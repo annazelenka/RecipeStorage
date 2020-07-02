@@ -11,10 +11,9 @@ Original App Design Project - README Template
 
 ## Overview
 ### Description
-[Description of your app]
+A mobile Android app developed in Java. Users can create profiles and store recipes. 
 
 ### App Evaluation
-[Evaluation of your app across the following attributes]
 - **Category:** Food & Drink
 - **Mobile:** Only available on mobile
 - **Story:** Store links or descriptions of recipes you’ve liked along with pictures about how they turned out and notes about how to improve the recipe next time.
