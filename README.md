@@ -96,8 +96,11 @@ A mobile Android app developed in Java. Users can create profiles and store reci
 
 
 ## Wireframes
-[Add picture of your hand sketched wireframes in this section]
-<img src="YOUR_WIREFRAME_IMAGE_URL" width=600>
+<img src="wireframe_1" width=600>
+<img src="wireframe_2" width=600>
+<img src="wireframe_3" width=600>
+
+
 
 ### [BONUS] Digital Wireframes & Mockups
 
