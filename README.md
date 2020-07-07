@@ -96,9 +96,9 @@ A mobile Android app developed in Java. Users can create profiles and store reci
 
 
 ## Wireframes
-<img src="wireframe_1" width=600>
-<img src="wireframe_2" width=600>
-<img src="wireframe_3" width=600>
+<img src="wireframe_1.jpg" width=600>
+<img src="wireframe_2.jpg" width=600>
+<img src="wireframe_3.jpg" width=600>
 
 
 
