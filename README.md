@@ -168,10 +168,10 @@ A mobile Android app developed in Java. Users can create profiles and store reci
   }
   ```
   
-  // DELETE ([source](https://stackoverflow.com/questions/26208937/delete-specific-object-from-parse-com#:~:text=3%20Answers&text=However%2C%20if%20you%20want%20to,the%20destroy%20method%20of%20ParseObject))
-  
   
   ```java
+  // DELETE ([source](https://stackoverflow.com/questions/26208937/delete-specific-object-from-parse-com#:~:text=3%20Answers&text=However%2C%20if%20you%20want%20to,the%20destroy%20method%20of%20ParseObject))
+ 
   func delete(imageId: String) {
 
     let query = PFQuery(className: "Recipe")
@@ -189,7 +189,3 @@ A mobile Android app developed in Java. Users can create profiles and store reci
     }
 }
 ```
-  
-
-
-- [OPTIONAL: List endpoints if using existing API such as Yelp]
