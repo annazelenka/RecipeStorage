@@ -109,9 +109,8 @@ A mobile Android app developed in Java. Users can create profiles and store reci
 ### Models
 
 **User**
-|     **Property   |        Type      |           Description           | Required for MVP?** |   |
+|     **Property**   |        **Type**      |           **Description**  | **Required for MVP?** |   |
 |:---------------:|:-----------------:|:--------------------------------:|-------------------|---|
-|                 |                   |                                  |                   |   |
 | User            | User              | who uploaded the recipe          | X                 |   |
 | username        | String            |                                  | X                 |   |
 | password        | String            |                                  | X                 |   |
@@ -119,7 +118,7 @@ A mobile Android app developed in Java. Users can create profiles and store reci
 
 
 **Recipe**
-|     **Property    |        Type       |             Description             | Required for MVP |   |
+|     **Property**    |        **Type**       |     **Description**        | **Required for MVP** |   |
 |:---------------:|:-----------------:|:------------------------------------:|-------------------|---|
 | title           | String            |                                      | X                 |   |
 | ingredients     | ArrayList<String> | recipe ingredients                   | X                 |   |
@@ -134,6 +133,60 @@ A mobile Android app developed in Java. Users can create profiles and store reci
   
   
 ### Networking
-- [Add list of network requests by screen ]
-- [Create basic snippets for each Parse network request]
+- Opening screen: Login screen
+    * (GET) username
+    * (GET) password
+- Sign up screen
+    * (POST) username
+    * (POST) password
+- Home: recipe list
+    * (GET/POST/UPDATE) isFavorite
+- Recipe details
+    * (GET/POST/UPDATE/DELETE) Title
+    * (GET/POST/UPDATE/DELETE) Ingredients
+    * (GET/POST/UPDATE/DELETE)Instructions
+    * (GET/POST/UPDATE/DELETE)Cook time (min)
+    * (GET/POST/UPDATE/DELETE) Notes
+    * (GET/POST/UPDATE/DELETE) recipeImage
+    * (GET/POST/UPDATE) isFavorite
+    * (GET/POST/UPDATE) Recipe category
+    * (GET/POST/UPDATE/DELETE) usersSharedWith
+    
+
+- basic snippets for each Parse network request
+  // GET
+  
+  let query = PFQuery(className:"Recipe")
+  query.whereKey("user", equalTo: currentUser)
+  query.order(byDescending: "createdAt")
+  query.findObjectsInBackground { (posts: [PFObject]?, error: Error?) in
+     if let error = error { 
+        print(error.localizedDescription)
+     } else if let recipes = recipes {
+        print("Successfully retrieved \(recipes.count) recipes.")
+    // TODO: Do something with recipes...
+     }
+  }
+  
+  // DELETE ([source](https://stackoverflow.com/questions/26208937/delete-specific-object-from-parse-com#:~:text=3%20Answers&text=However%2C%20if%20you%20want%20to,the%20destroy%20method%20of%20ParseObject))
+  
+  func delete(imageId: String) {
+
+    let query = PFQuery(className: "Recipe")
+    query.whereKey("Ingredients", equalTo: "\(ingredients)")
+
+    query.findObjectsInBackground {
+        (objects:[PFObject]?, error: Error?) -> Void in
+
+        if error == nil && (objects != nil) {
+            for object in objects! {
+                object.deleteInBackground()
+                print("object deleted")
+            }
+        }
+    }
+}
+  
+
+
 - [OPTIONAL: List endpoints if using existing API such as Yelp]
