@@ -107,12 +107,12 @@ A mobile Android app developed in Java. Users can create profiles and store reci
 ### Models
 
 **User**
-|     **Property**   |        **Type**      |           **Description**  | **Required for MVP?** |   
-|:---------------:|:-----------------:|:--------------------------------:|-------------------|---|
-| User            | User              | who uploaded the recipe          | X                 |   |
-| username        | String            |                                  | X                 |   |
-| password        | String            |                                  | X                 |   |
-| recipes         | ArrayList<Recipe> | recipes the user has uploaded    | X                 |   |
+|  **Property** |   **Type**           |   **Description**              | **Required for MVP?** |   
+|:---------------:|:-----------------:|:--------------------------------:|-------------------|
+| User            | User              | who uploaded the recipe          | X                 |   
+| username        | String            |                                  | X                 |   
+| password        | String            |                                  | X                 |   
+| recipes         | ArrayList<Recipe> | recipes the user has uploaded    | X                 |   
 
 
 **Recipe**
