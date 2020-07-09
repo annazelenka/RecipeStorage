@@ -106,9 +106,33 @@ A mobile Android app developed in Java. Users can create profiles and store reci
 ### [BONUS] Interactive Prototype
 
 ## Schema 
-[This section will be completed in Unit 9]
 ### Models
-[Add table of models]
+
+**User**
+|     **Property   |        Type      |           Description           | Required for MVP?** |   |
+|:---------------:|:-----------------:|:--------------------------------:|-------------------|---|
+|                 |                   |                                  |                   |   |
+| User            | User              | who uploaded the recipe          | X                 |   |
+| username        | String            |                                  | X                 |   |
+| password        | String            |                                  | X                 |   |
+| recipes         | ArrayList<Recipe> | recipes the user has uploaded    | X                 |   |
+
+
+**Recipe**
+|     **Property    |        Type       |             Description             | Required for MVP |   |
+|:---------------:|:-----------------:|:------------------------------------:|-------------------|---|
+| title           | String            |                                      | X                 |   |
+| ingredients     | ArrayList<String> | recipe ingredients                   | X                 |   |
+| instructions    | ArrayList<String> | recipe instructions                  | X                 |   |
+| CookTimeMinutes | unsigned int      | how long it takes to make the recipe | X                 |   |
+| recipeImage     | ParseFile         | image of the recipe                  | X                 |   |
+| Notes           | ArrayList<String> | recipe notes                         |                   |   |
+| usersSharedWith | ArrayList<User>   | users that have access to recipe     |                   |   |
+| isFavorite      | Boolean           |                                      |                   |   |
+| recipeCategory  | String            | eg breakfast, dinner                 |                   |   |
+  
+  
+  
 ### Networking
 - [Add list of network requests by screen ]
 - [Create basic snippets for each Parse network request]
