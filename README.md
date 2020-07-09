@@ -103,13 +103,11 @@ A mobile Android app developed in Java. Users can create profiles and store reci
 <img src="wireframe_2.jpg" width=600>
 <img src="wireframe_3.jpg" width=600>
 
-### [BONUS] Interactive Prototype
-
 ## Schema 
 ### Models
 
 **User**
-|     **Property**   |        **Type**      |           **Description**  | **Required for MVP?** |   |
+|     **Property**   |        **Type**      |           **Description**  | **Required for MVP?** |   
 |:---------------:|:-----------------:|:--------------------------------:|-------------------|---|
 | User            | User              | who uploaded the recipe          | X                 |   |
 | username        | String            |                                  | X                 |   |
@@ -118,17 +116,17 @@ A mobile Android app developed in Java. Users can create profiles and store reci
 
 
 **Recipe**
-|     **Property**    |        **Type**       |     **Description**        | **Required for MVP** |   |
-|:---------------:|:-----------------:|:------------------------------------:|-------------------|---|
-| title           | String            |                                      | X                 |   |
-| ingredients     | ArrayList<String> | recipe ingredients                   | X                 |   |
-| instructions    | ArrayList<String> | recipe instructions                  | X                 |   |
-| CookTimeMinutes | unsigned int      | how long it takes to make the recipe | X                 |   |
-| recipeImage     | ParseFile         | image of the recipe                  | X                 |   |
-| Notes           | ArrayList<String> | recipe notes                         |                   |   |
-| usersSharedWith | ArrayList<User>   | users that have access to recipe     |                   |   |
-| isFavorite      | Boolean           |                                      |                   |   |
-| recipeCategory  | String            | eg breakfast, dinner                 |                   |   |
+|     **Property**    |        **Type**       |     **Description**        | **Required for MVP** |   
+|:---------------:|:-----------------:|:------------------------------------:|-------------------|
+| title           | String            |                                      | X                 |   
+| ingredients     | ArrayList<String> | recipe ingredients                   | X                 |   
+| instructions    | ArrayList<String> | recipe instructions                  | X                 |   
+| CookTimeMinutes | unsigned int      | how long it takes to make the recipe | X                 |   
+| recipeImage     | ParseFile         | image of the recipe                  | X                 |   
+| Notes           | ArrayList<String> | recipe notes                         |                   |   
+| usersSharedWith | ArrayList<User>   | users that have access to recipe     |                   |   
+| isFavorite      | Boolean           |                                      |                   | 
+| recipeCategory  | String            | eg breakfast, dinner                 |                   | 
   
   
   
@@ -153,7 +151,8 @@ A mobile Android app developed in Java. Users can create profiles and store reci
     * (GET/POST/UPDATE/DELETE) usersSharedWith
     
 
-- basic snippets for each Parse network request
+- basic snippets for Parse network requests
+```java
   // GET
   
   let query = PFQuery(className:"Recipe")
@@ -167,9 +166,12 @@ A mobile Android app developed in Java. Users can create profiles and store reci
     // TODO: Do something with recipes...
      }
   }
+  ```
   
   // DELETE ([source](https://stackoverflow.com/questions/26208937/delete-specific-object-from-parse-com#:~:text=3%20Answers&text=However%2C%20if%20you%20want%20to,the%20destroy%20method%20of%20ParseObject))
   
+  
+  ```java
   func delete(imageId: String) {
 
     let query = PFQuery(className: "Recipe")
@@ -186,6 +188,7 @@ A mobile Android app developed in Java. Users can create profiles and store reci
         }
     }
 }
+```
   
 
 
