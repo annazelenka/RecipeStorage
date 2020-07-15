@@ -40,7 +40,6 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
 
     implementation 'com.google.android.material:material:1.1.0-alpha04'
-    implementation 'com.github.ibrahimsn98:SmoothBottomBar:1.7.6'
     implementation "androidx.coordinatorlayout:coordinatorlayout:1.1.0"
     implementation 'com.google.android.material:material:1.0.0-rc01'
 
@@ -49,5 +48,7 @@ dependencies {
 
     implementation 'com.github.parse-community.Parse-SDK-Android:parse:1.24.2'
     implementation 'com.squareup.okhttp3:logging-interceptor:3.8.1' // for logging API calls to LogCat
+
+    implementation 'com.github.jama5262:CarouselView:1.1.0'
 
 }

@@ -13,11 +13,17 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.example.recipestorage.R;
+import com.example.recipestorage.Recipe;
+
+import org.parceler.Parcels;
+
 public class RecipeSectionFragment extends Fragment {
 
     TextView tvTitle;
+
     RecipeSection recipeSection;
     String recipeSectionString;
+    Recipe recipe;
 
     public enum RecipeSection {
         INGREDIENT,
@@ -62,5 +68,7 @@ public class RecipeSectionFragment extends Fragment {
 
         tvTitle = view.findViewById(R.id.tvTitle);
         tvTitle.setText(recipeSectionString);
+
+        //recipe = (Recipe) Parcels.unwrap(getIntent().getParcelableExtra("user"));
     }
 }

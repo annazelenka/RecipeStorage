@@ -39,45 +39,63 @@
 
     </RelativeLayout>
 
-    <RelativeLayout
-        android:id="@+id/mockRecipeData"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:layout_below="@+id/relativeLayout"
-        android:layout_marginTop="8dp"
-        android:orientation="vertical">
+<!--    <RelativeLayout-->
+<!--        android:id="@+id/mockRecipeData"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="match_parent"-->
+<!--        android:layout_below="@+id/relativeLayout"-->
+<!--        android:layout_marginTop="8dp"-->
+<!--        android:orientation="vertical">-->
 
 
-        <ImageView
-            android:id="@+id/mockImage"
-            android:layout_width="200dp"
-            android:layout_height="200dp"
-            android:src="@drawable/burger">
+<!--        <ImageView-->
+<!--            android:id="@+id/mockImage"-->
+<!--            android:layout_width="200dp"-->
+<!--            android:layout_height="200dp"-->
+<!--            android:src="@drawable/burger">-->
 
-        </ImageView>
+<!--        </ImageView>-->
 
-        <Button
-            android:id="@+id/btnEditRecipe"
-            android:layout_width="wrap_content"
-            android:layout_height="50dp"
-            android:layout_below="@+id/mockImage"
-            style="@style/TextAppearance.MaterialComponents.Button"
-            android:text="Edit"></Button>
-    </RelativeLayout>
+<!--        <Button-->
+<!--            android:id="@+id/btnEditRecipe"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="50dp"-->
+<!--            android:layout_below="@+id/mockImage"-->
+<!--            style="@style/TextAppearance.MaterialComponents.Button"-->
+<!--            android:text="Edit"></Button>-->
+<!--    </RelativeLayout>-->
 
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/frameLayout"
-        android:layout_below="@id/mockRecipeData"
+        android:layout_below="@id/relativeLayout"
         android:layout_marginTop="16dp">
 
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rvPosts"
+<!--        <androidx.recyclerview.widget.RecyclerView-->
+<!--            android:id="@+id/rvPosts"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:padding="8dp" />-->
+
+        <com.jama.carouselview.CarouselView
+            android:id="@+id/carouselView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="8dp" />
+            app:enableSnapping="false"
+            app:scaleOnScroll="true"
+            app:setAutoPlay="true"
+            app:setAutoPlayDelay="3000"
+            app:carouselOffset="start"
+            app:indicatorAnimationType="drop"
+            app:indicatorRadius="5"
+            app:indicatorPadding="5"
+            app:indicatorSelectedColor="@color/colorAccent"
+            app:indicatorUnselectedColor="@color/colorPrimary"
+            app:size="10"
+            app:spacing="10"
+            app:resource="@layout/item_recipe_preview"/>
 
     </FrameLayout>
 

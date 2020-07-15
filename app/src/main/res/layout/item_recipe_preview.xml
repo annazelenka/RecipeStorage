@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="match_parent">
+
+
+    <TextView
+        android:id="@+id/tvTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="recipe title"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:layout_centerHorizontal="true">
+
+    </TextView>
+
+    <ImageView
+        android:id="@+id/ivPicture"
+        android:layout_width="150sp"
+        android:layout_height="150sp"
+        android:layout_below="@+id/tvTitle"
+        android:src="@drawable/fried_rice"
+        android:layout_centerHorizontal="true"
+        ></ImageView>
+
+    <Button
+        android:id="@+id/btnEditRecipe"
+        android:layout_width="wrap_content"
+        android:layout_height="50dp"
+        android:text="Edit"
+        android:layout_below="@id/ivPicture"
+        android:layout_centerHorizontal="true"></Button>
+
+</RelativeLayout>
