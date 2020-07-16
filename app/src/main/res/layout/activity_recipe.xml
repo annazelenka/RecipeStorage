@@ -19,9 +19,37 @@
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
+            android:layout_height="wrap_content"
             android:background="?attr/colorPrimary"
-            app:layout_scrollFlags="scroll|enterAlways" />
+            app:layout_scrollFlags="scroll|enterAlways" >
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+            <ImageView
+                android:id="@+id/ivRecipeImage"
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                android:src="@drawable/lobster">
+            </ImageView>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/etUsernameLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Put the recipe title here!"
+                android:layout_margin="16dp"
+                android:layout_marginTop="32dp"
+                android:layout_below="@+id/ivRecipeImage">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etRecipeTitle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    />
+
+            </com.google.android.material.textfield.TextInputLayout>
+            </RelativeLayout>
+        </androidx.appcompat.widget.Toolbar>
     </com.google.android.material.appbar.AppBarLayout>
 
     <!-- This could also be included from another file using the include tag -->

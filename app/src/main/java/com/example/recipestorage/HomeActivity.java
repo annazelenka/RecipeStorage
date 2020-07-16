@@ -12,6 +12,7 @@ import android.widget.Button;
 
 import com.example.recipestorage.fragments.RecipesListFragment;
 import com.example.recipestorage.fragments.RecipesSharedFragment;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseQuery;
@@ -27,44 +28,25 @@ public class HomeActivity extends AppCompatActivity {
 
     private static final String TAG = "HomeActivity";
     final FragmentManager fragmentManager = getSupportFragmentManager();
-//    private SmoothBottomBar bottomBar;
 
-    Button btnEdit;
+    FloatingActionButton fabAddRecipe;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
-//        bottomBar = findViewById(R.id.bottomBar);
-//
-//        bottomBar.setOnItemSelectedListener(new OnItemSelectedListener() {
-//            @Override
-//            public boolean onItemSelect(int i) {
-//                Fragment fragment = null;
-//                boolean isFragment = true;
-//                switch (i) {
-//                    case 0:
-//                        fragment = new RecipesListFragment();
-//                        break;
-//                    case 1:
-//                        fragment = new RecipesSharedFragment();
-//                        break;
-//                    case 2:
-//                    default:
-//                        Intent intent = new Intent(HomeActivity.this, RecipeActivity.class);
-//                        startActivity(intent);
-//                        isFragment = false;
-//                }
-//                if (isFragment) {
-//                    fragmentManager.beginTransaction().replace(R.id.flContainer, fragment).commit();
-//                }
-//                // TODO: change if needed when launching RecipeActivity
-//                return true;
-//            }
-//        });
         // TODO: Set default selection
         queryRecipes();
+
+        fabAddRecipe = findViewById(R.id.fabAddRecipe);
+        fabAddRecipe.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(HomeActivity.this, RecipeActivity.class);
+                startActivity(intent);
+            }
+        });
 
     }
 

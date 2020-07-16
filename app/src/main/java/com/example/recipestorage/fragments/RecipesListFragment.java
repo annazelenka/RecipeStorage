@@ -84,7 +84,7 @@ public class RecipesListFragment extends Fragment {
                 Button btnEditRecipe = view.findViewById(R.id.btnEditRecipe);
 
                 ivPicture.setImageDrawable(getResources().getDrawable(images[position]));
-                if (allRecipes.size() == 0) {
+                if (allRecipes == null) {
                     return;
                 }
 
