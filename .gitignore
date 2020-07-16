@@ -45,3 +45,7 @@ Thumbs.db
 
 # Parse Server config vars
 parseserver.properties
+
+# Facebook SDK strings
+facebook_strings.xml
+strings.xml

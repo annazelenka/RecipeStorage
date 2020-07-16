@@ -10,12 +10,16 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import com.example.recipestorage.R;
 import com.example.recipestorage.Recipe;
 
 import org.parceler.Parcels;
+
+import java.util.ArrayList;
 
 public class RecipeSectionFragment extends Fragment {
 
@@ -24,6 +28,9 @@ public class RecipeSectionFragment extends Fragment {
     RecipeSection recipeSection;
     String recipeSectionString;
     Recipe recipe;
+    ArrayList<String> recipeSectionContents;
+    boolean isBlankRecipe;
+    ListView lvItems;
 
     public enum RecipeSection {
         INGREDIENT,
@@ -36,18 +43,20 @@ public class RecipeSectionFragment extends Fragment {
         recipeSectionString = "empty";
     }
 
-    public RecipeSectionFragment(RecipeSection setRecipeSection) {
+    public RecipeSectionFragment(boolean setIsBlankRecipe, RecipeSection setRecipeSection, ArrayList<String> setRecipeSectionContents) {
+        this.isBlankRecipe = setIsBlankRecipe;
         this.recipeSection = setRecipeSection;
+        this.recipeSectionContents = setRecipeSectionContents;
 
         switch(recipeSection) {
             case INGREDIENT:
-                recipeSectionString = "ingredient";
+                recipeSectionString = "ingredients";
                 break;
             case DIRECTION:
-                recipeSectionString = "direction";
+                recipeSectionString = "directions";
                 break;
             case NOTE:
-                recipeSectionString = "note";
+                recipeSectionString = "notes";
                 break;
             default:
                 recipeSectionString = "empty";
@@ -66,9 +75,17 @@ public class RecipeSectionFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        lvItems = view.findViewById(R.id.lvItems);
         tvTitle = view.findViewById(R.id.tvTitle);
         tvTitle.setText(recipeSectionString);
 
-        //recipe = (Recipe) Parcels.unwrap(getIntent().getParcelableExtra("user"));
+        if (!isBlankRecipe) {
+            ArrayAdapter<String> itemsAdapter =
+                    new ArrayAdapter<String>(getContext(), android.R.layout.simple_list_item_1, recipeSectionContents);
+
+            ListView listView = (ListView) view.findViewById(R.id.lvItems);
+            listView.setAdapter(itemsAdapter);
+        }
+
     }
 }

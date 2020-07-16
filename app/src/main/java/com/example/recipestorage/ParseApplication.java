@@ -4,6 +4,7 @@ import android.app.Application;
 
 import com.parse.Parse;
 import com.parse.ParseObject;
+import com.parse.facebook.ParseFacebookUtils;
 
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
@@ -34,8 +35,5 @@ public class ParseApplication extends Application {
                 .clientBuilder(builder)
                 .server(BuildConfig.SERVER_URL).build()); // USE HTTPS!!
 
-//        Recipe testObject = new Recipe()
-//        testObject.put(""
-//        testObject.saveInBackground();
     }
 }

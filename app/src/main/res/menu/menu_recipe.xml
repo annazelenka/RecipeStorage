@@ -5,24 +5,24 @@
         android:id="@+id/miCamera"
         android:icon="@drawable/ic_photo_camera_24px"
         app:showAsAction="ifRoom"
-        android:title="Compose">
+        android:title="Camera">
     </item>
     <item
         android:id="@+id/miIngredients"
         android:icon="@drawable/ic_fastfood_black_18dp"
         app:showAsAction="ifRoom"
-        android:title="Compose">
+        android:title="Ingredients">
     </item>
     <item
         android:id="@+id/miDirections"
         android:icon="@drawable/ic_notes_black_18dp"
         app:showAsAction="ifRoom"
-        android:title="Compose">
+        android:title="Directions">
     </item>
     <item
         android:id="@+id/miNotes"
         android:icon="@drawable/ic_content_paste_black_18dp"
         app:showAsAction="ifRoom|withText"
-        android:title="Profile">
+        android:title="Notes">
     </item>
 </menu>

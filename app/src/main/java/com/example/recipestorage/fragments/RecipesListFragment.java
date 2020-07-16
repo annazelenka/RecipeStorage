@@ -18,6 +18,7 @@ import android.widget.TextView;
 import com.example.recipestorage.R;
 import com.example.recipestorage.Recipe;
 import com.example.recipestorage.RecipeActivity;
+import com.example.recipestorage.RecipeEditActivity;
 import com.jama.carouselview.CarouselView;
 import com.jama.carouselview.CarouselViewListener;
 import com.jama.carouselview.enums.IndicatorAnimationType;
@@ -84,11 +85,11 @@ public class RecipesListFragment extends Fragment {
                 Button btnEditRecipe = view.findViewById(R.id.btnEditRecipe);
 
                 ivPicture.setImageDrawable(getResources().getDrawable(images[position]));
-                if (allRecipes == null) {
+                if (allRecipes == null || allRecipes.size() == 0) {
                     return;
                 }
 
-                Recipe recipe = allRecipes.get(position);
+                final Recipe recipe = allRecipes.get(position);
 
                 // Example here is setting up a full image carousel
 
@@ -98,8 +99,8 @@ public class RecipesListFragment extends Fragment {
                 btnEditRecipe.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        Intent intent = new Intent(getContext(), RecipeActivity.class);
-                        //intent.putExtra("recipe", Parcels.wrap(recipe));
+                        Intent intent = new Intent(getContext(), RecipeEditActivity.class);
+                        intent.putExtra("recipe", Parcels.wrap(recipe));
                         startActivity(intent);
 
                         //TODO: do an onActivityResult listener so that once activity returns, this picture is updated
@@ -150,7 +151,7 @@ public class RecipesListFragment extends Fragment {
                     @Override
                     public void onClick(View view) {
                         Intent intent = new Intent(getContext(), RecipeActivity.class);
-                        //intent.putExtra("recipe", Parcels.wrap(recipe));
+                        intent.putExtra("recipe", Parcels.wrap(recipe));
                         startActivity(intent);
 
                         //TODO: do an onActivityResult listener so that once activity returns, this picture is updated

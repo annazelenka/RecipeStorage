@@ -11,6 +11,7 @@
     <!-- Note that AppBarLayout expects to be the first child nested within a CoordinatorLayout -->
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/appBar"
+        android:background="@color/colorPrimaryDark"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:theme="@style/ThemeOverlay.AppCompat.ActionBar">
@@ -21,7 +22,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="?attr/colorPrimary"
-            app:layout_scrollFlags="scroll|enterAlways" >
+            android:minHeight="?attr/actionBarSize"
+            app:layout_scrollFlags="scroll|exitUntilCollapsed">
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">

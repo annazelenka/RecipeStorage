@@ -16,6 +16,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseQuery;
+import com.parse.ParseUser;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
@@ -27,6 +28,7 @@ import java.util.List;
 public class HomeActivity extends AppCompatActivity {
 
     private static final String TAG = "HomeActivity";
+    private static final int RECIPE_LIMIT = 20;
     final FragmentManager fragmentManager = getSupportFragmentManager();
 
     FloatingActionButton fabAddRecipe;
@@ -54,7 +56,8 @@ public class HomeActivity extends AppCompatActivity {
 
         ParseQuery<Recipe> query = ParseQuery.getQuery(Recipe.class);
         query.include(Recipe.KEY_USER);
-        query.setLimit(5);
+        query.setLimit(RECIPE_LIMIT);
+        query.whereEqualTo(Recipe.KEY_USER, ParseUser.getCurrentUser());
         query.addDescendingOrder(Recipe.KEY_CREATED_KEY);
         query.findInBackground(new FindCallback<Recipe>() {
             @Override

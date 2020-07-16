@@ -23,6 +23,8 @@ import android.widget.Toast;
 
 import com.example.recipestorage.fragments.RecipeSectionFragment;
 
+import org.parceler.Parcels;
+
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -38,6 +40,7 @@ public class RecipeActivity extends AppCompatActivity {
     final FragmentManager fragmentManager = getSupportFragmentManager();
     Toolbar toolbar;
     ImageView ivRecipeImage;
+    Recipe recipe;
 
 
     @Override
@@ -71,14 +74,14 @@ public class RecipeActivity extends AppCompatActivity {
             case R.id.miCamera:
                 launchCamera();
             case R.id.miIngredients:
-                fragment = new RecipeSectionFragment(RecipeSectionFragment.RecipeSection.INGREDIENT);
+                fragment = new RecipeSectionFragment(true, RecipeSectionFragment.RecipeSection.INGREDIENT, null);
                 break;
             case R.id.miDirections:
-                fragment = new RecipeSectionFragment(RecipeSectionFragment.RecipeSection.DIRECTION);
+                fragment = new RecipeSectionFragment(true, RecipeSectionFragment.RecipeSection.DIRECTION, null);
                 break;
             case R.id.miNotes:
             default:
-                fragment = new RecipeSectionFragment(RecipeSectionFragment.RecipeSection.NOTE);
+                fragment = new RecipeSectionFragment(true, RecipeSectionFragment.RecipeSection.NOTE, null);
                 break;
         }
         fragmentManager.beginTransaction().replace(R.id.flContainer, fragment).commit();
@@ -87,7 +90,7 @@ public class RecipeActivity extends AppCompatActivity {
     }
 
 
-    private void launchCamera() {
+    protected void launchCamera() {
         // create Intent to take a picture and return control to the calling application
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
 

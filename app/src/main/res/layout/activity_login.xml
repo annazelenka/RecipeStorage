@@ -42,7 +42,7 @@
     </com.google.android.material.textfield.TextInputLayout>
 
     <Button
-        android:id="@+id/btnSignup"
+        android:id="@+id/btnLogin"
         style="@style/Widget.MaterialComponents.Button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -52,17 +52,28 @@
         android:layout_marginLeft="16dp"
         android:layout_marginTop="16dp"
         android:layout_marginRight="16dp"
-        android:text="Log In" />
-
+        android:text="Log In without Facebook" />
 
     <Button
-        android:id="@+id/btnSignupFacebook"
+        android:id="@+id/btnSignup"
         style="@style/Widget.MaterialComponents.Button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/btnSignup"
-        android:layout_alignLeft="@+id/btnSignup"
-        android:layout_alignRight="@+id/btnSignup"
-        android:layout_marginTop="364dp"
-        android:text="Sign Up" />
+        android:layout_alignLeft="@+id/btnLogin"
+        android:layout_alignRight="@+id/btnLogin"
+        android:layout_below="@+id/btnLogin"
+        android:text="Sign Up without Facebook" />
+
+    <com.facebook.login.widget.LoginButton
+        android:id="@+id/btnLoginFacebook"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/btnLogin"
+        android:layout_alignRight="@+id/btnLogin"
+        android:layout_marginTop="16dp"
+        android:text="Log in with Facebook"
+        android:textSize="16sp"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="16dp"
+        />
 </RelativeLayout>
