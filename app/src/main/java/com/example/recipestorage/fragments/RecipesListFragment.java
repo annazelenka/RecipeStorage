@@ -34,6 +34,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import coil.Coil;
+import coil.ImageLoader;
+import coil.request.LoadRequest;
+
 public class RecipesListFragment extends Fragment {
     public static final String TAG = "RecipeListFragment";
 
@@ -63,11 +67,6 @@ public class RecipesListFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        //TODO: REPLACE WITH REAL DATA
-        final String recipeTitle = "Burger";
-        final ArrayList<String> ingredients = new ArrayList<String> (Arrays.asList("1 lb ground beef", "salt and pepper", "cheese"));
-        final ArrayList<String> directions = new ArrayList<String> (Arrays.asList("1. Mix ground beef, salt, and pepper", "2. Grill", "3. Add cheese"));
-
         if (allRecipes != null) {
             carouselView = view.findViewById(R.id.carouselView);
 
@@ -85,17 +84,26 @@ public class RecipesListFragment extends Fragment {
                     ImageView ivPicture = view.findViewById(R.id.ivPicture);
                     Button btnEditRecipe = view.findViewById(R.id.btnEditRecipe);
 
-                    ivPicture.setImageDrawable(getResources().getDrawable(images[position]));
+                    ImageLoader imageLoader = Coil.imageLoader(getContext());
+
                     if (allRecipes == null || allRecipes.size() == 0 || position >= allRecipes.size()) {
                         return;
                     }
 
                     final Recipe recipe = allRecipes.get(position);
-
-                    // Example here is setting up a full image carousel
+                    boolean hasImage = (recipe.getImage() != null);
+                    if (hasImage) {
+                        LoadRequest request = LoadRequest.builder(getContext())
+                                .data(recipe.getImage().getUrl())
+                                .crossfade(true)
+                                .target(ivPicture)
+                                .build();
+                        imageLoader.execute(request);
+                    } else {
+                        ivPicture.setVisibility(View.GONE);
+                    }
 
                     tvTitle.setText(recipe.getTitle());
-
 
                     btnEditRecipe.setOnClickListener(new View.OnClickListener() {
                         @Override
