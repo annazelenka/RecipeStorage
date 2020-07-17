@@ -39,7 +39,7 @@ public class RecipesListFragment extends Fragment {
 
     private List<Recipe> allRecipes;
     private int[] images = {R.drawable.taco,
-            R.drawable.salmon, R.drawable.lobster, R.drawable.fried_rice};
+            R.drawable.salmon, R.drawable.lobster, R.drawable.fried_rice, R.drawable.burger, R.drawable.salad, R.drawable.pie};
     CarouselView carouselView;
 
     public RecipesListFragment() {
@@ -152,7 +152,7 @@ public class RecipesListFragment extends Fragment {
                 btnEditRecipe.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        Intent intent = new Intent(getContext(), RecipeActivity.class);
+                        Intent intent = new Intent(getContext(), RecipeEditActivity.class);
                         intent.putExtra("recipe", Parcels.wrap(recipe));
                         startActivity(intent);
 

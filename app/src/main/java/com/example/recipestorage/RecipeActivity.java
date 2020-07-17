@@ -6,9 +6,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -22,7 +20,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.recipestorage.fragments.RecipeSectionFragment;
@@ -31,8 +28,6 @@ import com.parse.ParseException;
 import com.parse.ParseFile;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
-
-import org.parceler.Parcels;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -59,6 +54,7 @@ public class RecipeActivity extends AppCompatActivity implements RecipeSectionFr
     ArrayList<String> directions;
     ArrayList<String> notes;
 
+    boolean recipeDataChanged;
 
 
     @Override
@@ -69,6 +65,8 @@ public class RecipeActivity extends AppCompatActivity implements RecipeSectionFr
         ivRecipeImage = findViewById(R.id.ivRecipeImage);
         etRecipeTitle = findViewById(R.id.etRecipeTitle);
 
+        setRecipe();
+
         // Find the toolbar view inside the activity layout
         toolbar = (Toolbar) findViewById(R.id.toolbar);
 
@@ -76,9 +74,6 @@ public class RecipeActivity extends AppCompatActivity implements RecipeSectionFr
         // Make sure the toolbar exists in the activity and is not null
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
-
-        Fragment fragment = new RecipeSectionFragment(true, RecipeSectionFragment.RecipeSection.INGREDIENT, null);
-        fragmentManager.beginTransaction().replace(R.id.flContainer, fragment).commit();
 
         fabSubmitRecipe = findViewById(R.id.fabSubmitRecipe);
         fabSubmitRecipe.setOnClickListener(new View.OnClickListener() {
@@ -88,39 +83,26 @@ public class RecipeActivity extends AppCompatActivity implements RecipeSectionFr
             }
         });
 
-        ingredients = new ArrayList<String>();
-        directions = new ArrayList<String>();
-        notes = new ArrayList<String>();
+        setDefaultFragment();
+        recipeDataChanged = false;
+    }
+
+    protected void setRecipe() {
+        recipe = new Recipe();
+        this.ingredients = new ArrayList<String>();
+        this.directions = new ArrayList<String>();
+        this.notes = new ArrayList<String>();
+    }
+
+    protected void setDefaultFragment() {
+        Fragment fragment = new RecipeSectionFragment(true, RecipeSectionFragment.RecipeSection.INGREDIENT, ingredients);
+        fragmentManager.beginTransaction().replace(R.id.flContainer, fragment).commit();
     }
 
     private void handleSubmittingRecipe() {
-        boolean cannotSubmitRecipe = false;
-        StringBuilder missingRecipeSections = new StringBuilder("Recipe needs ");
+        boolean canSubmitRecipe = canSubmitRecipe();
 
-        if (etRecipeTitle.getText().toString().isEmpty()) {
-            missingRecipeSections.append("title, ");
-            cannotSubmitRecipe = true;
-        }
-        if (ingredients.size() == 0) {
-            missingRecipeSections.append("ingredients, ");
-            cannotSubmitRecipe = true;
-        }
-        if (directions.size() == 0) {
-            missingRecipeSections.append("directions, ");
-            cannotSubmitRecipe = true;
-        }
-        if (notes.size() == 0) {
-            missingRecipeSections.append("notes, ");
-            cannotSubmitRecipe = true;
-        }
-
-
-        if (cannotSubmitRecipe) {
-            int length = missingRecipeSections.length();
-            missingRecipeSections.delete(length - 3, length - 1);
-            missingRecipeSections.append("!");
-
-            Toast.makeText(RecipeActivity.this, missingRecipeSections, Toast.LENGTH_SHORT).show();
+        if (!canSubmitRecipe) {
             return;
         }
 
@@ -130,14 +112,20 @@ public class RecipeActivity extends AppCompatActivity implements RecipeSectionFr
         } else {
             saveRecipe(ParseUser.getCurrentUser(), true, photoFile);
         }
-
-//        Intent intent = new Intent(RecipeActivity.this, HomeActivity.class);
-//        startActivity(intent);
     }
 
-    private void saveRecipe(ParseUser currentUser, boolean hasPhotoFile, File photoFile) {
-        recipe = new Recipe();
-        recipe.setUser(currentUser); // problem
+    protected boolean canSubmitRecipe() {
+        boolean canSubmitRecipe = !etRecipeTitle.getText().toString().isEmpty() && ingredients.size() != 0 &&
+                directions.size() != 0 && notes.size() != 0;
+        if (!canSubmitRecipe) {
+            String toast = "Recipe is missing ingredients, directions, and/or notes";
+            Toast.makeText(RecipeActivity.this, toast, Toast.LENGTH_SHORT).show();
+        }
+        return canSubmitRecipe;
+    }
+
+    protected void saveRecipe(ParseUser currentUser, boolean hasPhotoFile, File photoFile) {
+        recipe.setUser(currentUser);
         recipe.setTitle(etRecipeTitle.getText().toString());
         recipe.addIngredients(ingredients);
         recipe.addDirections(directions);
@@ -146,7 +134,7 @@ public class RecipeActivity extends AppCompatActivity implements RecipeSectionFr
         if (hasPhotoFile) {
             recipe.setImage(new ParseFile(photoFile));
         }
-       
+
         recipe.saveInBackground(new SaveCallback() {
             @Override
             public void done(ParseException e) {
@@ -155,9 +143,9 @@ public class RecipeActivity extends AppCompatActivity implements RecipeSectionFr
                     Toast.makeText(RecipeActivity.this, "error while saving!", Toast.LENGTH_SHORT).show();
                     return;
                 }
-                Toast.makeText(RecipeActivity.this, "Posted!", Toast.LENGTH_LONG).show();
-                etRecipeTitle.setText("");
-                // ivPostImage.setImageResource(0); // empty resource id
+                Toast.makeText(RecipeActivity.this, "Saved!", Toast.LENGTH_LONG).show();
+                Intent intent = new Intent(RecipeActivity.this, HomeActivity.class);
+                startActivity(intent);
             }
         });
     }
@@ -179,6 +167,11 @@ public class RecipeActivity extends AppCompatActivity implements RecipeSectionFr
         }
     }
 
+    @Override
+    public void onDataChangedPass(boolean dataChanged) {
+        this.recipeDataChanged = dataChanged;
+    }
+
 
     // Menu icons are inflated just as they were with actionbar
     @Override
@@ -195,18 +188,17 @@ public class RecipeActivity extends AppCompatActivity implements RecipeSectionFr
             case R.id.miCamera:
                 launchCamera();
             case R.id.miIngredients:
-                fragment = new RecipeSectionFragment(true, RecipeSectionFragment.RecipeSection.INGREDIENT, null);
+                fragment = new RecipeSectionFragment(true, RecipeSectionFragment.RecipeSection.INGREDIENT, ingredients);
                 break;
             case R.id.miDirections:
-                fragment = new RecipeSectionFragment(true, RecipeSectionFragment.RecipeSection.DIRECTION, null);
+                fragment = new RecipeSectionFragment(true, RecipeSectionFragment.RecipeSection.DIRECTION, directions);
                 break;
             case R.id.miNotes:
             default:
-                fragment = new RecipeSectionFragment(true, RecipeSectionFragment.RecipeSection.NOTE, null);
+                fragment = new RecipeSectionFragment(true, RecipeSectionFragment.RecipeSection.NOTE, notes);
                 break;
         }
         fragmentManager.beginTransaction().replace(R.id.flContainer, fragment).commit();
-//        return super.onOptionsItemSelected(item);
         return true;
     }
 

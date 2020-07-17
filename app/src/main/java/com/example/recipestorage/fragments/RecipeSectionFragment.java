@@ -54,6 +54,8 @@ public class RecipeSectionFragment extends Fragment {
 
     public interface OnDataPass {
         public void onDataPass(RecipeSection recipeSection, ArrayList<String> data);
+        // this method used only for RecipeEditActivity to notify RecipeActivity
+        public void onDataChangedPass(boolean dataChanged);
     }
 
     public RecipeSectionFragment() {
@@ -64,11 +66,7 @@ public class RecipeSectionFragment extends Fragment {
     public RecipeSectionFragment(boolean setIsBlankRecipe, RecipeSection setRecipeSection, ArrayList<String> setRecipeSectionContents) {
         this.isBlankRecipe = setIsBlankRecipe;
         this.recipeSection = setRecipeSection;
-        if (setRecipeSectionContents != null) {
-            this.recipeSectionContents = setRecipeSectionContents;
-        } else {
-            this.recipeSectionContents = new ArrayList<String>();
-        }
+        this.recipeSectionContents = setRecipeSectionContents;
 
         switch(recipeSection) {
             case INGREDIENT:
@@ -95,6 +93,10 @@ public class RecipeSectionFragment extends Fragment {
         dataPasser.onDataPass(recipeSection, data);
     }
 
+    public void passDataChanged(boolean dataHasChanged) {
+        dataPasser.onDataChangedPass(dataHasChanged);
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
@@ -110,13 +112,12 @@ public class RecipeSectionFragment extends Fragment {
         tvTitle = view.findViewById(R.id.tvTitle);
         etAddRecipeSection = view.findViewById(R.id.etAddRecipeSection);
 
+        populateListView(view);
         tvTitle.setText(recipeSectionString + "s");
 
-
-        itemsAdapter = new ArrayAdapter<String>(getContext(), android.R.layout.simple_list_item_1, recipeSectionContents);
-
-        ListView listView = (ListView) view.findViewById(R.id.lvItems);
-        listView.setAdapter(itemsAdapter);
+        if (!isBlankRecipe) {
+            passData(recipeSection, recipeSectionContents);
+        }
 
         etAddRecipeSection.setHint("new " + recipeSectionString);
         etAddRecipeSection.setOnEditorActionListener(new TextView.OnEditorActionListener() {
@@ -131,6 +132,7 @@ public class RecipeSectionFragment extends Fragment {
                     recipeSectionContents.add(text);
                     itemsAdapter.notifyDataSetChanged();
                     passData(recipeSection, recipeSectionContents);
+                    passDataChanged(true);
                     etAddRecipeSection.setText("");
 
                     return true;
@@ -138,6 +140,11 @@ public class RecipeSectionFragment extends Fragment {
                 return false;
             }
         });
+    }
 
+    private void populateListView(View view) {
+        itemsAdapter = new ArrayAdapter<String>(getContext(), android.R.layout.simple_list_item_1, recipeSectionContents);
+        ListView listView = (ListView) view.findViewById(R.id.lvItems);
+        listView.setAdapter(itemsAdapter);
     }
 }
