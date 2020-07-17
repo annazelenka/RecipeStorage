@@ -38,8 +38,8 @@ public class RecipesListFragment extends Fragment {
     public static final String TAG = "RecipeListFragment";
 
     private List<Recipe> allRecipes;
-    private int[] images = {R.drawable.pie,
-            R.drawable.lobster, R.drawable.salad, R.drawable.fried_rice};
+    private int[] images = {R.drawable.taco,
+            R.drawable.salmon, R.drawable.lobster, R.drawable.fried_rice};
     CarouselView carouselView;
 
     public RecipesListFragment() {
@@ -68,48 +68,50 @@ public class RecipesListFragment extends Fragment {
         final ArrayList<String> ingredients = new ArrayList<String> (Arrays.asList("1 lb ground beef", "salt and pepper", "cheese"));
         final ArrayList<String> directions = new ArrayList<String> (Arrays.asList("1. Mix ground beef, salt, and pepper", "2. Grill", "3. Add cheese"));
 
-        carouselView = view.findViewById(R.id.carouselView);
+        if (allRecipes != null) {
+            carouselView = view.findViewById(R.id.carouselView);
 
-        carouselView.setSize(images.length);
-        carouselView.setResource(R.layout.item_recipe_preview);
-        carouselView.setAutoPlay(false);
-        carouselView.setScaleOnScroll(true);
-        carouselView.setIndicatorAnimationType(IndicatorAnimationType.SLIDE);
-        carouselView.setCarouselOffset(OffsetType.CENTER);
-        carouselView.setCarouselViewListener(new CarouselViewListener() {
-            @Override
-            public void onBindView(View view, int position) {
-                // Example here is setting up a full image carousel
-                TextView tvTitle = view.findViewById(R.id.tvTitle);
-                ImageView ivPicture = view.findViewById(R.id.ivPicture);
-                Button btnEditRecipe = view.findViewById(R.id.btnEditRecipe);
+            carouselView.setSize(allRecipes.size());
+            carouselView.setResource(R.layout.item_recipe_preview);
+            carouselView.setAutoPlay(false);
+            carouselView.setScaleOnScroll(true);
+            carouselView.setIndicatorAnimationType(IndicatorAnimationType.SLIDE);
+            carouselView.setCarouselOffset(OffsetType.CENTER);
+            carouselView.setCarouselViewListener(new CarouselViewListener() {
+                @Override
+                public void onBindView(View view, int position) {
+                    // Example here is setting up a full image carousel
+                    TextView tvTitle = view.findViewById(R.id.tvTitle);
+                    ImageView ivPicture = view.findViewById(R.id.ivPicture);
+                    Button btnEditRecipe = view.findViewById(R.id.btnEditRecipe);
 
-                ivPicture.setImageDrawable(getResources().getDrawable(images[position]));
-                if (allRecipes == null || allRecipes.size() == 0) {
-                    return;
-                }
-
-                final Recipe recipe = allRecipes.get(position);
-
-                // Example here is setting up a full image carousel
-
-                tvTitle.setText(recipe.getTitle());
-
-
-                btnEditRecipe.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        Intent intent = new Intent(getContext(), RecipeEditActivity.class);
-                        intent.putExtra("recipe", Parcels.wrap(recipe));
-                        startActivity(intent);
-
-                        //TODO: do an onActivityResult listener so that once activity returns, this picture is updated
+                    ivPicture.setImageDrawable(getResources().getDrawable(images[position]));
+                    if (allRecipes == null || allRecipes.size() == 0 || position >= allRecipes.size()) {
+                        return;
                     }
-                });
-            }
-        });
-        // After you finish setting up, show the CarouselView
-        carouselView.show();
+
+                    final Recipe recipe = allRecipes.get(position);
+
+                    // Example here is setting up a full image carousel
+
+                    tvTitle.setText(recipe.getTitle());
+
+
+                    btnEditRecipe.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            Intent intent = new Intent(getContext(), RecipeEditActivity.class);
+                            intent.putExtra("recipe", Parcels.wrap(recipe));
+                            startActivity(intent);
+
+                            //TODO: do an onActivityResult listener so that once activity returns, this picture is updated
+                        }
+                    });
+                }
+            });
+            // After you finish setting up, show the CarouselView
+            carouselView.show();
+        }
 
     }
 

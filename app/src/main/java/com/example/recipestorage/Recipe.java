@@ -49,7 +49,6 @@ public class Recipe extends ParseObject {
 
     public void setUser(ParseUser user) {
         put(KEY_USER, user);
-        saveInBackground();
     }
 
     public String getParsedCreatedAt() {
@@ -92,28 +91,23 @@ public class Recipe extends ParseObject {
 
     public void addIngredient(String ingredient) {
         addUnique(KEY_INGREDIENTS, ingredient);
-        saveInBackground();
     }
 
     public void addIngredients(ArrayList<String> ingredients) {
         addAllUnique(KEY_INGREDIENTS, ingredients);
-        saveInBackground();
     }
 
     public void removeIngredient(String ingredient) {
         removeAll(KEY_INGREDIENTS, Arrays.asList(ingredient));
-        saveInBackground();
     }
 
     public void removeIngredients(ArrayList<String> ingredients) {
         removeAll(KEY_INGREDIENTS, ingredients);
-        saveInBackground();
     }
 
     public void clearIngredients() {
         ArrayList<String> ingredient = getParsedIngredients();
         removeNotes(ingredient);
-        saveInBackground();
     }
 
     public JSONArray getDirections() { return getJSONArray(KEY_DIRECTIONS); }
@@ -141,28 +135,23 @@ public class Recipe extends ParseObject {
 
     public void addDirection(String direction) {
         addUnique(KEY_DIRECTIONS, direction);
-        saveInBackground();
     }
 
     public void addDirections(ArrayList<String> directions) {
         addAllUnique(KEY_DIRECTIONS, directions);
-        saveInBackground();
     }
 
     public void removeDirection(String direction) {
         removeAll(KEY_DIRECTIONS, Arrays.asList(direction));
-        saveInBackground();
     }
 
     public void removeDirections(ArrayList<String> directions) {
         removeAll(KEY_DIRECTIONS, directions);
-        saveInBackground();
     }
 
     public void clearDirections() {
         ArrayList<String> directions = getParsedDirections();
         removeNotes(directions);
-        saveInBackground();
     }
 
 
@@ -190,40 +179,33 @@ public class Recipe extends ParseObject {
 
     public void addNote(String note) {
         addUnique(KEY_NOTES, note);
-        saveInBackground();
     }
 
     public void addNotes(ArrayList<String> notes) {
         addAllUnique(KEY_NOTES, notes);
-        saveInBackground();
     }
 
     public void removeNote(String note) {
         removeAll(KEY_NOTES, Arrays.asList(note));
-        saveInBackground();
     }
 
     public void removeNotes(ArrayList<String> notes) {
         removeAll(KEY_NOTES, notes);
-        saveInBackground();
     }
 
     public void clearNotes() {
         ArrayList<String> notes = getParsedNotes();
         removeNotes(notes);
-        saveInBackground();
     }
 
     public ParseFile getProfilePic() { return getUser().getParseFile(KEY_INGREDIENTS); }
 
     public void setProfilePic(ParseFile profilePic) {
         getUser().put(KEY_INGREDIENTS, profilePic);
-        saveInBackground();
     }
 
     public void addCommentToDatabase(String comment) {
         add(KEY_TITLE, comment);
-        saveInBackground();
     }
 
     public ParseFile getImage() {
@@ -232,7 +214,6 @@ public class Recipe extends ParseObject {
 
     public void setImage(ParseFile parseFile) {
         put(KEY_IMAGE, parseFile);
-        saveInBackground();
     }
 
     public int getCookTimeMin() {
@@ -241,6 +222,7 @@ public class Recipe extends ParseObject {
 
     public void setCookTimeMin(int cookTimeMin) {
         put(KEY_COOK_TIME_MIN, cookTimeMin);
-        saveInBackground();
     }
+
+    public void saveRecipe() { saveInBackground(); }
 }

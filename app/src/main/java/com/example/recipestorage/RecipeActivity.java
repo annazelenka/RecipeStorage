@@ -6,7 +6,9 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -18,10 +20,17 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.recipestorage.fragments.RecipeSectionFragment;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.parse.ParseException;
+import com.parse.ParseFile;
+import com.parse.ParseUser;
+import com.parse.SaveCallback;
 
 import org.parceler.Parcels;
 
@@ -30,8 +39,9 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 
-public class RecipeActivity extends AppCompatActivity {
+public class RecipeActivity extends AppCompatActivity implements RecipeSectionFragment.OnDataPass {
     public static final String TAG = "ComposeFragment";
     public static final int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 1034;
     private File photoFile;
@@ -41,6 +51,14 @@ public class RecipeActivity extends AppCompatActivity {
     Toolbar toolbar;
     ImageView ivRecipeImage;
     Recipe recipe;
+    EditText etRecipeTitle;
+
+    FloatingActionButton fabSubmitRecipe;
+
+    ArrayList<String> ingredients;
+    ArrayList<String> directions;
+    ArrayList<String> notes;
+
 
 
     @Override
@@ -49,6 +67,7 @@ public class RecipeActivity extends AppCompatActivity {
         setContentView(R.layout.activity_recipe);
 
         ivRecipeImage = findViewById(R.id.ivRecipeImage);
+        etRecipeTitle = findViewById(R.id.etRecipeTitle);
 
         // Find the toolbar view inside the activity layout
         toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -57,7 +76,109 @@ public class RecipeActivity extends AppCompatActivity {
         // Make sure the toolbar exists in the activity and is not null
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
+
+        Fragment fragment = new RecipeSectionFragment(true, RecipeSectionFragment.RecipeSection.INGREDIENT, null);
+        fragmentManager.beginTransaction().replace(R.id.flContainer, fragment).commit();
+
+        fabSubmitRecipe = findViewById(R.id.fabSubmitRecipe);
+        fabSubmitRecipe.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                handleSubmittingRecipe();
+            }
+        });
+
+        ingredients = new ArrayList<String>();
+        directions = new ArrayList<String>();
+        notes = new ArrayList<String>();
     }
+
+    private void handleSubmittingRecipe() {
+        boolean cannotSubmitRecipe = false;
+        StringBuilder missingRecipeSections = new StringBuilder("Recipe needs ");
+
+        if (etRecipeTitle.getText().toString().isEmpty()) {
+            missingRecipeSections.append("title, ");
+            cannotSubmitRecipe = true;
+        }
+        if (ingredients.size() == 0) {
+            missingRecipeSections.append("ingredients, ");
+            cannotSubmitRecipe = true;
+        }
+        if (directions.size() == 0) {
+            missingRecipeSections.append("directions, ");
+            cannotSubmitRecipe = true;
+        }
+        if (notes.size() == 0) {
+            missingRecipeSections.append("notes, ");
+            cannotSubmitRecipe = true;
+        }
+
+
+        if (cannotSubmitRecipe) {
+            int length = missingRecipeSections.length();
+            missingRecipeSections.delete(length - 3, length - 1);
+            missingRecipeSections.append("!");
+
+            Toast.makeText(RecipeActivity.this, missingRecipeSections, Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        if (photoFile == null || ivRecipeImage.getDrawable() == null) {
+            Toast.makeText(RecipeActivity.this, "There is no image!", Toast.LENGTH_SHORT).show();
+            saveRecipe(ParseUser.getCurrentUser(), false, photoFile);
+        } else {
+            saveRecipe(ParseUser.getCurrentUser(), true, photoFile);
+        }
+
+//        Intent intent = new Intent(RecipeActivity.this, HomeActivity.class);
+//        startActivity(intent);
+    }
+
+    private void saveRecipe(ParseUser currentUser, boolean hasPhotoFile, File photoFile) {
+        recipe = new Recipe();
+        recipe.setUser(currentUser); // problem
+        recipe.setTitle(etRecipeTitle.getText().toString());
+        recipe.addIngredients(ingredients);
+        recipe.addDirections(directions);
+        recipe.addNotes(notes);
+
+        if (hasPhotoFile) {
+            recipe.setImage(new ParseFile(photoFile));
+        }
+       
+        recipe.saveInBackground(new SaveCallback() {
+            @Override
+            public void done(ParseException e) {
+                if (e != null) {
+                    Log.e(TAG, "Error while saving", e);
+                    Toast.makeText(RecipeActivity.this, "error while saving!", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                Toast.makeText(RecipeActivity.this, "Posted!", Toast.LENGTH_LONG).show();
+                etRecipeTitle.setText("");
+                // ivPostImage.setImageResource(0); // empty resource id
+            }
+        });
+    }
+
+    @Override
+    public void onDataPass(RecipeSectionFragment.RecipeSection recipeSection, ArrayList<String>data) {
+        Log.d("LOG","hello " + data);
+        switch (recipeSection) {
+            case INGREDIENT:
+                ingredients = data;
+                break;
+            case DIRECTION:
+                directions = data;
+                break;
+            case NOTE:
+            default:
+                notes = data;
+                break;
+        }
+    }
+
 
     // Menu icons are inflated just as they were with actionbar
     @Override

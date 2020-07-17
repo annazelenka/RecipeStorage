@@ -1,18 +1,26 @@
 package com.example.recipestorage.fragments;
 
+import android.content.Context;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.recipestorage.R;
 import com.example.recipestorage.Recipe;
@@ -32,10 +40,20 @@ public class RecipeSectionFragment extends Fragment {
     boolean isBlankRecipe;
     ListView lvItems;
 
+    EditText etAddRecipeSection;
+
+    ArrayAdapter<String> itemsAdapter;
+    OnDataPass dataPasser;
+
+
     public enum RecipeSection {
         INGREDIENT,
         DIRECTION,
         NOTE
+    }
+
+    public interface OnDataPass {
+        public void onDataPass(RecipeSection recipeSection, ArrayList<String> data);
     }
 
     public RecipeSectionFragment() {
@@ -46,23 +64,36 @@ public class RecipeSectionFragment extends Fragment {
     public RecipeSectionFragment(boolean setIsBlankRecipe, RecipeSection setRecipeSection, ArrayList<String> setRecipeSectionContents) {
         this.isBlankRecipe = setIsBlankRecipe;
         this.recipeSection = setRecipeSection;
-        this.recipeSectionContents = setRecipeSectionContents;
+        if (setRecipeSectionContents != null) {
+            this.recipeSectionContents = setRecipeSectionContents;
+        } else {
+            this.recipeSectionContents = new ArrayList<String>();
+        }
 
         switch(recipeSection) {
             case INGREDIENT:
-                recipeSectionString = "ingredients";
+                recipeSectionString = "ingredient";
                 break;
             case DIRECTION:
-                recipeSectionString = "directions";
+                recipeSectionString = "direction";
                 break;
             case NOTE:
-                recipeSectionString = "notes";
+                recipeSectionString = "note";
                 break;
             default:
                 recipeSectionString = "empty";
         }
     }
 
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        dataPasser = (OnDataPass) context;
+    }
+
+    public void passData(RecipeSection recipeSection, ArrayList<String> data) {
+        dataPasser.onDataPass(recipeSection, data);
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -77,15 +108,36 @@ public class RecipeSectionFragment extends Fragment {
 
         lvItems = view.findViewById(R.id.lvItems);
         tvTitle = view.findViewById(R.id.tvTitle);
-        tvTitle.setText(recipeSectionString);
+        etAddRecipeSection = view.findViewById(R.id.etAddRecipeSection);
 
-        if (!isBlankRecipe) {
-            ArrayAdapter<String> itemsAdapter =
-                    new ArrayAdapter<String>(getContext(), android.R.layout.simple_list_item_1, recipeSectionContents);
+        tvTitle.setText(recipeSectionString + "s");
 
-            ListView listView = (ListView) view.findViewById(R.id.lvItems);
-            listView.setAdapter(itemsAdapter);
-        }
+
+        itemsAdapter = new ArrayAdapter<String>(getContext(), android.R.layout.simple_list_item_1, recipeSectionContents);
+
+        ListView listView = (ListView) view.findViewById(R.id.lvItems);
+        listView.setAdapter(itemsAdapter);
+
+        etAddRecipeSection.setHint("new " + recipeSectionString);
+        etAddRecipeSection.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event){
+                if(actionId == EditorInfo.IME_ACTION_DONE){
+                    String text = etAddRecipeSection.getText().toString();
+                    if (text.isEmpty()) {
+                        Toast.makeText(getContext(), "New " + recipeSectionString + " cannot be empty!", Toast.LENGTH_SHORT).show();
+                        return false;
+                    }
+                    recipeSectionContents.add(text);
+                    itemsAdapter.notifyDataSetChanged();
+                    passData(recipeSection, recipeSectionContents);
+                    etAddRecipeSection.setText("");
+
+                    return true;
+                }
+                return false;
+            }
+        });
 
     }
 }
