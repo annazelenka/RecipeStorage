@@ -50,6 +50,17 @@
                     />
 
             </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.floatingactionbutton.FloatingActionButton
+                    android:id="@+id/fabSubmitRecipe"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@color/colorFacebookBlue"
+                    android:src="@drawable/ic_done_24px"
+                    app:fabSize="normal"
+                    android:layout_margin="16dp"
+                    android:layout_alignParentBottom="true"
+                    android:layout_alignParentEnd="true"/>
             </RelativeLayout>
         </androidx.appcompat.widget.Toolbar>
     </com.google.android.material.appbar.AppBarLayout>
@@ -64,14 +75,64 @@
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
         />
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/fabSubmitRecipe"
-        android:layout_width="wrap_content"
+
+
+    <com.gauravk.bubblenavigation.BubbleNavigationLinearView
+        android:id="@+id/equal_navigation_bar"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/colorFacebookBlue"
-        android:src="@drawable/ic_done_24px"
-        app:fabSize="normal"
-        android:layout_margin="16dp"
-        android:layout_gravity="bottom|right"/>
+        android:layout_marginStart="18dp"
+        android:layout_marginLeft="18dp"
+        android:layout_marginEnd="18dp"
+        android:layout_marginRight="18dp"
+        android:layout_marginBottom="18dp"
+        android:background="@drawable/rounded_rect_white"
+        android:elevation="8dp"
+        android:padding="16dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_gravity="bottom">
+
+        <com.gauravk.bubblenavigation.BubbleToggleView
+            android:id="@+id/miCamera"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            app:bt_colorActive="@color/blue_active"
+            app:bt_colorInactive="@color/default_inactive"
+            app:bt_icon="@drawable/ic_photo_camera_24px"
+             />
+
+        <com.gauravk.bubblenavigation.BubbleToggleView
+            android:id="@+id/miIngredients"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            app:bt_colorActive="@color/blue_active"
+            app:bt_colorInactive="@color/default_inactive"
+            app:bt_icon="@drawable/ic_fastfood_black_18dp"
+             />
+
+        <com.gauravk.bubblenavigation.BubbleToggleView
+            android:id="@+id/miDirections"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            app:bt_colorActive="@color/purple_active"
+            app:bt_colorInactive="@color/default_inactive"
+            app:bt_icon="@drawable/ic_notes_black_18dp" />
+
+        <com.gauravk.bubblenavigation.BubbleToggleView
+            android:id="@+id/miNotes"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            app:bt_colorActive="@color/green_active"
+            app:bt_colorInactive="@color/default_inactive"
+            app:bt_icon="@drawable/ic_content_paste_black_18dp"
+            />
+
+    </com.gauravk.bubblenavigation.BubbleNavigationLinearView>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

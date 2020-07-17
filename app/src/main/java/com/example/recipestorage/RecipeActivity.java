@@ -23,6 +23,9 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.example.recipestorage.fragments.RecipeSectionFragment;
+import com.gauravk.bubblenavigation.BubbleNavigationLinearView;
+import com.gauravk.bubblenavigation.IBubbleNavigation;
+import com.gauravk.bubblenavigation.listener.BubbleNavigationChangeListener;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.parse.ParseException;
 import com.parse.ParseFile;
@@ -39,6 +42,15 @@ import java.util.ArrayList;
 public class RecipeActivity extends AppCompatActivity implements RecipeSectionFragment.OnDataPass {
     public static final String TAG = "ComposeFragment";
     public static final int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 1034;
+    public static final int CAMERA_POSITION = 0;
+    public static final int INGREDIENTS_POSITION = 1;
+    public static final int DIRECTIONS_POSITION = 2;
+    public static final int NOTES_POSITION = 3;
+
+
+
+
+
     private File photoFile;
     public String photoFileName = "photo.jpg";
 
@@ -55,6 +67,7 @@ public class RecipeActivity extends AppCompatActivity implements RecipeSectionFr
     ArrayList<String> notes;
 
     boolean recipeDataChanged;
+    BubbleNavigationLinearView bubbleNavigation;
 
 
     @Override
@@ -64,6 +77,7 @@ public class RecipeActivity extends AppCompatActivity implements RecipeSectionFr
 
         ivRecipeImage = findViewById(R.id.ivRecipeImage);
         etRecipeTitle = findViewById(R.id.etRecipeTitle);
+        bubbleNavigation = findViewById(R.id.equal_navigation_bar);
 
         setRecipe();
 
@@ -74,6 +88,29 @@ public class RecipeActivity extends AppCompatActivity implements RecipeSectionFr
         // Make sure the toolbar exists in the activity and is not null
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
+
+        bubbleNavigation.setNavigationChangeListener(new BubbleNavigationChangeListener() {
+            @Override
+            public void onNavigationChanged(View view, int position) {
+                Fragment fragment;
+                switch (position) {
+                    case CAMERA_POSITION: //
+                        launchCamera();
+                    case INGREDIENTS_POSITION: //miDirections
+                        fragment = new RecipeSectionFragment(true, RecipeSectionFragment.RecipeSection.INGREDIENT, ingredients);
+                        break;
+                    case DIRECTIONS_POSITION: //miNotes
+                        fragment = new RecipeSectionFragment(true, RecipeSectionFragment.RecipeSection.DIRECTION, directions);
+                        break;
+                    case NOTES_POSITION:
+                    default:
+                        fragment = new RecipeSectionFragment(true, RecipeSectionFragment.RecipeSection.NOTE, notes);
+                        break;
+                }
+                fragmentManager.beginTransaction().replace(R.id.flContainer, fragment).commit();
+            }
+        });
+        bubbleNavigation.setCurrentActiveItem(INGREDIENTS_POSITION);
 
         fabSubmitRecipe = findViewById(R.id.fabSubmitRecipe);
         fabSubmitRecipe.setOnClickListener(new View.OnClickListener() {
@@ -97,6 +134,7 @@ public class RecipeActivity extends AppCompatActivity implements RecipeSectionFr
     protected void setDefaultFragment() {
         Fragment fragment = new RecipeSectionFragment(true, RecipeSectionFragment.RecipeSection.INGREDIENT, ingredients);
         fragmentManager.beginTransaction().replace(R.id.flContainer, fragment).commit();
+
     }
 
     private void handleSubmittingRecipe() {
@@ -172,35 +210,6 @@ public class RecipeActivity extends AppCompatActivity implements RecipeSectionFr
         this.recipeDataChanged = dataChanged;
     }
 
-
-    // Menu icons are inflated just as they were with actionbar
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_recipe, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        Fragment fragment;
-        switch (item.getItemId()) {
-            case R.id.miCamera:
-                launchCamera();
-            case R.id.miIngredients:
-                fragment = new RecipeSectionFragment(true, RecipeSectionFragment.RecipeSection.INGREDIENT, ingredients);
-                break;
-            case R.id.miDirections:
-                fragment = new RecipeSectionFragment(true, RecipeSectionFragment.RecipeSection.DIRECTION, directions);
-                break;
-            case R.id.miNotes:
-            default:
-                fragment = new RecipeSectionFragment(true, RecipeSectionFragment.RecipeSection.NOTE, notes);
-                break;
-        }
-        fragmentManager.beginTransaction().replace(R.id.flContainer, fragment).commit();
-        return true;
-    }
 
 
     protected void launchCamera() {
