@@ -27,29 +27,37 @@
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
-            <ImageView
-                android:id="@+id/ivRecipeImage"
-                android:layout_width="match_parent"
-                android:layout_height="200dp"
-                android:src="@drawable/lobster">
-            </ImageView>
+                <ImageView
+                    android:id="@+id/ivRecipeImage"
+                    android:layout_width="match_parent"
+                    android:layout_height="200dp"
+                    android:src="@drawable/lobster">
+                </ImageView>
 
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/etUsernameLayout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="Put the recipe title here!"
-                android:layout_margin="16dp"
-                android:layout_marginTop="32dp"
-                android:layout_below="@+id/ivRecipeImage">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/etRecipeTitle"
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/etUsernameLayout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    />
+                    android:hint="Put the recipe title here!"
+                    android:layout_margin="16dp"
+                    android:layout_marginTop="32dp"
+                    android:layout_below="@+id/ivRecipeImage">
 
-            </com.google.android.material.textfield.TextInputLayout>
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/etRecipeTitle"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <ImageButton
+                    android:id="@+id/btnHelp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_help_outline_24px"
+                    android:layout_margin="16dp"
+                   android:layout_toStartOf="@+id/fabSubmitRecipe" ></ImageButton>
 
                 <com.google.android.material.floatingactionbutton.FloatingActionButton
                     android:id="@+id/fabSubmitRecipe"
@@ -59,7 +67,7 @@
                     android:src="@drawable/ic_done_24px"
                     app:fabSize="normal"
                     android:layout_margin="16dp"
-                    android:layout_alignParentBottom="true"
+                    android:layout_alignParentTop="true"
                     android:layout_alignParentEnd="true"/>
             </RelativeLayout>
         </androidx.appcompat.widget.Toolbar>

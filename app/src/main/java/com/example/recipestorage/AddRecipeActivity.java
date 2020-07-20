@@ -15,16 +15,14 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.example.recipestorage.fragments.RecipeSectionFragment;
 import com.gauravk.bubblenavigation.BubbleNavigationLinearView;
-import com.gauravk.bubblenavigation.IBubbleNavigation;
 import com.gauravk.bubblenavigation.listener.BubbleNavigationChangeListener;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.parse.ParseException;
@@ -39,17 +37,13 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 
-public class RecipeActivity extends AppCompatActivity implements RecipeSectionFragment.OnDataPass {
+public class AddRecipeActivity extends AppCompatActivity implements RecipeSectionFragment.OnDataPass {
     public static final String TAG = "ComposeFragment";
     public static final int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 1034;
     public static final int CAMERA_POSITION = 0;
     public static final int INGREDIENTS_POSITION = 1;
     public static final int DIRECTIONS_POSITION = 2;
     public static final int NOTES_POSITION = 3;
-
-
-
-
 
     private File photoFile;
     public String photoFileName = "photo.jpg";
@@ -59,7 +53,7 @@ public class RecipeActivity extends AppCompatActivity implements RecipeSectionFr
     ImageView ivRecipeImage;
     Recipe recipe;
     EditText etRecipeTitle;
-
+    Button btnHelp;
     FloatingActionButton fabSubmitRecipe;
 
     ArrayList<String> ingredients;
@@ -73,7 +67,7 @@ public class RecipeActivity extends AppCompatActivity implements RecipeSectionFr
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_recipe);
+        setContentView(R.layout.activity_add_recipe);
 
         ivRecipeImage = findViewById(R.id.ivRecipeImage);
         etRecipeTitle = findViewById(R.id.etRecipeTitle);
@@ -122,6 +116,8 @@ public class RecipeActivity extends AppCompatActivity implements RecipeSectionFr
 
         setDefaultFragment();
         recipeDataChanged = false;
+
+        btnHelp.setOnClickListener();
     }
 
     protected void setRecipe() {
@@ -145,7 +141,7 @@ public class RecipeActivity extends AppCompatActivity implements RecipeSectionFr
         }
 
         if (photoFile == null || ivRecipeImage.getDrawable() == null) {
-            Toast.makeText(RecipeActivity.this, "There is no image!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(AddRecipeActivity.this, "There is no image!", Toast.LENGTH_SHORT).show();
             saveRecipe(ParseUser.getCurrentUser(), false, photoFile);
         } else {
             saveRecipe(ParseUser.getCurrentUser(), true, photoFile);
@@ -157,7 +153,7 @@ public class RecipeActivity extends AppCompatActivity implements RecipeSectionFr
                 directions.size() != 0 && notes.size() != 0;
         if (!canSubmitRecipe) {
             String toast = "Recipe is missing ingredients, directions, and/or notes";
-            Toast.makeText(RecipeActivity.this, toast, Toast.LENGTH_SHORT).show();
+            Toast.makeText(AddRecipeActivity.this, toast, Toast.LENGTH_SHORT).show();
         }
         return canSubmitRecipe;
     }
@@ -178,11 +174,11 @@ public class RecipeActivity extends AppCompatActivity implements RecipeSectionFr
             public void done(ParseException e) {
                 if (e != null) {
                     Log.e(TAG, "Error while saving", e);
-                    Toast.makeText(RecipeActivity.this, "error while saving!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(AddRecipeActivity.this, "error while saving!", Toast.LENGTH_SHORT).show();
                     return;
                 }
-                Toast.makeText(RecipeActivity.this, "Saved!", Toast.LENGTH_LONG).show();
-                Intent intent = new Intent(RecipeActivity.this, HomeActivity.class);
+                Toast.makeText(AddRecipeActivity.this, "Saved!", Toast.LENGTH_LONG).show();
+                Intent intent = new Intent(AddRecipeActivity.this, HomeActivity.class);
                 startActivity(intent);
             }
         });
@@ -222,12 +218,12 @@ public class RecipeActivity extends AppCompatActivity implements RecipeSectionFr
         // wrap File object into a content provider
         // required for API >= 24
         // See https://guides.codepath.com/android/Sharing-Content-with-Intents#sharing-files-with-api-24-or-higher
-        Uri fileProvider = FileProvider.getUriForFile(RecipeActivity.this, "com.codepath.fileprovider", photoFile);
+        Uri fileProvider = FileProvider.getUriForFile(AddRecipeActivity.this, "com.codepath.fileprovider", photoFile);
         intent.putExtra(MediaStore.EXTRA_OUTPUT, fileProvider);
 
         // If you call startActivityForResult() using an intent that no app can handle, your app will crash.
         // So as long as the result is not null, it's safe to use the intent.
-        if (intent.resolveActivity(RecipeActivity.this.getPackageManager()) != null) {
+        if (intent.resolveActivity(AddRecipeActivity.this.getPackageManager()) != null) {
             // Start the image capture intent to take photo
             startActivityForResult(intent, CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE);
         }
@@ -282,7 +278,7 @@ public class RecipeActivity extends AppCompatActivity implements RecipeSectionFr
         // Get safe storage directory for photos
         // Use `getExternalFilesDir` on Context to access package-specific directories.
         // This way, we don't need to request external read/write runtime permissions.
-        File mediaStorageDir = new File(RecipeActivity.this.getExternalFilesDir(Environment.DIRECTORY_PICTURES), TAG);
+        File mediaStorageDir = new File(AddRecipeActivity.this.getExternalFilesDir(Environment.DIRECTORY_PICTURES), TAG);
 
         // Create the storage directory if it does not exist
         if (!mediaStorageDir.exists() && !mediaStorageDir.mkdirs()){
@@ -309,7 +305,7 @@ public class RecipeActivity extends AppCompatActivity implements RecipeSectionFr
                 ivRecipeImage.setImageBitmap(takenImage);
                 ivRecipeImage.setVisibility(View.VISIBLE);
             } else { // Result was a failure
-                Toast.makeText(RecipeActivity.this, "Picture wasn't taken!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(AddRecipeActivity.this, "Picture wasn't taken!", Toast.LENGTH_SHORT).show();
             }
         }
     }

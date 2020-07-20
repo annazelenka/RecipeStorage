@@ -26,7 +26,7 @@ public class Recipe extends ParseObject {
     private static final String KEY_INGREDIENTS = "ingredients";
     private static final String KEY_DIRECTIONS = "directions";
     public static final String KEY_NOTES = "notes";
-    public static final String KEY_IMAGE = "image";
+    public static final String KEY_RECIPE_IMAGE = "recipeImage";
     private static final String KEY_COOK_TIME_MIN = "cookTimeMin";
 
     // empty constructor needed by Parcelable library
@@ -209,11 +209,11 @@ public class Recipe extends ParseObject {
     }
 
     public ParseFile getImage() {
-        return getParseFile(KEY_IMAGE);
+        return getParseFile(KEY_RECIPE_IMAGE);
     }
 
     public void setImage(ParseFile parseFile) {
-        put(KEY_IMAGE, parseFile);
+        put(KEY_RECIPE_IMAGE, parseFile);
     }
 
     public int getCookTimeMin() {

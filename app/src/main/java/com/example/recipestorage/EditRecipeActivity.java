@@ -1,7 +1,6 @@
 package com.example.recipestorage;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
@@ -9,18 +8,10 @@ import android.widget.Toast;
 import androidx.fragment.app.Fragment;
 
 import com.example.recipestorage.fragments.RecipeSectionFragment;
-import com.google.android.material.appbar.AppBarLayout;
-import com.parse.ParseException;
-import com.parse.ParseFile;
-import com.parse.ParseUser;
-import com.parse.SaveCallback;
 
 import org.parceler.Parcels;
 
-import java.io.File;
-import java.util.ArrayList;
-
-public class RecipeEditActivity<recipe> extends RecipeActivity {
+public class EditRecipeActivity<recipe> extends AddRecipeActivity {
 
 
     @Override
@@ -71,7 +62,7 @@ public class RecipeEditActivity<recipe> extends RecipeActivity {
         boolean canSubmitRecipe = super.canSubmitRecipe() && recipeDataChanged;
         if (!canSubmitRecipe) {
             String toast = "Recipe data has not changed!";
-            Toast.makeText(RecipeEditActivity.this, toast, Toast.LENGTH_SHORT).show();
+            Toast.makeText(EditRecipeActivity.this, toast, Toast.LENGTH_SHORT).show();
         }
         return canSubmitRecipe;
     }
