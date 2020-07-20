@@ -1,5 +1,5 @@
-<!--modified from https://github.com/nemanja-kovacevic/recycler-view-swipe-to-delete-->
 <?xml version="1.0" encoding="utf-8"?>
+<!--modified from https://github.com/nemanja-kovacevic/recycler-view-swipe-to-delete-->
 <FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -25,7 +25,8 @@
         android:textAllCaps="true"
         android:textColor="@android:color/white"
         android:layout_gravity="end|center_vertical"
-        style="@style/Base.Widget.AppCompat.Button.Borderless"
+        android:backgroundTint="@android:color/transparent"
+        style="?android:attr/borderlessButtonStyle"
         />
 
     <!-- quick and dirty divider -->

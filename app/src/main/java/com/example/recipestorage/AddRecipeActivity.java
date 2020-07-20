@@ -61,6 +61,9 @@ public class AddRecipeActivity extends AppCompatActivity implements RecipeSectio
     ArrayList<String> notes;
 
     boolean recipeDataChanged;
+    boolean ingredientsDataChanged;
+    boolean directionsDataChanged;
+    boolean notesDataChanged;
     BubbleNavigationLinearView bubbleNavigation;
 
 
@@ -73,7 +76,7 @@ public class AddRecipeActivity extends AppCompatActivity implements RecipeSectio
         etRecipeTitle = findViewById(R.id.etRecipeTitle);
         bubbleNavigation = findViewById(R.id.equal_navigation_bar);
 
-        setRecipe();
+        initializeRecipe();
 
         // Find the toolbar view inside the activity layout
         toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -116,11 +119,14 @@ public class AddRecipeActivity extends AppCompatActivity implements RecipeSectio
 
         setDefaultFragment();
         recipeDataChanged = false;
+        ingredientsDataChanged = false;
+        directionsDataChanged = false;
+        notesDataChanged = false;
 
         //btnHelp.setOnClickListener();
     }
 
-    protected void setRecipe() {
+    protected void initializeRecipe() {
         recipe = new Recipe();
         this.ingredients = new ArrayList<String>();
         this.directions = new ArrayList<String>();
@@ -130,7 +136,6 @@ public class AddRecipeActivity extends AppCompatActivity implements RecipeSectio
     protected void setDefaultFragment() {
         Fragment fragment = new RecipeSectionFragment(true, RecipeSectionFragment.RecipeSection.INGREDIENT, ingredients);
         fragmentManager.beginTransaction().replace(R.id.flContainer, fragment).commit();
-
     }
 
     private void handleSubmittingRecipe() {
@@ -185,7 +190,7 @@ public class AddRecipeActivity extends AppCompatActivity implements RecipeSectio
     }
 
     @Override
-    public void onDataPass(RecipeSectionFragment.RecipeSection recipeSection, ArrayList<String>data) {
+    public void onAddDataPass(RecipeSectionFragment.RecipeSection recipeSection, ArrayList<String>data) {
         Log.d("LOG","hello " + data);
         switch (recipeSection) {
             case INGREDIENT:
@@ -202,11 +207,22 @@ public class AddRecipeActivity extends AppCompatActivity implements RecipeSectio
     }
 
     @Override
-    public void onDataChangedPass(boolean dataChanged) {
+    public void onIngredientsChangedPass(boolean dataChanged) {
         this.recipeDataChanged = dataChanged;
+        this.ingredientsDataChanged = dataChanged;
     }
 
+    @Override
+    public void onDirectionsChangedPass(boolean dataChanged) {
+        this.recipeDataChanged = dataChanged;
+        this.directionsDataChanged = dataChanged;
+    }
 
+    @Override
+    public void onNotesChangedPass(boolean dataChanged) {
+        this.recipeDataChanged = dataChanged;
+        this.notesDataChanged = dataChanged;
+    }
 
     protected void launchCamera() {
         // create Intent to take a picture and return control to the calling application

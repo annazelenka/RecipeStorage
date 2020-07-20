@@ -107,7 +107,7 @@ public class Recipe extends ParseObject {
 
     public void clearIngredients() {
         ArrayList<String> ingredient = getParsedIngredients();
-        removeNotes(ingredient);
+        removeIngredients(ingredient);
     }
 
     public JSONArray getDirections() { return getJSONArray(KEY_DIRECTIONS); }
@@ -151,7 +151,7 @@ public class Recipe extends ParseObject {
 
     public void clearDirections() {
         ArrayList<String> directions = getParsedDirections();
-        removeNotes(directions);
+        removeDirections(directions);
     }
 
 
@@ -224,5 +224,5 @@ public class Recipe extends ParseObject {
         put(KEY_COOK_TIME_MIN, cookTimeMin);
     }
 
-    public void saveRecipe() { saveInBackground(); }
+    public void saveRecipe() { this.saveInBackground(); }
 }

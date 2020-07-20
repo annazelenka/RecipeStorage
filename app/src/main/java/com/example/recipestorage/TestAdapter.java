@@ -17,7 +17,7 @@ import java.util.List;
 
 /**
  * RecyclerView adapter enabling undo on a swiped away item.
- * MODIFIED FROM https://github.com/nemanja-kovacevic/recycler-view-swipe-to-delete 
+ * MODIFIED FROM https://github.com/nemanja-kovacevic/recycler-view-swipe-to-delete
  */
 
 public class TestAdapter extends RecyclerView.Adapter {
@@ -31,6 +31,15 @@ public class TestAdapter extends RecyclerView.Adapter {
 
     private Handler handler = new Handler(); // hanlder for running delayed runnables
     HashMap<String, Runnable> pendingRunnables = new HashMap<>(); // map of items to pending runnables, so we can cancel a removal if need be
+    private AdapterInterface adapterListener;
+    private TestViewHolder viewHolder;
+
+    public interface AdapterInterface {
+        void onDataDeleted(int position);
+        void onDataEdited(int position, String newData);
+    }
+
+    private AdapterInterface adapterInterface;
 
     public TestAdapter() {
         items = new ArrayList<>();
@@ -43,11 +52,14 @@ public class TestAdapter extends RecyclerView.Adapter {
         }
     }
 
-    public TestAdapter(List<String> setItems) {
+    public TestAdapter(AdapterInterface setAdapterListener, List<String> setItems){
+        this.adapterInterface = setAdapterListener;
         this.items = setItems;
         itemsPendingRemoval = new ArrayList<>();
         lastInsertedIndex = setItems.size();
     }
+
+
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -56,13 +68,25 @@ public class TestAdapter extends RecyclerView.Adapter {
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-        TestViewHolder viewHolder = (TestViewHolder)holder;
+        viewHolder = (TestViewHolder)holder;
         final String item = items.get(position);
+
+        viewHolder.undoButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // user wants to undo the removal, let's cancel the pending task
+                Runnable pendingRemovalRunnable = pendingRunnables.get(item);
+                pendingRunnables.remove(item);
+                if (pendingRemovalRunnable != null) handler.removeCallbacks(pendingRemovalRunnable);
+                itemsPendingRemoval.remove(item);
+                // this will rebind the row in "normal" state
+                notifyItemChanged(items.indexOf(item));
+            }
+        });
 
         if (itemsPendingRemoval.contains(item)) {
             // we need to show the "undo" state of the row
             viewHolder.itemView.setBackgroundColor(Color.RED);
-            viewHolder.tvData.setVisibility(View.GONE);
             viewHolder.undoButton.setVisibility(View.VISIBLE);
             viewHolder.undoButton.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -89,6 +113,24 @@ public class TestAdapter extends RecyclerView.Adapter {
     @Override
     public int getItemCount() {
         return items.size();
+    }
+
+    public void setupUndoButton(TestViewHolder viewHolder, final String item) {
+
+        viewHolder.undoButton.setVisibility(View.VISIBLE);
+
+        viewHolder.undoButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // user wants to undo the removal, let's cancel the pending task
+                Runnable pendingRemovalRunnable = pendingRunnables.get(item);
+                pendingRunnables.remove(item);
+                if (pendingRemovalRunnable != null) handler.removeCallbacks(pendingRemovalRunnable);
+                itemsPendingRemoval.remove(item);
+                // this will rebind the row in "normal" state
+                notifyItemChanged(items.indexOf(item));
+            }
+        });
     }
 
     /**
@@ -118,6 +160,7 @@ public class TestAdapter extends RecyclerView.Adapter {
             itemsPendingRemoval.add(item);
             // this will redraw row in "undo" state
             notifyItemChanged(position);
+            //setupUndoButton(viewHolder, item);
             // let's create, store and post a runnable to remove the item
             Runnable pendingRemovalRunnable = new Runnable() {
                 @Override
@@ -137,6 +180,8 @@ public class TestAdapter extends RecyclerView.Adapter {
         }
         if (items.contains(item)) {
             items.remove(position);
+            // tell the fragment that data was deleted so it will delete it
+            adapterInterface.onDataDeleted(position);
             notifyItemRemoved(position);
         }
     }

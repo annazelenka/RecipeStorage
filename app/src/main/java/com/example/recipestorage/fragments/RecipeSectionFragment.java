@@ -23,7 +23,6 @@ import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
-import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -34,7 +33,7 @@ import com.example.recipestorage.TestAdapter;
 
 import java.util.ArrayList;
 
-public class RecipeSectionFragment extends Fragment {
+public class RecipeSectionFragment extends Fragment implements TestAdapter.AdapterInterface {
 
     TextView tvTitle;
 
@@ -60,9 +59,11 @@ public class RecipeSectionFragment extends Fragment {
     }
 
     public interface OnDataPass {
-        public void onDataPass(RecipeSection recipeSection, ArrayList<String> data);
+        public void onAddDataPass(RecipeSection recipeSection, ArrayList<String> data);
         // this method used only for RecipeEditActivity to notify RecipeActivity
-        public void onDataChangedPass(boolean dataChanged);
+        public void onIngredientsChangedPass(boolean dataChanged);
+        public void onDirectionsChangedPass(boolean dataChanged);
+        public void onNotesChangedPass(boolean dataChanged);
     }
 
     public RecipeSectionFragment() {
@@ -97,11 +98,44 @@ public class RecipeSectionFragment extends Fragment {
     }
 
     public void passData(RecipeSection recipeSection, ArrayList<String> data) {
-        dataPasser.onDataPass(recipeSection, data);
+        dataPasser.onAddDataPass(recipeSection, data);
     }
 
     public void passDataChanged(boolean dataHasChanged) {
-        dataPasser.onDataChangedPass(dataHasChanged);
+        switch (recipeSection) {
+            case INGREDIENT:
+                dataPasser.onIngredientsChangedPass(true);
+            case DIRECTION:
+                dataPasser.onDirectionsChangedPass(true);
+            case NOTE:
+                dataPasser.onNotesChangedPass(true);
+        }
+    }
+
+    // onDataDeleted and onDataEdited called from adapter
+    @Override
+    public void onDataDeleted(int position) {
+        switch (recipeSection) {
+            case INGREDIENT:
+                dataPasser.onIngredientsChangedPass(true);
+            case DIRECTION:
+                dataPasser.onDirectionsChangedPass(true);
+            case NOTE:
+                dataPasser.onNotesChangedPass(true);
+        }
+    }
+
+
+    @Override
+    public void onDataEdited(int position, String newData){
+        switch (recipeSection) {
+            case INGREDIENT:
+                dataPasser.onIngredientsChangedPass(true);
+            case DIRECTION:
+                dataPasser.onDirectionsChangedPass(true);
+            case NOTE:
+                dataPasser.onNotesChangedPass(true);
+        }
     }
 
     @Override
@@ -154,7 +188,9 @@ public class RecipeSectionFragment extends Fragment {
 
     private void setUpRecyclerView() {
         rvItems.setLayoutManager(new LinearLayoutManager(getContext()));
-        rvItems.setAdapter(new TestAdapter(recipeSectionContents));
+        TestAdapter testAdapter = new TestAdapter(RecipeSectionFragment.this, recipeSectionContents);
+        testAdapter.setUndoOn(true);
+        rvItems.setAdapter(testAdapter);
         rvItems.setHasFixedSize(true);
         setUpItemTouchHelper();
         setUpAnimationDecoratorHelper();
