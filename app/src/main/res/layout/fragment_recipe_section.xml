@@ -24,15 +24,15 @@
 <!--        android:layout_below="@+id/tvTitle">-->
 
 
-        <ListView
-            android:id="@+id/lvItems"
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvItems"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="8dp"
             android:layout_below="@id/tvTitle"
             android:layout_margin="16dp">
 
-        </ListView>
+        </androidx.recyclerview.widget.RecyclerView>
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/etAddRecipeSectionLayout"
@@ -42,7 +42,7 @@
                 android:layout_marginTop="32dp"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_gravity="bottom"
-                android:layout_below="@id/lvItems">
+                android:layout_below="@id/rvItems">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/etAddRecipeSection"

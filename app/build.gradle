@@ -52,4 +52,7 @@ dependencies {
     implementation "com.github.parse-community.Parse-SDK-Android:facebook:1.24.2"
     implementation("io.coil-kt:coil:0.11.0")
     implementation 'com.gauravk.bubblenavigation:bubblenavigation:1.0.7'
+
+    implementation 'com.android.support:recyclerview-v7:22.2.+'
+
 }

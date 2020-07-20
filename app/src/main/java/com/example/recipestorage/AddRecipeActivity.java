@@ -117,7 +117,7 @@ public class AddRecipeActivity extends AppCompatActivity implements RecipeSectio
         setDefaultFragment();
         recipeDataChanged = false;
 
-        btnHelp.setOnClickListener();
+        //btnHelp.setOnClickListener();
     }
 
     protected void setRecipe() {
