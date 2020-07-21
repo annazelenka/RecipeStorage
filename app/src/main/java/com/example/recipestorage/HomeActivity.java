@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.ImageButton;
 
 import com.example.recipestorage.fragments.RecipesListFragment;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -14,6 +15,8 @@ import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
+import com.shreyaspatil.MaterialDialog.MaterialDialog;
+import com.shreyaspatil.MaterialDialog.interfaces.DialogInterface;
 
 import java.util.List;
 
@@ -27,6 +30,7 @@ public class HomeActivity extends AppCompatActivity {
     final FragmentManager fragmentManager = getSupportFragmentManager();
 
     FloatingActionButton fabAddRecipe;
+    ImageButton btnLogout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,6 +41,8 @@ public class HomeActivity extends AppCompatActivity {
         queryRecipes();
 
         fabAddRecipe = findViewById(R.id.fabAddRecipe);
+        btnLogout = findViewById(R.id.btnLogout);
+
         fabAddRecipe.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -45,6 +51,39 @@ public class HomeActivity extends AppCompatActivity {
             }
         });
 
+        btnLogout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showLogoutDialog();
+            }
+        });
+    }
+
+    private void showLogoutDialog() {
+        MaterialDialog mDialog = new MaterialDialog.Builder(this)
+                .setTitle("log out?")
+                .setMessage("Are you sure you want to log out?")
+                .setCancelable(false)
+                .setPositiveButton("Yes", R.drawable.ic_power_settings_new_black_18dp, new MaterialDialog.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int which) {
+                        // Delete Operation
+                        Intent intent = new Intent(HomeActivity.this, LoginActivity.class);
+                        ParseUser.logOut();
+                        startActivity(intent);
+                        finish();
+                    }
+                })
+                .setNegativeButton("Cancel", R.drawable.ic_clear_24px, new MaterialDialog.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int which) {
+                        dialogInterface.dismiss();
+                    }
+                })
+                .build();
+
+        // Show Dialog
+        mDialog.show();
     }
 
     protected void queryRecipes() {
