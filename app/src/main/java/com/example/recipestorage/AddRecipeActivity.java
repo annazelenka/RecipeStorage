@@ -16,14 +16,13 @@ import android.os.Environment;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.example.recipestorage.fragments.RecipeSectionFragment;
-import com.gauravk.bubblenavigation.BubbleNavigationLinearView;
+import com.gauravk.bubblenavigation.BubbleNavigationConstraintView;
 import com.gauravk.bubblenavigation.listener.BubbleNavigationChangeListener;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.parse.ParseException;
@@ -68,7 +67,7 @@ public class AddRecipeActivity extends AppCompatActivity implements RecipeSectio
     boolean ingredientsDataChanged;
     boolean directionsDataChanged;
     boolean notesDataChanged;
-    BubbleNavigationLinearView bubbleNavigation;
+    BubbleNavigationConstraintView bubbleNavigation;
 
 
     @Override
@@ -132,12 +131,12 @@ public class AddRecipeActivity extends AppCompatActivity implements RecipeSectio
         btnDelete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                showDeleteMaterialDialog();
+                showDeleteDialog();
             }
         });
     }
 
-    private void showDeleteMaterialDialog() {
+    private void showDeleteDialog() {
         MaterialDialog mDialog = new MaterialDialog.Builder(this)
                 .setTitle("Delete?")
                 .setMessage("Are you sure want to delete this file?")

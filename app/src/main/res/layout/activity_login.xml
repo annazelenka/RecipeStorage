@@ -8,7 +8,7 @@
     tools:context=".LoginActivity">
 
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/etUsername"
+        android:id="@+id/etUsernameLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="username"
@@ -16,6 +16,7 @@
         android:layout_marginTop="32dp">
 
         <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/etUsername"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             />
@@ -24,15 +25,16 @@
 
 
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/etPassword"
+        android:id="@+id/etPasswordLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="password"
-        android:layout_below="@+id/etUsername"
+        android:layout_below="@+id/etUsernameLayout"
         app:endIconMode="password_toggle"
         >
 
         <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/etPassword"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="16dp"
@@ -46,9 +48,9 @@
         style="@style/Widget.MaterialComponents.Button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/etPassword"
-        android:layout_alignLeft="@+id/etPassword"
-        android:layout_alignRight="@+id/etPassword"
+        android:layout_below="@+id/etPasswordLayout"
+        android:layout_alignLeft="@+id/etPasswordLayout"
+        android:layout_alignRight="@+id/etPasswordLayout"
         android:layout_marginLeft="16dp"
         android:layout_marginTop="16dp"
         android:layout_marginRight="16dp"

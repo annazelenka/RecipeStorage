@@ -1,6 +1,6 @@
 <!-- CoordinatorLayout is used to create scrolling and "floating" effects within a layout -->
 <!-- This is typically the root layout which wraps the app bar and content -->
-<androidx.coordinatorlayout.widget.CoordinatorLayout
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main_content"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -95,63 +95,63 @@
         />
 
 
-
-    <com.gauravk.bubblenavigation.BubbleNavigationLinearView
+    <com.gauravk.bubblenavigation.BubbleNavigationConstraintView
         android:id="@+id/equal_navigation_bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="18dp"
-        android:layout_marginLeft="18dp"
-        android:layout_marginEnd="18dp"
-        android:layout_marginRight="18dp"
-        android:layout_marginBottom="18dp"
-        android:background="@drawable/rounded_rect_white"
-        android:elevation="8dp"
+        android:background="@color/colorWhite"
+        android:elevation="4dp"
         android:padding="16dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        app:bnc_mode="inside"
         android:layout_gravity="bottom">
 
         <com.gauravk.bubblenavigation.BubbleToggleView
             android:id="@+id/miCamera"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            app:bt_colorActive="@color/blue_active"
-            app:bt_colorInactive="@color/default_inactive"
+            app:bt_active="true"
+            app:bt_colorActive="@color/orange_active"
+            app:bt_colorInactive="@color/orange_inactive"
             app:bt_icon="@drawable/ic_photo_camera_24px"
-             />
+            app:bt_title="add photo"
+            app:bt_padding="@dimen/internal_padding"
+            android:layout_marginRight="8dp"/>
 
         <com.gauravk.bubblenavigation.BubbleToggleView
             android:id="@+id/miIngredients"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
+            app:bt_active="true"
             app:bt_colorActive="@color/blue_active"
-            app:bt_colorInactive="@color/default_inactive"
+            app:bt_colorInactive="@color/blue_inactive"
             app:bt_icon="@drawable/ic_fastfood_black_18dp"
-             />
+            app:bt_title="ingredients"
+            app:bt_padding="@dimen/internal_padding"/>
 
         <com.gauravk.bubblenavigation.BubbleToggleView
             android:id="@+id/miDirections"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
+            app:bt_active="false"
             app:bt_colorActive="@color/purple_active"
-            app:bt_colorInactive="@color/default_inactive"
-            app:bt_icon="@drawable/ic_notes_black_18dp" />
+            app:bt_colorInactive="@color/purple_inactive"
+            app:bt_icon="@drawable/ic_notes_black_18dp"
+            app:bt_title="directions"
+            app:bt_padding="@dimen/internal_padding"/>
 
         <com.gauravk.bubblenavigation.BubbleToggleView
             android:id="@+id/miNotes"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
+            app:bt_active="false"
             app:bt_colorActive="@color/green_active"
-            app:bt_colorInactive="@color/default_inactive"
+            app:bt_colorInactive="@color/green_inactive"
             app:bt_icon="@drawable/ic_content_paste_black_18dp"
-            />
+            app:bt_title="notes"
+            app:bt_padding="@dimen/internal_padding"/>
 
-    </com.gauravk.bubblenavigation.BubbleNavigationLinearView>
+        <!-- Add more child items here - max upto 5 -->
+
+    </com.gauravk.bubblenavigation.BubbleNavigationConstraintView>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

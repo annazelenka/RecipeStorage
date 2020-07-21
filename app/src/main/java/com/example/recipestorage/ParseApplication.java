@@ -35,5 +35,7 @@ public class ParseApplication extends Application {
                 .clientBuilder(builder)
                 .server(BuildConfig.SERVER_URL).build()); // USE HTTPS!!
 
+
+        ParseFacebookUtils.initialize(this);
     }
 }
