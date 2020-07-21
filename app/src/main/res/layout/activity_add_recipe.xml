@@ -57,7 +57,18 @@
                     android:layout_height="wrap_content"
                     android:src="@drawable/ic_help_outline_24px"
                     android:layout_margin="16dp"
-                   android:layout_toStartOf="@+id/fabSubmitRecipe" ></ImageButton>
+                    android:layout_toStartOf="@+id/btnDelete"
+                    ></ImageButton>
+
+                <ImageButton
+                    android:id="@+id/btnDelete"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="16dp"
+                    android:layout_toStartOf="@+id/fabSubmitRecipe"
+                    android:src="@drawable/ic_delete_outline_24px">
+
+                </ImageButton>
 
                 <com.google.android.material.floatingactionbutton.FloatingActionButton
                     android:id="@+id/fabSubmitRecipe"

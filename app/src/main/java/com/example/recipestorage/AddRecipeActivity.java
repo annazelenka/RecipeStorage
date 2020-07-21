@@ -18,6 +18,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -29,6 +30,8 @@ import com.parse.ParseException;
 import com.parse.ParseFile;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
+import com.shreyaspatil.MaterialDialog.MaterialDialog;
+import com.shreyaspatil.MaterialDialog.interfaces.DialogInterface;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -53,7 +56,8 @@ public class AddRecipeActivity extends AppCompatActivity implements RecipeSectio
     ImageView ivRecipeImage;
     Recipe recipe;
     EditText etRecipeTitle;
-    Button btnHelp;
+    ImageButton btnHelp;
+    ImageButton btnDelete;
     FloatingActionButton fabSubmitRecipe;
 
     ArrayList<String> ingredients;
@@ -75,6 +79,7 @@ public class AddRecipeActivity extends AppCompatActivity implements RecipeSectio
         ivRecipeImage = findViewById(R.id.ivRecipeImage);
         etRecipeTitle = findViewById(R.id.etRecipeTitle);
         bubbleNavigation = findViewById(R.id.equal_navigation_bar);
+        btnDelete = findViewById(R.id.btnDelete);
 
         initializeRecipe();
 
@@ -124,6 +129,37 @@ public class AddRecipeActivity extends AppCompatActivity implements RecipeSectio
         notesDataChanged = false;
 
         //btnHelp.setOnClickListener();
+        btnDelete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showDeleteMaterialDialog();
+            }
+        });
+    }
+
+    private void showDeleteMaterialDialog() {
+        MaterialDialog mDialog = new MaterialDialog.Builder(this)
+                .setTitle("Delete?")
+                .setMessage("Are you sure want to delete this file?")
+                .setCancelable(false)
+                .setPositiveButton("Delete", R.drawable.ic_delete_24px, new MaterialDialog.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int which) {
+                        // Delete Operation
+                        recipe.deleteInBackground();
+                        launchHomeActivity();
+                    }
+                })
+                .setNegativeButton("Cancel", R.drawable.ic_clear_24px, new MaterialDialog.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int which) {
+                        dialogInterface.dismiss();
+                    }
+                })
+                .build();
+
+        // Show Dialog
+        mDialog.show();
     }
 
     protected void initializeRecipe() {
@@ -183,10 +219,14 @@ public class AddRecipeActivity extends AppCompatActivity implements RecipeSectio
                     return;
                 }
                 Toast.makeText(AddRecipeActivity.this, "Saved!", Toast.LENGTH_LONG).show();
-                Intent intent = new Intent(AddRecipeActivity.this, HomeActivity.class);
-                startActivity(intent);
+                launchHomeActivity();
             }
         });
+    }
+
+    private void launchHomeActivity() {
+        Intent intent = new Intent(AddRecipeActivity.this, HomeActivity.class);
+        startActivity(intent);
     }
 
     @Override
