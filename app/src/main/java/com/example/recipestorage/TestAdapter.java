@@ -1,13 +1,19 @@
 package com.example.recipestorage;
 
 
+import android.content.Context;
 import android.graphics.Color;
 import android.os.Handler;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -33,6 +39,7 @@ public class TestAdapter extends RecyclerView.Adapter {
     HashMap<String, Runnable> pendingRunnables = new HashMap<>(); // map of items to pending runnables, so we can cancel a removal if need be
     private AdapterInterface adapterListener;
     private TestViewHolder viewHolder;
+    private Context context;
 
     public interface AdapterInterface {
         void onDataDeleted(int position);
@@ -51,25 +58,49 @@ public class TestAdapter extends RecyclerView.Adapter {
             items.add("Item " + i);
         }
     }
-
-    public TestAdapter(AdapterInterface setAdapterListener, List<String> setItems){
+    public TestAdapter(Context setContext, AdapterInterface setAdapterListener, List<String> setItems){
+        this.context = setContext;
         this.adapterInterface = setAdapterListener;
         this.items = setItems;
         itemsPendingRemoval = new ArrayList<>();
         lastInsertedIndex = setItems.size();
     }
 
-
-
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        return new TestViewHolder(parent);
+        final AdapterInterface newAdapterInterface = adapterInterface;
+        return new TestViewHolder(parent, newAdapterInterface);
     }
 
     @Override
-    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+    public void onBindViewHolder(RecyclerView.ViewHolder holder, final int position) {
         viewHolder = (TestViewHolder)holder;
         final String item = items.get(position);
+
+        viewHolder.etData.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event){
+                String originalText = items.get(position);
+                if(actionId == EditorInfo.IME_ACTION_DONE){
+                    String text = viewHolder.etData.getText().toString();
+                    if (text.isEmpty()) {
+                        Toast.makeText(context, "text cannot be empty!", Toast.LENGTH_SHORT).show();
+                        return false;
+                    } else if (originalText.equals(text)) {
+                        Toast.makeText(context, "text has not changed!", Toast.LENGTH_SHORT).show();
+                        hideKeyboard();
+                        return false;
+                    }
+                    // pass data changed
+                    adapterInterface.onDataEdited(position, text);
+                    items.set(position, text);
+                    hideKeyboard();
+                    return true;
+                }
+                return false;
+            }
+        });
 
         viewHolder.undoButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -103,11 +134,18 @@ public class TestAdapter extends RecyclerView.Adapter {
         } else {
             // we need to show the "normal" state
             viewHolder.itemView.setBackgroundColor(Color.WHITE);
-            viewHolder.tvData.setVisibility(View.VISIBLE);
-            viewHolder.tvData.setText(item);
+            viewHolder.etData.setVisibility(View.VISIBLE);
+            viewHolder.etData.setText(item);
             viewHolder.undoButton.setVisibility(View.GONE);
             viewHolder.undoButton.setOnClickListener(null);
         }
+    }
+
+    // from https://stackoverflow.com/questions/3413157/hide-soft-keyboard-on-done-keypress-in-android
+    private void hideKeyboard() {
+        InputMethodManager inputManager = (InputMethodManager)
+                context.getSystemService(context.INPUT_METHOD_SERVICE);
+        inputManager.toggleSoftInput(0, 0);
     }
 
     @Override
@@ -199,12 +237,19 @@ public class TestAdapter extends RecyclerView.Adapter {
  class TestViewHolder extends RecyclerView.ViewHolder {
 
     TextView tvData;
+    EditText etData;
     Button undoButton;
 
-    public TestViewHolder(ViewGroup parent) {
+    private TestAdapter.AdapterInterface newAdapterInterface;
+
+    public TestViewHolder(ViewGroup parent, TestAdapter.AdapterInterface setAdapterInterface) {
         super(LayoutInflater.from(parent.getContext()).inflate(R.layout.row_view, parent, false));
-        tvData = (TextView) itemView.findViewById(R.id.tvData);
+        //tvData = (TextView) itemView.findViewById(R.id.tvData);
+        this.newAdapterInterface = setAdapterInterface;
         undoButton = (Button) itemView.findViewById(R.id.undo_button);
+        etData = (EditText) itemView.findViewById(R.id.etData);
+        final int position = getAdapterPosition();
+
     }
 
 }

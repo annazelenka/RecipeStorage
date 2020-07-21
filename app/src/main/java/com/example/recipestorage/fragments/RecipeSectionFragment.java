@@ -105,10 +105,13 @@ public class RecipeSectionFragment extends Fragment implements TestAdapter.Adapt
         switch (recipeSection) {
             case INGREDIENT:
                 dataPasser.onIngredientsChangedPass(true);
+                break;
             case DIRECTION:
                 dataPasser.onDirectionsChangedPass(true);
+                break;
             case NOTE:
                 dataPasser.onNotesChangedPass(true);
+                break;
         }
     }
 
@@ -118,10 +121,13 @@ public class RecipeSectionFragment extends Fragment implements TestAdapter.Adapt
         switch (recipeSection) {
             case INGREDIENT:
                 dataPasser.onIngredientsChangedPass(true);
+                break;
             case DIRECTION:
                 dataPasser.onDirectionsChangedPass(true);
+                break;
             case NOTE:
                 dataPasser.onNotesChangedPass(true);
+                break;
         }
     }
 
@@ -188,7 +194,7 @@ public class RecipeSectionFragment extends Fragment implements TestAdapter.Adapt
 
     private void setUpRecyclerView() {
         rvItems.setLayoutManager(new LinearLayoutManager(getContext()));
-        TestAdapter testAdapter = new TestAdapter(RecipeSectionFragment.this, recipeSectionContents);
+        TestAdapter testAdapter = new TestAdapter(getContext(), RecipeSectionFragment.this, recipeSectionContents);
         testAdapter.setUndoOn(true);
         rvItems.setAdapter(testAdapter);
         rvItems.setHasFixedSize(true);

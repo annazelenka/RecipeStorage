@@ -106,8 +106,9 @@ public class Recipe extends ParseObject {
     }
 
     public void clearIngredients() {
-        ArrayList<String> ingredient = getParsedIngredients();
-        removeIngredients(ingredient);
+//        ArrayList<String> ingredient = getParsedIngredients();
+////        removeIngredients(ingredient);
+        remove(KEY_INGREDIENTS);
     }
 
     public JSONArray getDirections() { return getJSONArray(KEY_DIRECTIONS); }
@@ -150,8 +151,9 @@ public class Recipe extends ParseObject {
     }
 
     public void clearDirections() {
-        ArrayList<String> directions = getParsedDirections();
-        removeDirections(directions);
+//        ArrayList<String> directions = getParsedDirections();
+//        removeDirections(directions);
+        remove(KEY_DIRECTIONS);
     }
 
 
@@ -194,8 +196,9 @@ public class Recipe extends ParseObject {
     }
 
     public void clearNotes() {
-        ArrayList<String> notes = getParsedNotes();
-        removeNotes(notes);
+//        ArrayList<String> notes = getParsedNotes();
+//        removeNotes(notes);
+        remove(KEY_NOTES);
     }
 
     public ParseFile getProfilePic() { return getUser().getParseFile(KEY_INGREDIENTS); }
