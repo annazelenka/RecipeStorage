@@ -30,6 +30,7 @@ import com.example.recipestorage.R;
 import com.example.recipestorage.Recipe;
 import com.example.recipestorage.RecipeAdapter;
 import com.example.recipestorage.TestAdapter;
+import com.example.recipestorage.utils.KeyboardUtils;
 
 import java.util.ArrayList;
 
@@ -64,6 +65,8 @@ public class RecipeSectionFragment extends Fragment implements TestAdapter.Adapt
         public void onIngredientsChangedPass(boolean dataChanged);
         public void onDirectionsChangedPass(boolean dataChanged);
         public void onNotesChangedPass(boolean dataChanged);
+        public void setVisibilityFabSubmit(boolean setVisible);
+        public void setVisibilityBubbleNavigation(boolean setVisible);
     }
 
     public RecipeSectionFragment() {
@@ -168,10 +171,12 @@ public class RecipeSectionFragment extends Fragment implements TestAdapter.Adapt
             passData(recipeSection, recipeSectionContents);
         }
 
+
         etAddRecipeSection.setHint("new " + recipeSectionString);
         etAddRecipeSection.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event){
+
                 if(actionId == EditorInfo.IME_ACTION_DONE){
                     String text = etAddRecipeSection.getText().toString();
                     if (text.isEmpty()) {
@@ -183,7 +188,6 @@ public class RecipeSectionFragment extends Fragment implements TestAdapter.Adapt
                     passData(recipeSection, recipeSectionContents);
                     passDataChanged(true);
                     etAddRecipeSection.setText("");
-
                     return true;
                 }
                 return false;

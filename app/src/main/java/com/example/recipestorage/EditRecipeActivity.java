@@ -10,6 +10,8 @@ import android.widget.Toast;
 import androidx.fragment.app.Fragment;
 
 import com.example.recipestorage.fragments.RecipeSectionFragment;
+import com.example.recipestorage.fragments.RecipeSummaryFragment;
+import com.gauravk.bubblenavigation.listener.BubbleNavigationChangeListener;
 import com.parse.ParseException;
 import com.parse.ParseFile;
 import com.parse.ParseUser;
@@ -26,13 +28,13 @@ public class EditRecipeActivity<recipe> extends AddRecipeActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        ivRecipeImage.setVisibility(View.GONE);
         etRecipeTitle.setText(recipe.getTitle());
     }
 
     @Override
     protected void setDefaultFragment() {
-        Fragment fragment = new RecipeSectionFragment(false, RecipeSectionFragment.RecipeSection.INGREDIENT, recipe.getParsedIngredients());
+        toolbar.setVisibility(View.GONE);
+        Fragment fragment = new RecipeSummaryFragment(recipe);
         fragmentManager.beginTransaction().replace(R.id.flContainer, fragment).commit();
     }
 
@@ -45,19 +47,54 @@ public class EditRecipeActivity<recipe> extends AddRecipeActivity {
     }
 
     @Override
+    public void setupBubbleNavigation() {
+        bubbleNavigation.setNavigationChangeListener(new BubbleNavigationChangeListener() {
+            @Override
+            public void onNavigationChanged(View view, int position) {
+                Fragment fragment;
+                switch (position) {
+                    case HOME_POSITION:
+                        toolbar.setVisibility(View.GONE);
+                        fragment = new RecipeSummaryFragment(recipe);
+                        break;
+                    case INGREDIENTS_POSITION: //miDirections
+                        toolbar.setVisibility(View.VISIBLE);
+                        fragment = new RecipeSectionFragment(false, RecipeSectionFragment.RecipeSection.INGREDIENT, ingredients);
+                        break;
+                    case DIRECTIONS_POSITION: //miNotes
+                        toolbar.setVisibility(View.VISIBLE);
+                        fragment = new RecipeSectionFragment(false, RecipeSectionFragment.RecipeSection.DIRECTION, directions);
+                        break;
+                    case NOTES_POSITION:
+                    default:
+                        toolbar.setVisibility(View.VISIBLE);
+                        fragment = new RecipeSectionFragment(false, RecipeSectionFragment.RecipeSection.NOTE, notes);
+                        break;
+                }
+                fragmentManager.beginTransaction().replace(R.id.flContainer, fragment).commit();
+            }
+        });
+        bubbleNavigation.setCurrentActiveItem(HOME_POSITION);
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         Fragment fragment;
         switch (item.getItemId()) {
-            case R.id.miCamera:
-                super.launchCamera();
+            case R.id.miHome:
+                fragment = new RecipeSummaryFragment(recipe);
+                break;
             case R.id.miIngredients:
+                toolbar.setVisibility(View.VISIBLE);
                 fragment = new RecipeSectionFragment(false, RecipeSectionFragment.RecipeSection.INGREDIENT, recipe.getParsedIngredients());
                 break;
             case R.id.miDirections:
+                toolbar.setVisibility(View.VISIBLE);
                 fragment = new RecipeSectionFragment(false, RecipeSectionFragment.RecipeSection.DIRECTION, recipe.getParsedDirections());
                 break;
             case R.id.miNotes:
             default:
+                toolbar.setVisibility(View.VISIBLE);
                 fragment = new RecipeSectionFragment(false, RecipeSectionFragment.RecipeSection.NOTE, recipe.getParsedNotes());
                 break;
         }

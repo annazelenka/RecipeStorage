@@ -117,6 +117,7 @@ public class TestAdapter extends RecyclerView.Adapter {
 
         if (itemsPendingRemoval.contains(item)) {
             // we need to show the "undo" state of the row
+            viewHolder.etData.setVisibility(View.GONE);
             viewHolder.itemView.setBackgroundColor(Color.RED);
             viewHolder.undoButton.setVisibility(View.VISIBLE);
             viewHolder.undoButton.setOnClickListener(new View.OnClickListener() {

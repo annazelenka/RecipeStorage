@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".fragments.RecipeSummaryFragment">
+
+    <ScrollView
+        android:id="@+id/scroll"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        >
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+    <ImageView
+        android:id="@+id/ivRecipeImage"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:adjustViewBounds="true"
+        android:scaleType="fitCenter"
+        android:src="@drawable/lobster">
+        </ImageView>
+
+
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/etTitleLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:layout_marginTop="32dp"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        android:layout_gravity="bottom"
+        android:layout_below="@id/ivRecipeImage">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/etTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:imeOptions="actionDone"
+            android:singleLine="true"
+            android:layout_centerHorizontal="true"
+            android:text="title"
+            android:textAlignment="center"
+            android:textSize="36dp"
+            android:textStyle="bold"/>
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <LinearLayout
+        android:id="@+id/layoutImageBtns"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_below="@id/etTitleLayout">
+
+        <ImageButton
+            android:id="@+id/btnCamera"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp"
+            android:src="@drawable/ic_photo_camera_24px"
+            android:layout_weight="1">
+
+        </ImageButton>
+
+
+        <ImageButton
+            android:id="@+id/btnFavorite"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp"
+            android:src="@drawable/ic_favorite_border_black_18dp"
+            android:layout_weight="1"
+            >
+
+        </ImageButton>
+
+        <ImageButton
+            android:id="@+id/btnDelete"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp"
+            android:src="@drawable/ic_delete_outline_24px"
+            android:layout_weight="1"
+            >
+
+        </ImageButton>
+    </LinearLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/etRecipeTimeLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:layout_marginTop="32dp"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        android:layout_gravity="bottom"
+        android:layout_below="@id/layoutImageBtns">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/etRecipeTime"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:imeOptions="actionDone"
+            android:singleLine="true"
+            android:layout_centerHorizontal="true"
+            android:text="title"
+            android:textAlignment="center"
+            android:textSize="16dp"
+            android:textStyle="bold"/>
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    </RelativeLayout>
+    </ScrollView>
+
+
+</RelativeLayout>

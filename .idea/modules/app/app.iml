@@ -175,5 +175,6 @@
     <orderEntry type="library" name="Gradle: com.android.installreferrer:installreferrer:1.0@aar" level="project" />
     <orderEntry type="library" name="Gradle: com.gauravk.bubblenavigation:bubblenavigation:1.0.7@aar" level="project" />
     <orderEntry type="library" name="Gradle: com.shreyaspatil:MaterialDialog:2.1@aar" level="project" />
+    <orderEntry type="library" name="Gradle: com.github.pedromassango:doubleClick:3.0@aar" level="project" />
   </component>
 </module>

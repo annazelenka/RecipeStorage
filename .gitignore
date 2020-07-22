@@ -49,3 +49,6 @@ parseserver.properties
 # Facebook SDK strings
 facebook_strings.xml
 strings.xml
+
+# KeyboardUtils external code (not my code)
+app/src/main/java/com/example/recipestorage/utils/KeyboardUtils.java

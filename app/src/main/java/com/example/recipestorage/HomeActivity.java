@@ -38,7 +38,7 @@ public class HomeActivity extends AppCompatActivity {
         setContentView(R.layout.activity_home);
 
         // TODO: Set default selection
-        queryRecipes();
+        //queryRecipes();
 
         fabAddRecipe = findViewById(R.id.fabAddRecipe);
         btnLogout = findViewById(R.id.btnLogout);
@@ -57,6 +57,10 @@ public class HomeActivity extends AppCompatActivity {
                 showLogoutDialog();
             }
         });
+
+        RecipesListFragment fragment = new RecipesListFragment();
+
+        fragmentManager.beginTransaction().replace(R.id.flContainer, fragment).commit();
     }
 
     private void showLogoutDialog() {
@@ -71,6 +75,7 @@ public class HomeActivity extends AppCompatActivity {
                         Intent intent = new Intent(HomeActivity.this, LoginActivity.class);
                         ParseUser.logOut();
                         startActivity(intent);
+                        dialogInterface.dismiss();
                         finish();
                     }
                 })
@@ -86,30 +91,30 @@ public class HomeActivity extends AppCompatActivity {
         mDialog.show();
     }
 
-    protected void queryRecipes() {
-
-        ParseQuery<Recipe> query = ParseQuery.getQuery(Recipe.class);
-        query.include(Recipe.KEY_USER);
-        query.setLimit(RECIPE_LIMIT);
-        query.whereEqualTo(Recipe.KEY_USER, ParseUser.getCurrentUser());
-        query.addDescendingOrder(Recipe.KEY_CREATED_KEY);
-        query.findInBackground(new FindCallback<Recipe>() {
-            @Override
-            public void done(List<Recipe> recipes, ParseException e) {
-                if (e != null) {
-                    Log.e(TAG, "Issue with getting recipes", e);
-                    return;
-                }
-
-                Log.i("HomeActivity", "success getting recipes");
-                RecipesListFragment fragment = new RecipesListFragment(recipes);
-
-                fragmentManager.beginTransaction().replace(R.id.flContainer, fragment).commit();
-            }
-
-        });
-
-    }
+//    protected void queryRecipes() {
+//
+//        ParseQuery<Recipe> query = ParseQuery.getQuery(Recipe.class);
+//        query.include(Recipe.KEY_USER);
+//        query.setLimit(RECIPE_LIMIT);
+//        query.whereEqualTo(Recipe.KEY_USER, ParseUser.getCurrentUser());
+//        query.addDescendingOrder(Recipe.KEY_CREATED_KEY);
+//        query.findInBackground(new FindCallback<Recipe>() {
+//            @Override
+//            public void done(List<Recipe> recipes, ParseException e) {
+//                if (e != null) {
+//                    Log.e(TAG, "Issue with getting recipes", e);
+//                    return;
+//                }
+//
+//                Log.i("HomeActivity", "success getting recipes");
+//                RecipesListFragment fragment = new RecipesListFragment(recipes);
+//
+//                fragmentManager.beginTransaction().replace(R.id.flContainer, fragment).commit();
+//            }
+//
+//        });
+//
+//    }
 
 
 }

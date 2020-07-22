@@ -64,7 +64,6 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
-
         btnLoginFacebook.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -132,7 +131,6 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
-        launchHomeScreen();
     }
 
     @Override
@@ -162,5 +160,7 @@ public class LoginActivity extends AppCompatActivity {
     private void launchHomeScreen() {
         Intent intent = new Intent(LoginActivity.this, HomeActivity.class);
         startActivity(intent);
+        // remove LoginActivity from backstack so user cannot return; instead must log out
+        finish();
     }
 }

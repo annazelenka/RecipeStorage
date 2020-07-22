@@ -22,6 +22,8 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.example.recipestorage.fragments.RecipeSectionFragment;
+import com.example.recipestorage.fragments.RecipeSummaryFragment;
+import com.example.recipestorage.utils.KeyboardUtils;
 import com.gauravk.bubblenavigation.BubbleNavigationConstraintView;
 import com.gauravk.bubblenavigation.listener.BubbleNavigationChangeListener;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -42,10 +44,11 @@ import java.util.ArrayList;
 public class AddRecipeActivity extends AppCompatActivity implements RecipeSectionFragment.OnDataPass {
     public static final String TAG = "ComposeFragment";
     public static final int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 1034;
-    public static final int CAMERA_POSITION = 0;
+    public static final int CAMERA_POSITION = 4;
     public static final int INGREDIENTS_POSITION = 1;
     public static final int DIRECTIONS_POSITION = 2;
     public static final int NOTES_POSITION = 3;
+    public static final int HOME_POSITION = 0;
 
     private File photoFile;
     public String photoFileName = "photo.jpg";
@@ -90,28 +93,7 @@ public class AddRecipeActivity extends AppCompatActivity implements RecipeSectio
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
 
-        bubbleNavigation.setNavigationChangeListener(new BubbleNavigationChangeListener() {
-            @Override
-            public void onNavigationChanged(View view, int position) {
-                Fragment fragment;
-                switch (position) {
-                    case CAMERA_POSITION: //
-                        launchCamera();
-                    case INGREDIENTS_POSITION: //miDirections
-                        fragment = new RecipeSectionFragment(true, RecipeSectionFragment.RecipeSection.INGREDIENT, ingredients);
-                        break;
-                    case DIRECTIONS_POSITION: //miNotes
-                        fragment = new RecipeSectionFragment(true, RecipeSectionFragment.RecipeSection.DIRECTION, directions);
-                        break;
-                    case NOTES_POSITION:
-                    default:
-                        fragment = new RecipeSectionFragment(true, RecipeSectionFragment.RecipeSection.NOTE, notes);
-                        break;
-                }
-                fragmentManager.beginTransaction().replace(R.id.flContainer, fragment).commit();
-            }
-        });
-        bubbleNavigation.setCurrentActiveItem(INGREDIENTS_POSITION);
+        setupBubbleNavigation();
 
         fabSubmitRecipe = findViewById(R.id.fabSubmitRecipe);
         fabSubmitRecipe.setOnClickListener(new View.OnClickListener() {
@@ -134,12 +116,58 @@ public class AddRecipeActivity extends AppCompatActivity implements RecipeSectio
                 showDeleteDialog();
             }
         });
+
+        KeyboardUtils.addKeyboardToggleListener(this, new KeyboardUtils.SoftKeyboardToggleListener()
+        {
+            @Override
+            public void onToggleSoftKeyboard(boolean isVisible)
+            {
+                if (isVisible) {
+                    // hide fabSubmit button and bubble navigation bar
+                    fabSubmitRecipe.setVisibility(View.INVISIBLE);
+                    bubbleNavigation.setVisibility(View.INVISIBLE);
+                } else {
+                    fabSubmitRecipe.setVisibility(View.VISIBLE);
+                    bubbleNavigation.setVisibility(View.VISIBLE);
+                }
+            }
+        });
+    }
+
+    protected void setupBubbleNavigation() {
+        bubbleNavigation.setNavigationChangeListener(new BubbleNavigationChangeListener() {
+            @Override
+            public void onNavigationChanged(View view, int position) {
+                Fragment fragment;
+                switch (position) {
+                    case HOME_POSITION:
+                        toolbar.setVisibility(View.GONE);
+                        fragment = new RecipeSummaryFragment();
+                        break;
+                    case INGREDIENTS_POSITION: //miDirections
+                        toolbar.setVisibility(View.VISIBLE);
+                        fragment = new RecipeSectionFragment(true, RecipeSectionFragment.RecipeSection.INGREDIENT, ingredients);
+                        break;
+                    case DIRECTIONS_POSITION: //miNotes
+                        toolbar.setVisibility(View.VISIBLE);
+                        fragment = new RecipeSectionFragment(true, RecipeSectionFragment.RecipeSection.DIRECTION, directions);
+                        break;
+                    case NOTES_POSITION:
+                    default:
+                        toolbar.setVisibility(View.VISIBLE);
+                        fragment = new RecipeSectionFragment(true, RecipeSectionFragment.RecipeSection.NOTE, notes);
+                        break;
+                }
+                fragmentManager.beginTransaction().replace(R.id.flContainer, fragment).commit();
+            }
+        });
+        bubbleNavigation.setCurrentActiveItem(HOME_POSITION);
     }
 
     private void showDeleteDialog() {
         MaterialDialog mDialog = new MaterialDialog.Builder(this)
                 .setTitle("Delete?")
-                .setMessage("Are you sure want to delete this file?")
+                .setMessage("Are you sure you want to delete this file?")
                 .setCancelable(false)
                 .setPositiveButton("Delete", R.drawable.ic_delete_24px, new MaterialDialog.OnClickListener() {
                     @Override
@@ -169,7 +197,8 @@ public class AddRecipeActivity extends AppCompatActivity implements RecipeSectio
     }
 
     protected void setDefaultFragment() {
-        Fragment fragment = new RecipeSectionFragment(true, RecipeSectionFragment.RecipeSection.INGREDIENT, ingredients);
+        toolbar.setVisibility(View.GONE);
+        Fragment fragment = new RecipeSummaryFragment();
         fragmentManager.beginTransaction().replace(R.id.flContainer, fragment).commit();
     }
 
@@ -190,9 +219,9 @@ public class AddRecipeActivity extends AppCompatActivity implements RecipeSectio
 
     protected boolean canSubmitRecipe() {
         boolean canSubmitRecipe = !etRecipeTitle.getText().toString().isEmpty() && ingredients.size() != 0 &&
-                directions.size() != 0 && notes.size() != 0;
+                directions.size() != 0;
         if (!canSubmitRecipe) {
-            String toast = "Recipe is missing ingredients, directions, and/or notes";
+            String toast = "Recipe is missing ingredients and/or directions";
             Toast.makeText(AddRecipeActivity.this, toast, Toast.LENGTH_SHORT).show();
         }
         return canSubmitRecipe;
@@ -246,6 +275,24 @@ public class AddRecipeActivity extends AppCompatActivity implements RecipeSectio
     }
 
     @Override
+    public void setVisibilityFabSubmit(boolean setVisible) {
+        if (setVisible) {
+            fabSubmitRecipe.setVisibility(View.VISIBLE);
+        } else {
+            fabSubmitRecipe.setVisibility(View.GONE);
+        }
+    }
+
+    @Override
+    public void setVisibilityBubbleNavigation(boolean setVisible) {
+        if (setVisible) {
+            bubbleNavigation.setVisibility(View.VISIBLE);
+        } else {
+            bubbleNavigation.setVisibility(View.GONE);
+        }
+    }
+
+    @Override
     public void onIngredientsChangedPass(boolean dataChanged) {
         this.recipeDataChanged = dataChanged;
         this.ingredientsDataChanged = dataChanged;
@@ -263,106 +310,106 @@ public class AddRecipeActivity extends AppCompatActivity implements RecipeSectio
         this.notesDataChanged = dataChanged;
     }
 
-    protected void launchCamera() {
-        // create Intent to take a picture and return control to the calling application
-        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-
-        // Create a File reference for future access
-        photoFile =  getPhotoFileUri(photoFileName);
-
-        // wrap File object into a content provider
-        // required for API >= 24
-        // See https://guides.codepath.com/android/Sharing-Content-with-Intents#sharing-files-with-api-24-or-higher
-        Uri fileProvider = FileProvider.getUriForFile(AddRecipeActivity.this, "com.codepath.fileprovider", photoFile);
-        intent.putExtra(MediaStore.EXTRA_OUTPUT, fileProvider);
-
-        // If you call startActivityForResult() using an intent that no app can handle, your app will crash.
-        // So as long as the result is not null, it's safe to use the intent.
-        if (intent.resolveActivity(AddRecipeActivity.this.getPackageManager()) != null) {
-            // Start the image capture intent to take photo
-            startActivityForResult(intent, CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE);
-        }
-    }
-
-
-    private File getResizedPhotoFileUri(Bitmap takenPhoto) {
-        // by this point we have the camera photo on disk
-        int imageWidth = 400;
-        Bitmap resizedBitmap = BitmapScaler.scaleToFitWidth(takenPhoto, imageWidth);
-        // Then we can write that smaller bitmap back to disk with:
-
-        // Configure byte output stream
-        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-        // Compress the image further
-        resizedBitmap.compress(Bitmap.CompressFormat.JPEG, 40, bytes);
-        // Create a new file for the resized bitmap (`getPhotoFileUri` defined above)
-        File resizedFile = getPhotoFileUri(photoFileName + "_resized");
-        Log.i(TAG, "reached");
-        try {
-            resizedFile.createNewFile();
-        } catch (IOException e) {
-            Log.d(TAG, "failed to resize file");
-            e.printStackTrace();
-        }
-        FileOutputStream fos = null;
-        try {
-            fos = new FileOutputStream(resizedFile);
-        } catch (FileNotFoundException e) {
-            Log.d(TAG, "Resized file not found");
-            e.printStackTrace();
-        }
-        // Write the bytes of the bitmap to file
-        try {
-            fos.write(bytes.toByteArray());
-        } catch (IOException e) {
-            Log.d(TAG, "failed to write file");
-            e.printStackTrace();
-        }
-        try {
-            fos.close();
-        } catch (IOException e) {
-            Log.d(TAG, "failed to close FileOutputStream");
-            e.printStackTrace();
-        }
-        return resizedFile;
-    }
-
-
-    // Returns the File for a photo stored on disk given the fileName
-    public File getPhotoFileUri(String fileName) {
-        // Get safe storage directory for photos
-        // Use `getExternalFilesDir` on Context to access package-specific directories.
-        // This way, we don't need to request external read/write runtime permissions.
-        File mediaStorageDir = new File(AddRecipeActivity.this.getExternalFilesDir(Environment.DIRECTORY_PICTURES), TAG);
-
-        // Create the storage directory if it does not exist
-        if (!mediaStorageDir.exists() && !mediaStorageDir.mkdirs()){
-            Log.d(TAG, "failed to create directory");
-        }
-
-        // Return the file target for the photo based on filename
-        return new File(mediaStorageDir.getPath() + File.separator + fileName);
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        Log.i(TAG, "requestCode: " + String.valueOf(requestCode));
-        if (requestCode == CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE) {
-            Log.i(TAG, String.valueOf(resultCode));
-            if (resultCode == RESULT_OK) { // User took picture
-                // by this point we have the camera photo on disk
-
-                Bitmap takenImage = BitmapFactory.decodeFile(photoFile.getAbsolutePath());
-                photoFile = getResizedPhotoFileUri(takenImage);
-                // RESIZE BITMAP, see section below
-                // Load the taken image into a preview
-                ivRecipeImage.setImageBitmap(takenImage);
-                ivRecipeImage.setVisibility(View.VISIBLE);
-            } else { // Result was a failure
-                Toast.makeText(AddRecipeActivity.this, "Picture wasn't taken!", Toast.LENGTH_SHORT).show();
-            }
-        }
-    }
+//    protected void launchCamera() {
+//        // create Intent to take a picture and return control to the calling application
+//        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+//
+//        // Create a File reference for future access
+//        photoFile =  getPhotoFileUri(photoFileName);
+//
+//        // wrap File object into a content provider
+//        // required for API >= 24
+//        // See https://guides.codepath.com/android/Sharing-Content-with-Intents#sharing-files-with-api-24-or-higher
+//        Uri fileProvider = FileProvider.getUriForFile(AddRecipeActivity.this, "com.codepath.fileprovider", photoFile);
+//        intent.putExtra(MediaStore.EXTRA_OUTPUT, fileProvider);
+//
+//        // If you call startActivityForResult() using an intent that no app can handle, your app will crash.
+//        // So as long as the result is not null, it's safe to use the intent.
+//        if (intent.resolveActivity(AddRecipeActivity.this.getPackageManager()) != null) {
+//            // Start the image capture intent to take photo
+//            startActivityForResult(intent, CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE);
+//        }
+//    }
+//
+//
+//    private File getResizedPhotoFileUri(Bitmap takenPhoto) {
+//        // by this point we have the camera photo on disk
+//        int imageWidth = 400;
+//        Bitmap resizedBitmap = BitmapScaler.scaleToFitWidth(takenPhoto, imageWidth);
+//        // Then we can write that smaller bitmap back to disk with:
+//
+//        // Configure byte output stream
+//        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+//        // Compress the image further
+//        resizedBitmap.compress(Bitmap.CompressFormat.JPEG, 40, bytes);
+//        // Create a new file for the resized bitmap (`getPhotoFileUri` defined above)
+//        File resizedFile = getPhotoFileUri(photoFileName + "_resized");
+//        Log.i(TAG, "reached");
+//        try {
+//            resizedFile.createNewFile();
+//        } catch (IOException e) {
+//            Log.d(TAG, "failed to resize file");
+//            e.printStackTrace();
+//        }
+//        FileOutputStream fos = null;
+//        try {
+//            fos = new FileOutputStream(resizedFile);
+//        } catch (FileNotFoundException e) {
+//            Log.d(TAG, "Resized file not found");
+//            e.printStackTrace();
+//        }
+//        // Write the bytes of the bitmap to file
+//        try {
+//            fos.write(bytes.toByteArray());
+//        } catch (IOException e) {
+//            Log.d(TAG, "failed to write file");
+//            e.printStackTrace();
+//        }
+//        try {
+//            fos.close();
+//        } catch (IOException e) {
+//            Log.d(TAG, "failed to close FileOutputStream");
+//            e.printStackTrace();
+//        }
+//        return resizedFile;
+//    }
+//
+//
+//    // Returns the File for a photo stored on disk given the fileName
+//    public File getPhotoFileUri(String fileName) {
+//        // Get safe storage directory for photos
+//        // Use `getExternalFilesDir` on Context to access package-specific directories.
+//        // This way, we don't need to request external read/write runtime permissions.
+//        File mediaStorageDir = new File(AddRecipeActivity.this.getExternalFilesDir(Environment.DIRECTORY_PICTURES), TAG);
+//
+//        // Create the storage directory if it does not exist
+//        if (!mediaStorageDir.exists() && !mediaStorageDir.mkdirs()){
+//            Log.d(TAG, "failed to create directory");
+//        }
+//
+//        // Return the file target for the photo based on filename
+//        return new File(mediaStorageDir.getPath() + File.separator + fileName);
+//    }
+//
+//    @Override
+//    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+//        super.onActivityResult(requestCode, resultCode, data);
+//        Log.i(TAG, "requestCode: " + String.valueOf(requestCode));
+//        if (requestCode == CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE) {
+//            Log.i(TAG, String.valueOf(resultCode));
+//            if (resultCode == RESULT_OK) { // User took picture
+//                // by this point we have the camera photo on disk
+//
+//                Bitmap takenImage = BitmapFactory.decodeFile(photoFile.getAbsolutePath());
+//                photoFile = getResizedPhotoFileUri(takenImage);
+//                // RESIZE BITMAP, see section below
+//                // Load the taken image into a preview
+//                ivRecipeImage.setImageBitmap(takenImage);
+//                ivRecipeImage.setVisibility(View.VISIBLE);
+//            } else { // Result was a failure
+//                Toast.makeText(AddRecipeActivity.this, "Picture wasn't taken!", Toast.LENGTH_SHORT).show();
+//            }
+//        }
+//    }
 
 }

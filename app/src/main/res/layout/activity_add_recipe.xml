@@ -27,12 +27,12 @@
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
-                <ImageView
-                    android:id="@+id/ivRecipeImage"
-                    android:layout_width="match_parent"
-                    android:layout_height="200dp"
-                    android:src="@drawable/lobster">
-                </ImageView>
+<!--                <ImageView-->
+<!--                    android:id="@+id/ivRecipeImage"-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="200dp"-->
+<!--                    android:src="@drawable/lobster">-->
+<!--                </ImageView>-->
 
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/etUsernameLayout"
@@ -40,8 +40,7 @@
                     android:layout_height="wrap_content"
                     android:hint="Put the recipe title here!"
                     android:layout_margin="16dp"
-                    android:layout_marginTop="32dp"
-                    android:layout_below="@+id/ivRecipeImage">
+                    android:layout_marginTop="32dp">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/etRecipeTitle"
@@ -65,21 +64,12 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_margin="16dp"
-                    android:layout_toStartOf="@+id/fabSubmitRecipe"
+                    android:layout_alignParentEnd="true"
                     android:src="@drawable/ic_delete_outline_24px">
 
                 </ImageButton>
 
-                <com.google.android.material.floatingactionbutton.FloatingActionButton
-                    android:id="@+id/fabSubmitRecipe"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:background="@color/colorFacebookBlue"
-                    android:src="@drawable/ic_done_24px"
-                    app:fabSize="normal"
-                    android:layout_margin="16dp"
-                    android:layout_alignParentTop="true"
-                    android:layout_alignParentEnd="true"/>
+
             </RelativeLayout>
         </androidx.appcompat.widget.Toolbar>
     </com.google.android.material.appbar.AppBarLayout>
@@ -90,9 +80,21 @@
     <FrameLayout
         android:id="@+id/flContainer"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="72dp"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
         />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fabSubmitRecipe"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@color/colorFacebookBlue"
+        android:src="@drawable/ic_done_24px"
+        app:fabSize="normal"
+        android:layout_marginRight="16dp"
+        android:layout_marginBottom="96dp"
+        android:layout_gravity="bottom|right"/>
 
 
     <com.gauravk.bubblenavigation.BubbleNavigationConstraintView
@@ -103,17 +105,18 @@
         android:elevation="4dp"
         android:padding="16dp"
         app:bnc_mode="inside"
-        android:layout_gravity="bottom">
+        android:layout_gravity="bottom"
+        >
 
         <com.gauravk.bubblenavigation.BubbleToggleView
-            android:id="@+id/miCamera"
+            android:id="@+id/miHome"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:bt_active="true"
-            app:bt_colorActive="@color/orange_active"
-            app:bt_colorInactive="@color/orange_inactive"
-            app:bt_icon="@drawable/ic_photo_camera_24px"
-            app:bt_title="add photo"
+            app:bt_colorActive="@color/red_active"
+            app:bt_colorInactive="@color/red_inactive"
+            app:bt_icon="@drawable/ic_home_black_18dp"
+            app:bt_title="overview"
             app:bt_padding="@dimen/internal_padding"
             android:layout_marginRight="8dp"/>
 
@@ -121,7 +124,7 @@
             android:id="@+id/miIngredients"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:bt_active="true"
+            app:bt_active="false"
             app:bt_colorActive="@color/blue_active"
             app:bt_colorInactive="@color/blue_inactive"
             app:bt_icon="@drawable/ic_fastfood_black_18dp"
@@ -149,6 +152,8 @@
             app:bt_icon="@drawable/ic_content_paste_black_18dp"
             app:bt_title="notes"
             app:bt_padding="@dimen/internal_padding"/>
+
+
 
         <!-- Add more child items here - max upto 5 -->
 

@@ -28,6 +28,7 @@ public class Recipe extends ParseObject {
     public static final String KEY_NOTES = "notes";
     public static final String KEY_RECIPE_IMAGE = "recipeImage";
     private static final String KEY_COOK_TIME_MIN = "cookTimeMin";
+    private static final String KEY_IS_FAVORITE = "isFavorite";
 
     // empty constructor needed by Parcelable library
     public Recipe() {
@@ -228,4 +229,12 @@ public class Recipe extends ParseObject {
     }
 
     public void saveRecipe() { this.saveInBackground(); }
+
+    public boolean isFavorite() {
+        return getBoolean(KEY_IS_FAVORITE);
+    }
+
+    public void setIsFavorite(boolean isFavorite) {
+        put(KEY_IS_FAVORITE, isFavorite);
+    }
 }

@@ -7,6 +7,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,9 +22,14 @@ import com.jama.carouselview.CarouselView;
 import com.jama.carouselview.CarouselViewListener;
 import com.jama.carouselview.enums.IndicatorAnimationType;
 import com.jama.carouselview.enums.OffsetType;
+import com.parse.FindCallback;
+import com.parse.ParseException;
+import com.parse.ParseQuery;
+import com.parse.ParseUser;
 
 import org.parceler.Parcels;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import coil.Coil;
@@ -32,20 +38,19 @@ import coil.request.LoadRequest;
 
 public class RecipesListFragment extends Fragment {
     public static final String TAG = "RecipeListFragment";
+    public static final int RECIPE_LIMIT = 20;
 
     private List<Recipe> allRecipes;
-    //private int[] images = {R.drawable.taco,
-            //R.drawable.salmon, R.drawable.lobster, R.drawable.fried_rice, R.drawable.burger, R.drawable.salad, R.drawable.pie};
     CarouselView carouselView;
 
     public RecipesListFragment() {
         // Required empty public constructor
     }
 
-    public RecipesListFragment(List<Recipe> recipes) {
-        // Required empty public constructor
-        this.allRecipes = recipes;
-    }
+//    public RecipesListFragment(List<Recipe> recipes) {
+//        // Required empty public constructor
+//        this.allRecipes = recipes;
+//    }
 
 
     @Override
@@ -58,11 +63,9 @@ public class RecipesListFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
-        if (allRecipes != null) {
-            handleCarouselView(view);
+        if (allRecipes == null) {
+            populateRecipes(view);
         }
-
     }
 
     private void handleCarouselView(View view) {
@@ -117,6 +120,31 @@ public class RecipesListFragment extends Fragment {
         });
         // After you finish setting up, show the CarouselView
         carouselView.show();
+    }
+
+        protected void populateRecipes(final View view) {
+
+        // query recipes
+        ParseQuery<Recipe> query = ParseQuery.getQuery(Recipe.class);
+        query.include(Recipe.KEY_USER);
+        query.setLimit(RECIPE_LIMIT);
+        query.whereEqualTo(Recipe.KEY_USER, ParseUser.getCurrentUser());
+        query.addDescendingOrder(Recipe.KEY_CREATED_KEY);
+        query.findInBackground(new FindCallback<Recipe>() {
+            @Override
+            public void done(List<Recipe> recipes, ParseException e) {
+                if (e != null) {
+                    Log.e(TAG, "Issue with getting recipes", e);
+                    return;
+                }
+
+                Log.i("HomeActivity", "success getting recipes");
+                allRecipes = recipes;
+                handleCarouselView(view);
+            }
+
+        });
+
     }
 
 

@@ -1,0 +1,12 @@
+<component name="libraryTable">
+  <library name="Gradle: com.github.pedromassango:doubleClick:3.0@aar">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/ac389d74772d62e014bbab51230221a4/jetified-doubleClick-3.0/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/ac389d74772d62e014bbab51230221a4/jetified-doubleClick-3.0/res" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.github.pedromassango/doubleClick/3.0/18cce7e4efd25a2aed8a2808b8686d3f49e0be13/doubleClick-3.0-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>
