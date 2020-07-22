@@ -17,6 +17,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -165,6 +166,7 @@ public class RecipeSummaryFragment extends Fragment {
                     .target(ivRecipeImage)
                     .build();
             imageLoader.execute(request);
+            scheduleStartPostponedTransition(ivRecipeImage);
         } else {
             ivRecipeImage.setVisibility(View.GONE);
         }
@@ -315,5 +317,29 @@ public class RecipeSummaryFragment extends Fragment {
                 Toast.makeText(getActivity(), "Picture wasn't taken!", Toast.LENGTH_SHORT).show();
             }
         }
+    }
+
+    /**
+     * Schedules the shared element transition to be started immediately
+     * after the shared element has been measured and laid out within the
+     * activity's view hierarchy. Some common places where it might make
+     * sense to call this method are:
+     *
+     * (1) Inside a Fragment's onCreateView() method (if the shared element
+     *     lives inside a Fragment hosted by the called Activity).
+     *
+     * (2) Inside a Picasso Callback object (if you need to wait for Picasso to
+     *     asynchronously load/scale a bitmap before the transition can begin).
+     **/
+    private void scheduleStartPostponedTransition(final View sharedElement) {
+        sharedElement.getViewTreeObserver().addOnPreDrawListener(
+                new ViewTreeObserver.OnPreDrawListener() {
+                    @Override
+                    public boolean onPreDraw() {
+                        sharedElement.getViewTreeObserver().removeOnPreDrawListener(this);
+                        startPostponedEnterTransition();
+                        return true;
+                    }
+                });
     }
 }

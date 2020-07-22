@@ -5,6 +5,8 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.app.ActivityOptionsCompat;
+import androidx.core.util.Pair;
 import androidx.fragment.app.Fragment;
 
 import android.util.Log;
@@ -81,9 +83,13 @@ public class RecipesListFragment extends Fragment {
             @Override
             public void onBindView(View view, int position) {
                 // Example here is setting up a full image carousel
-                TextView tvTitle = view.findViewById(R.id.tvTitle);
-                ImageView ivPicture = view.findViewById(R.id.ivPicture);
+                final TextView tvTitle = view.findViewById(R.id.tvTitle);
+                final ImageView ivPicture = view.findViewById(R.id.ivPicture);
                 Button btnEditRecipe = view.findViewById(R.id.btnEditRecipe);
+
+                ivPicture.setTransitionName("recipeImage");
+                tvTitle.setTransitionName("recipeTitle");
+
 
                 ImageLoader imageLoader = Coil.imageLoader(getContext());
 
@@ -109,11 +115,7 @@ public class RecipesListFragment extends Fragment {
                 btnEditRecipe.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        Intent intent = new Intent(getContext(), EditRecipeActivity.class);
-                        intent.putExtra("recipe", Parcels.wrap(recipe));
-                        startActivity(intent);
-
-                        //TODO: do an onActivityResult listener so that once activity returns, this picture is updated
+                        launchRecipeEditActivity(recipe, ivPicture, tvTitle);
                     }
                 });
             }
@@ -122,7 +124,24 @@ public class RecipesListFragment extends Fragment {
         carouselView.show();
     }
 
-        protected void populateRecipes(final View view) {
+    private void launchRecipeEditActivity(Recipe recipe, ImageView ivPicture, TextView tvTitle) {
+//        Intent intent = new Intent(getContext(), EditRecipeActivity.class);
+//
+//        intent.putExtra("recipe", Parcels.wrap(recipe));
+//        ActivityOptionsCompat options = ActivityOptionsCompat.
+//                makeSceneTransitionAnimation(getActivity(), (View)ivPicture, "profile");
+//        startActivity(intent, options.toBundle());
+        Intent intent = new Intent(getContext(), EditRecipeActivity.class);
+        intent.putExtra("recipe", Parcels.wrap(recipe));
+        Pair<View, String> p1 = Pair.create((View)ivPicture, "recipeImage");
+        Pair<View, String> p2 = Pair.create((View)tvTitle, "tvTitle");
+        ActivityOptionsCompat options = ActivityOptionsCompat.
+                makeSceneTransitionAnimation(getActivity(), p1, p2);
+        startActivity(intent, options.toBundle());
+
+    }
+
+    protected void populateRecipes(final View view) {
 
         // query recipes
         ParseQuery<Recipe> query = ParseQuery.getQuery(Recipe.class);

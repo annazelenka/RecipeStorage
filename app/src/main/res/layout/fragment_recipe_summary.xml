@@ -20,7 +20,8 @@
         android:layout_height="wrap_content"
         android:adjustViewBounds="true"
         android:scaleType="fitCenter"
-        android:src="@drawable/lobster">
+        android:src="@drawable/lobster"
+        android:transitionName="recipeImage">
         </ImageView>
 
 
@@ -28,6 +29,7 @@
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/etTitleLayout"
         android:layout_width="match_parent"
+        android:transitionName="recipeTitle"
         android:layout_height="wrap_content"
         android:layout_margin="16dp"
         android:layout_marginTop="32dp"
