@@ -1,4 +1,4 @@
-package com.example.recipestorage;
+package com.example.recipestorage.adapters;
 
 
 import android.content.Context;
@@ -12,10 +12,14 @@ import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.example.recipestorage.R;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -26,7 +30,7 @@ import java.util.List;
  * MODIFIED FROM https://github.com/nemanja-kovacevic/recycler-view-swipe-to-delete
  */
 
-public class TestAdapter extends RecyclerView.Adapter {
+public class RecipeSectionAdapter extends RecyclerView.Adapter implements Filterable {
 
     private static final int PENDING_REMOVAL_TIMEOUT = 3000; // 3sec
 
@@ -41,6 +45,11 @@ public class TestAdapter extends RecyclerView.Adapter {
     private TestViewHolder viewHolder;
     private Context context;
 
+    @Override
+    public Filter getFilter() {
+        return null;
+    }
+
     public interface AdapterInterface {
         void onDataDeleted(int position);
         void onDataEdited(int position, String newData);
@@ -48,7 +57,7 @@ public class TestAdapter extends RecyclerView.Adapter {
 
     private AdapterInterface adapterInterface;
 
-    public TestAdapter() {
+    public RecipeSectionAdapter() {
         items = new ArrayList<>();
         itemsPendingRemoval = new ArrayList<>();
         // let's generate some items
@@ -58,7 +67,7 @@ public class TestAdapter extends RecyclerView.Adapter {
             items.add("Item " + i);
         }
     }
-    public TestAdapter(Context setContext, AdapterInterface setAdapterListener, List<String> setItems){
+    public RecipeSectionAdapter(Context setContext, AdapterInterface setAdapterListener, List<String> setItems){
         this.context = setContext;
         this.adapterInterface = setAdapterListener;
         this.items = setItems;
@@ -241,9 +250,9 @@ public class TestAdapter extends RecyclerView.Adapter {
     EditText etData;
     Button undoButton;
 
-    private TestAdapter.AdapterInterface newAdapterInterface;
+    private RecipeSectionAdapter.AdapterInterface newAdapterInterface;
 
-    public TestViewHolder(ViewGroup parent, TestAdapter.AdapterInterface setAdapterInterface) {
+    public TestViewHolder(ViewGroup parent, RecipeSectionAdapter.AdapterInterface setAdapterInterface) {
         super(LayoutInflater.from(parent.getContext()).inflate(R.layout.row_view, parent, false));
         //tvData = (TextView) itemView.findViewById(R.id.tvData);
         this.newAdapterInterface = setAdapterInterface;

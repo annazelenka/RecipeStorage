@@ -6,6 +6,7 @@
     android:layout_height="match_parent"
     tools:context=".HomeActivity">
 
+
     <ImageButton
         android:id="@+id/btnLogout"
         android:layout_width="wrap_content"
@@ -13,7 +14,9 @@
         android:layout_alignParentEnd="true"
         android:layout_margin="16dp"
         android:src="@drawable/ic_power_settings_new_black_18dp"
+        android:layout_toRightOf="@+id/recipe_search"
         ></ImageButton>
+
 
 
     <FrameLayout
@@ -34,16 +37,15 @@
             android:layout_weight="1"/>
     </FrameLayout>
 
-<!--    <Button-->
-<!--        android:id="@+id/btnAllRecipes"-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:layout_alignParentBottom="true"-->
-<!--        android:layout_centerHorizontal="true"-->
-<!--        android:layout_below="@id/flContainer"-->
-<!--        android:layout_margin="16dp"-->
-<!--        android:text="All Recipes"-->
+    <Button
+        android:id="@+id/btnAllRecipes"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_margin="16dp"
+        android:text="All Recipes"
 
-<!--        ></Button>-->
+        ></Button>
 
 </RelativeLayout>

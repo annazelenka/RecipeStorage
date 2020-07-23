@@ -8,7 +8,7 @@ import android.view.ViewGroup;
 
 import com.example.recipestorage.R;
 
-public class RecipesSharedFragment extends RecipesListFragment {
+public class RecipesSharedFragment extends RecipeCarouselFragment {
 
 
     public RecipesSharedFragment() {
@@ -20,6 +20,6 @@ public class RecipesSharedFragment extends RecipesListFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_recipes, container, false);
+        return inflater.inflate(R.layout.fragment_recipe_carousel, container, false);
     }
 }

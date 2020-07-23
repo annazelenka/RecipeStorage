@@ -1,5 +1,6 @@
 package com.example.recipestorage.fragments;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 
@@ -31,35 +32,33 @@ import com.parse.ParseUser;
 
 import org.parceler.Parcels;
 
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import coil.Coil;
 import coil.ImageLoader;
 import coil.request.LoadRequest;
 
-public class RecipesListFragment extends Fragment {
+public class RecipeCarouselFragment extends Fragment {
     public static final String TAG = "RecipeListFragment";
     public static final int RECIPE_LIMIT = 20;
 
     private List<Recipe> allRecipes;
     CarouselView carouselView;
 
-    public RecipesListFragment() {
+    Map<String, Recipe> recipeNameMap;
+
+    public RecipeCarouselFragment() {
         // Required empty public constructor
     }
-
-//    public RecipesListFragment(List<Recipe> recipes) {
-//        // Required empty public constructor
-//        this.allRecipes = recipes;
-//    }
 
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_recipes, container, false);
+        return inflater.inflate(R.layout.fragment_recipe_carousel, container, false);
     }
 
     @Override
@@ -111,6 +110,7 @@ public class RecipesListFragment extends Fragment {
                 }
 
                 tvTitle.setText(recipe.getTitle());
+                recipeNameMap.put(recipe.getTitle(), recipe);
 
                 btnEditRecipe.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -125,12 +125,6 @@ public class RecipesListFragment extends Fragment {
     }
 
     private void launchRecipeEditActivity(Recipe recipe, ImageView ivPicture, TextView tvTitle) {
-//        Intent intent = new Intent(getContext(), EditRecipeActivity.class);
-//
-//        intent.putExtra("recipe", Parcels.wrap(recipe));
-//        ActivityOptionsCompat options = ActivityOptionsCompat.
-//                makeSceneTransitionAnimation(getActivity(), (View)ivPicture, "profile");
-//        startActivity(intent, options.toBundle());
         Intent intent = new Intent(getContext(), EditRecipeActivity.class);
         intent.putExtra("recipe", Parcels.wrap(recipe));
         Pair<View, String> p1 = Pair.create((View)ivPicture, "recipeImage");
@@ -138,6 +132,11 @@ public class RecipesListFragment extends Fragment {
         ActivityOptionsCompat options = ActivityOptionsCompat.
                 makeSceneTransitionAnimation(getActivity(), p1, p2);
         startActivity(intent, options.toBundle());
+
+    }
+
+    public void setRecipes(List<Recipe> recipes) {
+        allRecipes = recipes;
 
     }
 
@@ -159,12 +158,19 @@ public class RecipesListFragment extends Fragment {
 
                 Log.i("HomeActivity", "success getting recipes");
                 allRecipes = recipes;
+                recipeNameMap = new HashMap<String, Recipe>();
                 handleCarouselView(view);
             }
 
         });
 
     }
+
+    public Map<String, Recipe> getRecipeNameMap() {
+        return recipeNameMap;
+    }
+
+
 
 
 }

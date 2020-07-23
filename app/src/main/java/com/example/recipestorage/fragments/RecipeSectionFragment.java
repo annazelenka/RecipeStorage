@@ -28,13 +28,12 @@ import android.widget.Toast;
 
 import com.example.recipestorage.R;
 import com.example.recipestorage.Recipe;
-import com.example.recipestorage.RecipeAdapter;
-import com.example.recipestorage.TestAdapter;
-import com.example.recipestorage.utils.KeyboardUtils;
+import com.example.recipestorage.adapters.RecipeAdapter;
+import com.example.recipestorage.adapters.RecipeSectionAdapter;
 
 import java.util.ArrayList;
 
-public class RecipeSectionFragment extends Fragment implements TestAdapter.AdapterInterface {
+public class RecipeSectionFragment extends Fragment implements RecipeSectionAdapter.AdapterInterface {
 
     TextView tvTitle;
 
@@ -198,9 +197,9 @@ public class RecipeSectionFragment extends Fragment implements TestAdapter.Adapt
 
     private void setUpRecyclerView() {
         rvItems.setLayoutManager(new LinearLayoutManager(getContext()));
-        TestAdapter testAdapter = new TestAdapter(getContext(), RecipeSectionFragment.this, recipeSectionContents);
-        testAdapter.setUndoOn(true);
-        rvItems.setAdapter(testAdapter);
+        RecipeSectionAdapter recipeSectionAdapter = new RecipeSectionAdapter(getContext(), RecipeSectionFragment.this, recipeSectionContents);
+        recipeSectionAdapter.setUndoOn(true);
+        rvItems.setAdapter(recipeSectionAdapter);
         rvItems.setHasFixedSize(true);
         setUpItemTouchHelper();
         setUpAnimationDecoratorHelper();
@@ -268,8 +267,8 @@ public class RecipeSectionFragment extends Fragment implements TestAdapter.Adapt
             @Override
             public int getSwipeDirs(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder) {
                 int position = viewHolder.getAdapterPosition();
-                TestAdapter testAdapter = (TestAdapter)recyclerView.getAdapter();
-                if (testAdapter.isUndoOn() && testAdapter.isPendingRemoval(position)) {
+                RecipeSectionAdapter recipeSectionAdapter = (RecipeSectionAdapter)recyclerView.getAdapter();
+                if (recipeSectionAdapter.isUndoOn() && recipeSectionAdapter.isPendingRemoval(position)) {
                     return 0;
                 }
                 return super.getSwipeDirs(recyclerView, viewHolder);
@@ -278,7 +277,7 @@ public class RecipeSectionFragment extends Fragment implements TestAdapter.Adapt
             @Override
             public void onSwiped(RecyclerView.ViewHolder viewHolder, int swipeDir) {
                 int swipedPosition = viewHolder.getAdapterPosition();
-                TestAdapter adapter = (TestAdapter)rvItems.getAdapter();
+                RecipeSectionAdapter adapter = (RecipeSectionAdapter)rvItems.getAdapter();
                 boolean undoOn = adapter.isUndoOn();
                 if (undoOn) {
                     adapter.pendingRemoval(swipedPosition);

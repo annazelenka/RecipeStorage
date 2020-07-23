@@ -18,6 +18,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
+import android.view.animation.AnimationUtils;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -177,6 +178,7 @@ public class RecipeSummaryFragment extends Fragment {
         if (!isFavoriteRecipe) {
             btnFavorite.setImageResource(R.drawable.ic_favorite_border_black_18dp);
         } else {
+            btnFavorite.startAnimation(AnimationUtils.loadAnimation(getContext(), R.anim.image_click));
             btnFavorite.setImageResource(R.drawable.ic_favorite_black_18dp);
         }
 

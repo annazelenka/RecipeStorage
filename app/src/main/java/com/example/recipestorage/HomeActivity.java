@@ -5,25 +5,26 @@ import androidx.fragment.app.FragmentManager;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.ImageButton;
+import android.widget.Toast;
 
-import com.example.recipestorage.fragments.RecipesListFragment;
+import com.example.recipestorage.fragments.RecipeCarouselFragment;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.parse.FindCallback;
-import com.parse.ParseException;
-import com.parse.ParseQuery;
 import com.parse.ParseUser;
 import com.shreyaspatil.MaterialDialog.MaterialDialog;
 import com.shreyaspatil.MaterialDialog.interfaces.DialogInterface;
 
-import java.util.List;
+import java.util.Map;
 
 //import me.ibrahimsn.lib.OnItemSelectedListener;
 //import me.ibrahimsn.lib.SmoothBottomBar;
 
-public class HomeActivity extends AppCompatActivity {
+public class HomeActivity extends AppCompatActivity implements Filterable {
 
     private static final String TAG = "HomeActivity";
     private static final int RECIPE_LIMIT = 20;
@@ -31,6 +32,10 @@ public class HomeActivity extends AppCompatActivity {
 
     FloatingActionButton fabAddRecipe;
     ImageButton btnLogout;
+    ImageButton btnSearch;
+    Button btnAllRecipes;
+    EditText etSearch;
+    Map<String, Recipe> recipeNameMap;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,6 +47,9 @@ public class HomeActivity extends AppCompatActivity {
 
         fabAddRecipe = findViewById(R.id.fabAddRecipe);
         btnLogout = findViewById(R.id.btnLogout);
+        btnSearch = findViewById(R.id.btnSearch);
+        btnAllRecipes = findViewById(R.id.btnAllRecipes);
+        etSearch = findViewById(R.id.etSearch);
 
         fabAddRecipe.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -58,10 +66,37 @@ public class HomeActivity extends AppCompatActivity {
             }
         });
 
-        RecipesListFragment fragment = new RecipesListFragment();
+        RecipeCarouselFragment fragment = new RecipeCarouselFragment();
 
         fragmentManager.beginTransaction().replace(R.id.flContainer, fragment).commit();
+        recipeNameMap = fragment.getRecipeNameMap();
+
+//        btnSearch.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                String searchText = etSearch.getText().toString();
+//
+//                if (searchText.isEmpty()) {
+//                    Toast.makeText(HomeActivity.this, "Search cannot be empty!", Toast.LENGTH_SHORT).show();
+//                    return;
+//                }
+//                Recipe recipe = recipeNameMap.get(searchText);
+//                if (recipe != null) {
+//
+//                }
+//            }
+//        });
+
+        btnAllRecipes.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(HomeActivity.this, AllRecipesActivity.class);
+                startActivity(intent);
+            }
+        });
     }
+
+
 
     private void showLogoutDialog() {
         MaterialDialog mDialog = new MaterialDialog.Builder(this)
@@ -91,30 +126,11 @@ public class HomeActivity extends AppCompatActivity {
         mDialog.show();
     }
 
-//    protected void queryRecipes() {
-//
-//        ParseQuery<Recipe> query = ParseQuery.getQuery(Recipe.class);
-//        query.include(Recipe.KEY_USER);
-//        query.setLimit(RECIPE_LIMIT);
-//        query.whereEqualTo(Recipe.KEY_USER, ParseUser.getCurrentUser());
-//        query.addDescendingOrder(Recipe.KEY_CREATED_KEY);
-//        query.findInBackground(new FindCallback<Recipe>() {
-//            @Override
-//            public void done(List<Recipe> recipes, ParseException e) {
-//                if (e != null) {
-//                    Log.e(TAG, "Issue with getting recipes", e);
-//                    return;
-//                }
-//
-//                Log.i("HomeActivity", "success getting recipes");
-//                RecipesListFragment fragment = new RecipesListFragment(recipes);
-//
-//                fragmentManager.beginTransaction().replace(R.id.flContainer, fragment).commit();
-//            }
-//
-//        });
-//
-//    }
+
+    @Override
+    public Filter getFilter() {
+        return null;
+    }
 
 
 }

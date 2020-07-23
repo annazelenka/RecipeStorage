@@ -98,7 +98,8 @@ public class EditRecipeActivity<recipe> extends AddRecipeActivity {
                 fragment = new RecipeSectionFragment(false, RecipeSectionFragment.RecipeSection.NOTE, recipe.getParsedNotes());
                 break;
         }
-        fragmentManager.beginTransaction().replace(R.id.flContainer, fragment).commit();
+        //fragmentManager.beginTransaction().replace(R.id.flContainer, fragment).commit();
+        startAnimatedFragment(fragment);
         return true;
     }
 

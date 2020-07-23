@@ -52,3 +52,6 @@ strings.xml
 
 # KeyboardUtils external code (not my code)
 app/src/main/java/com/example/recipestorage/utils/KeyboardUtils.java
+
+# clicking heart image; not my code
+app/src/main/res/anim/image_click.xml
