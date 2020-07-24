@@ -81,6 +81,13 @@ public class EditRecipeActivity<recipe> extends AddRecipeActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         Fragment fragment;
         switch (item.getItemId()) {
+            case R.id.miHelp:
+                return true;
+            case R.id.miFavorite:
+                return true;
+            case R.id.miDelete:
+                showDeleteDialog();
+                return true;
             case R.id.miHome:
                 fragment = new RecipeSummaryFragment(recipe);
                 break;
@@ -97,6 +104,7 @@ public class EditRecipeActivity<recipe> extends AddRecipeActivity {
                 toolbar.setVisibility(View.VISIBLE);
                 fragment = new RecipeSectionFragment(false, RecipeSectionFragment.RecipeSection.NOTE, recipe.getParsedNotes());
                 break;
+
         }
         //fragmentManager.beginTransaction().replace(R.id.flContainer, fragment).commit();
         startAnimatedFragment(fragment);

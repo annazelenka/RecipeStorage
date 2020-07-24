@@ -6,15 +6,21 @@
     android:layout_height="wrap_content"
     tools:context=".fragments.RecipeCarouselFragment">
 
-   <TextView
-       android:id="@+id/tvTitle"
-       android:layout_width="wrap_content"
-       android:layout_height="wrap_content"
-       android:text="Recipe Section"
-       android:textSize="16sp"
-       android:textStyle="bold"
-       android:layout_centerHorizontal="true"
-       ></TextView>
+    <TextView
+        android:id="@+id/tvTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_margin="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"
+        android:text="Recipe Section"
+        android:textAlignment="center"
+        android:textColor="@color/colorBlack"
+        android:textSize="24sp"
+        android:textStyle="bold"></TextView>
 
 
 <!--    <FrameLayout-->

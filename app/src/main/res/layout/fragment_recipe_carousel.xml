@@ -6,47 +6,14 @@
     android:layout_height="match_parent"
     tools:context=".fragments.RecipeCarouselFragment">
 
-    <RelativeLayout
-        android:id="@+id/relativeLayout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="48dp"
-        >
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/etSearch"
-        android:layout_width="293dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginRight="32dp"
-        android:layout_marginBottom="16dp"
-        android:hint="Search by title...">
 
-        <com.google.android.material.textfield.TextInputEditText
-            android:layout_width="276dp"
-            android:layout_height="wrap_content" />
-
-    </com.google.android.material.textfield.TextInputLayout>
-
-    <ImageButton
-        android:id="@+id/btnSearch"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:layout_centerInParent="true"
-        android:layout_toRightOf="@+id/etSearch"
-        android:src="@drawable/ic_search_black_18dp">
-    </ImageButton>
-
-    </RelativeLayout>
 
 
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/frameLayout"
-        android:layout_below="@id/relativeLayout"
-        android:layout_marginTop="16dp">
+        android:layout_marginTop="96dp">
 
         <com.jama.carouselview.CarouselView
             android:id="@+id/carouselView"
@@ -64,7 +31,7 @@
             app:indicatorUnselectedColor="@color/colorPrimary"
             app:size="10"
             app:spacing="10"
-            app:resource="@layout/item_recipe_preview"/>
+            app:resource="@layout/item_recipe_preview" />
 
     </FrameLayout>
 

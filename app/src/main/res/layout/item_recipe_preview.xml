@@ -13,7 +13,8 @@
         android:text="recipe title"
         android:textAlignment="center"
         android:textSize="20sp"
-        android:textStyle="bold">
+        android:textStyle="bold"
+        android:textColor="@color/colorBlack">
 
     </TextView>
 

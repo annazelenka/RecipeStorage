@@ -65,7 +65,9 @@
             android:layout_height="wrap_content"
             android:layout_margin="16dp"
             android:src="@drawable/ic_photo_camera_24px"
-            android:layout_weight="1">
+            android:layout_weight="1"
+            android:backgroundTint="@color/colorWhite"
+            >
 
         </ImageButton>
 
@@ -77,6 +79,7 @@
             android:layout_margin="16dp"
             android:src="@drawable/ic_favorite_border_black_18dp"
             android:layout_weight="1"
+            android:backgroundTint="@color/colorWhite"
             >
 
         </ImageButton>
@@ -88,6 +91,7 @@
             android:layout_margin="16dp"
             android:src="@drawable/ic_delete_outline_24px"
             android:layout_weight="1"
+            android:backgroundTint="@color/colorWhite"
             >
 
         </ImageButton>

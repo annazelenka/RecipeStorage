@@ -19,10 +19,12 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.recipestorage.EditRecipeActivity;
 import com.example.recipestorage.R;
 import com.example.recipestorage.Recipe;
+import com.example.recipestorage.utils.CustomFilter;
 
 import org.parceler.Parcels;
 
 import java.util.List;
+import java.util.Map;
 
 import coil.Coil;
 import coil.ImageLoader;
@@ -33,15 +35,44 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
     Context context;
     List<Recipe> recipes;
     Activity activity;
+    List<Recipe> recipesFiltered;
+    CustomFilter filter;
+    List<Recipe> allRecipes;
 
-    public RecipeAdapter(Activity setActivity, Context context, List<Recipe> setItems) {
+    public RecipeAdapter(Activity setActivity, Context context, List<Recipe> setRecipes) {
         this.activity = setActivity;
         this.context = context;
-        this.recipes = setItems;
+        this.recipes = setRecipes;
+
+        this.recipesFiltered = setRecipes;
+    }
+
+    public void addAll(List<Recipe> list) {
+        recipes.addAll(list);
+        recipesFiltered.addAll(list);
+        notifyDataSetChanged();
+    }
+
+    public void setFilter(Map<String, Recipe> map) {
+        filter = new CustomFilter(recipes, this, map);
+    }
+
+    public void reloadRecipes() {
+        setList(recipes);
+    }
+
+    // set adapter filtered list
+    public void setList(List<Recipe> list) {
+        this.recipesFiltered = list;
+        notifyDataSetChanged();
+    }
+    //call when you want to filter
+    public void filterList(String text) {
+        filter.filter(text);
     }
 
     public void updateList(List<Recipe> setRecipes) {
-        this.recipes = setRecipes;
+        this.recipesFiltered = setRecipes;
     }
 
 
@@ -60,7 +91,7 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Log.d("MovieAdapter", "onBindViewHolder " + position);
         //Get the movie at the passed in position
-        Recipe data = recipes.get(position);
+        Recipe data = recipesFiltered.get(position);
         //Bind the movie data into the View Holder
         holder.bind(data);
     }
@@ -68,7 +99,7 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
     //Returns teh total count of items in teh list
     @Override
     public int getItemCount() {
-        return recipes.size();
+        return recipesFiltered.size();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {

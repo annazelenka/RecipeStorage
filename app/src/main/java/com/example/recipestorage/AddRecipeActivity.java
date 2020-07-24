@@ -16,6 +16,8 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -62,6 +64,9 @@ public class AddRecipeActivity extends AppCompatActivity implements RecipeSectio
     ImageButton btnHelp;
     ImageButton btnDelete;
     FloatingActionButton fabSubmitRecipe;
+    MenuItem miHelp;
+    MenuItem miFavorite;
+    MenuItem miDelete;
 
     ArrayList<String> ingredients;
     ArrayList<String> directions;
@@ -82,7 +87,8 @@ public class AddRecipeActivity extends AppCompatActivity implements RecipeSectio
         ivRecipeImage = findViewById(R.id.ivRecipeImage);
         etRecipeTitle = findViewById(R.id.etRecipeTitle);
         bubbleNavigation = findViewById(R.id.equal_navigation_bar);
-        btnDelete = findViewById(R.id.btnDelete);
+        //miHelp =  toolbar.get
+        //btnDelete = findViewById(R.id.btnDelete);
 
         initializeRecipe();
 
@@ -111,12 +117,12 @@ public class AddRecipeActivity extends AppCompatActivity implements RecipeSectio
         notesDataChanged = false;
 
         //btnHelp.setOnClickListener();
-        btnDelete.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                showDeleteDialog();
-            }
-        });
+//        btnDelete.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                showDeleteDialog();
+//            }
+//        });
 
         KeyboardUtils.addKeyboardToggleListener(this, new KeyboardUtils.SoftKeyboardToggleListener()
         {
@@ -133,6 +139,23 @@ public class AddRecipeActivity extends AppCompatActivity implements RecipeSectio
                 }
             }
         });
+
+
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.miFavorite) { // Compose icon has been selected
+            // Navigate to compose activity
+            return true; // true to consume the tap of this item
+        } else if (item.getItemId() == R.id.miHelp) {
+
+            return true;
+        } else if (item.getItemId() == R.id.miDelete) {
+            showDeleteDialog();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     protected void setupBubbleNavigation() {
@@ -166,7 +189,15 @@ public class AddRecipeActivity extends AppCompatActivity implements RecipeSectio
         bubbleNavigation.setCurrentActiveItem(HOME_POSITION);
     }
 
-    private void showDeleteDialog() {
+    // Menu icons are inflated just as they were with actionbar
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_recipe, menu);
+        return true;
+    }
+
+    protected void showDeleteDialog() {
         MaterialDialog mDialog = new MaterialDialog.Builder(this)
                 .setTitle("Delete?")
                 .setMessage("Are you sure you want to delete this file?")

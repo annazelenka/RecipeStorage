@@ -26,6 +26,7 @@ public class CustomFilter extends Filter {
 
     @Override
     protected FilterResults performFiltering(CharSequence searchText) {
+        String searchTextString = searchText.toString().toLowerCase();
         filteredRecipeList.clear();
         final FilterResults results = new FilterResults();
 
@@ -35,10 +36,15 @@ public class CustomFilter extends Filter {
 //                filteredRecipeList.add(item);
 //            }
 //        }
-        // TODO: replace with trie
-        Recipe recipe = recipeNameMap.get(searchText);
-        if (recipe != null) {
-            filteredRecipeList.add(recipe);
+
+        if (searchTextString == null || searchTextString.equals("")) {
+            filteredRecipeList.addAll(recipeList);
+        } else {
+            // TODO: replace with trie
+            Recipe recipe = recipeNameMap.get(searchTextString);
+            if (recipe != null) {
+                filteredRecipeList.add(recipe);
+            }
         }
 
 
@@ -50,6 +56,8 @@ public class CustomFilter extends Filter {
     @Override
     protected void publishResults(CharSequence constraint, FilterResults results) {
         adapter.updateList(filteredRecipeList);
-        //adapter.notifyDataSetChanged();
+        adapter.notifyDataSetChanged();
     }
+
+
 }

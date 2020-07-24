@@ -47,9 +47,7 @@ public class HomeActivity extends AppCompatActivity implements Filterable {
 
         fabAddRecipe = findViewById(R.id.fabAddRecipe);
         btnLogout = findViewById(R.id.btnLogout);
-        btnSearch = findViewById(R.id.btnSearch);
         btnAllRecipes = findViewById(R.id.btnAllRecipes);
-        etSearch = findViewById(R.id.etSearch);
 
         fabAddRecipe.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -71,21 +69,6 @@ public class HomeActivity extends AppCompatActivity implements Filterable {
         fragmentManager.beginTransaction().replace(R.id.flContainer, fragment).commit();
         recipeNameMap = fragment.getRecipeNameMap();
 
-//        btnSearch.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                String searchText = etSearch.getText().toString();
-//
-//                if (searchText.isEmpty()) {
-//                    Toast.makeText(HomeActivity.this, "Search cannot be empty!", Toast.LENGTH_SHORT).show();
-//                    return;
-//                }
-//                Recipe recipe = recipeNameMap.get(searchText);
-//                if (recipe != null) {
-//
-//                }
-//            }
-//        });
 
         btnAllRecipes.setOnClickListener(new View.OnClickListener() {
             @Override

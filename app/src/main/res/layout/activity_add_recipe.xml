@@ -27,12 +27,6 @@
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
-<!--                <ImageView-->
-<!--                    android:id="@+id/ivRecipeImage"-->
-<!--                    android:layout_width="match_parent"-->
-<!--                    android:layout_height="200dp"-->
-<!--                    android:src="@drawable/lobster">-->
-<!--                </ImageView>-->
 
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/etUsernameLayout"
@@ -50,24 +44,24 @@
 
                 </com.google.android.material.textfield.TextInputLayout>
 
-                <ImageButton
-                    android:id="@+id/btnHelp"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:src="@drawable/ic_help_outline_24px"
-                    android:layout_margin="16dp"
-                    android:layout_toStartOf="@+id/btnDelete"
-                    ></ImageButton>
+<!--                <ImageButton-->
+<!--                    android:id="@+id/btnHelp"-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:src="@drawable/ic_help_outline_24px"-->
+<!--                    android:layout_margin="16dp"-->
+<!--                    android:layout_toStartOf="@+id/btnDelete"-->
+<!--                    ></ImageButton>-->
 
-                <ImageButton
-                    android:id="@+id/btnDelete"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="16dp"
-                    android:layout_alignParentEnd="true"
-                    android:src="@drawable/ic_delete_outline_24px">
+<!--                <ImageButton-->
+<!--                    android:id="@+id/btnDelete"-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:layout_margin="16dp"-->
+<!--                    android:layout_alignParentEnd="true"-->
+<!--                    android:src="@drawable/ic_delete_outline_24px">-->
 
-                </ImageButton>
+<!--                </ImageButton>-->
 
 
             </RelativeLayout>
@@ -89,7 +83,7 @@
         android:id="@+id/fabSubmitRecipe"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@color/colorFacebookBlue"
+        android:background="@color/green_active"
         android:src="@drawable/ic_done_24px"
         app:fabSize="normal"
         android:layout_marginRight="16dp"
