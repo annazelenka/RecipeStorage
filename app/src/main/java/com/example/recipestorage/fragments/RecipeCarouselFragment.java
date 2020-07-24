@@ -15,6 +15,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -53,6 +54,12 @@ public class RecipeCarouselFragment extends Fragment {
         // Required empty public constructor
     }
 
+    public RecipeCarouselFragment(List<Recipe> setAllRecipes, Map<String,Recipe> setRecipeNameMap) {
+        // Required empty public constructor
+        this.allRecipes = setAllRecipes;
+        this.recipeNameMap = setRecipeNameMap;
+    }
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -64,8 +71,8 @@ public class RecipeCarouselFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        if (allRecipes == null) {
-            populateRecipes(view);
+        if (allRecipes != null) {
+            handleCarouselView(view);
         }
     }
 
@@ -84,7 +91,7 @@ public class RecipeCarouselFragment extends Fragment {
                 // Example here is setting up a full image carousel
                 final TextView tvTitle = view.findViewById(R.id.tvTitle);
                 final ImageView ivPicture = view.findViewById(R.id.ivPicture);
-                Button btnEditRecipe = view.findViewById(R.id.btnEditRecipe);
+                ImageButton btnEditRecipe = view.findViewById(R.id.btnEditRecipe);
 
                 ivPicture.setTransitionName("recipeImage");
                 tvTitle.setTransitionName("recipeTitle");
@@ -110,7 +117,7 @@ public class RecipeCarouselFragment extends Fragment {
                 }
 
                 tvTitle.setText(recipe.getTitle());
-                recipeNameMap.put(recipe.getTitle(), recipe);
+
 
                 btnEditRecipe.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -140,37 +147,35 @@ public class RecipeCarouselFragment extends Fragment {
 
     }
 
-    protected void populateRecipes(final View view) {
-
-        // query recipes
-        ParseQuery<Recipe> query = ParseQuery.getQuery(Recipe.class);
-        query.include(Recipe.KEY_USER);
-        query.setLimit(RECIPE_LIMIT);
-        query.whereEqualTo(Recipe.KEY_USER, ParseUser.getCurrentUser());
-        query.addDescendingOrder(Recipe.KEY_CREATED_KEY);
-        query.findInBackground(new FindCallback<Recipe>() {
-            @Override
-            public void done(List<Recipe> recipes, ParseException e) {
-                if (e != null) {
-                    Log.e(TAG, "Issue with getting recipes", e);
-                    return;
-                }
-
-                Log.i("HomeActivity", "success getting recipes");
-                allRecipes = recipes;
-                recipeNameMap = new HashMap<String, Recipe>();
-                handleCarouselView(view);
-            }
-
-        });
-
-    }
+//    protected void populateRecipes(final View view) {
+//
+//        // query recipes
+//        ParseQuery<Recipe> query = ParseQuery.getQuery(Recipe.class);
+//        query.include(Recipe.KEY_USER);
+//        query.setLimit(RECIPE_LIMIT);
+//        query.whereEqualTo(Recipe.KEY_USER, ParseUser.getCurrentUser());
+//        query.addDescendingOrder(Recipe.KEY_CREATED_KEY);
+//        query.findInBackground(new FindCallback<Recipe>() {
+//            @Override
+//            public void done(List<Recipe> recipes, ParseException e) {
+//                if (e != null) {
+//                    Log.e(TAG, "Issue with getting recipes", e);
+//                    return;
+//                }
+//
+//                Log.i("HomeActivity", "success getting recipes");
+//                allRecipes = recipes;
+//                recipeNameMap = new HashMap<String, Recipe>();
+//                handleCarouselView(view);
+//            }
+//
+//        });
+//
+//    }
 
     public Map<String, Recipe> getRecipeNameMap() {
         return recipeNameMap;
     }
-
-
 
 
 }

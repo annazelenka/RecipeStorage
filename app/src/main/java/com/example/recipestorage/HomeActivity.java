@@ -5,6 +5,7 @@ import androidx.fragment.app.FragmentManager;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -15,10 +16,17 @@ import android.widget.Toast;
 
 import com.example.recipestorage.fragments.RecipeCarouselFragment;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.parse.FindCallback;
+import com.parse.ParseException;
+import com.parse.ParseQuery;
 import com.parse.ParseUser;
 import com.shreyaspatil.MaterialDialog.MaterialDialog;
 import com.shreyaspatil.MaterialDialog.interfaces.DialogInterface;
 
+import org.parceler.Parcels;
+
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 //import me.ibrahimsn.lib.OnItemSelectedListener;
@@ -32,10 +40,10 @@ public class HomeActivity extends AppCompatActivity implements Filterable {
 
     FloatingActionButton fabAddRecipe;
     ImageButton btnLogout;
-    ImageButton btnSearch;
     Button btnAllRecipes;
-    EditText etSearch;
     Map<String, Recipe> recipeNameMap;
+
+    List<Recipe> allRecipes;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,22 +72,65 @@ public class HomeActivity extends AppCompatActivity implements Filterable {
             }
         });
 
-        RecipeCarouselFragment fragment = new RecipeCarouselFragment();
-
-        fragmentManager.beginTransaction().replace(R.id.flContainer, fragment).commit();
-        recipeNameMap = fragment.getRecipeNameMap();
-
 
         btnAllRecipes.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(HomeActivity.this, AllRecipesActivity.class);
-                startActivity(intent);
+                if (allRecipes != null) {
+                    launchAllRecipesScreen();
+                }
             }
         });
+
+        populateRecipes();
     }
 
+    private void launchAllRecipesScreen() {
+        Intent intent = new Intent(HomeActivity.this, AllRecipesActivity.class);
+        intent.putExtra("allRecipes", Parcels.wrap(allRecipes));
+        intent.putExtra("recipeNameMap", Parcels.wrap(recipeNameMap));
+        startActivity(intent);
+    }
 
+    protected void populateRecipes() {
+
+        // query recipes
+        ParseQuery<Recipe> query = ParseQuery.getQuery(Recipe.class);
+        query.include(Recipe.KEY_USER);
+        query.setLimit(RECIPE_LIMIT);
+        query.whereEqualTo(Recipe.KEY_USER, ParseUser.getCurrentUser());
+        query.addDescendingOrder(Recipe.KEY_CREATED_KEY);
+        query.findInBackground(new FindCallback<Recipe>() {
+            @Override
+            public void done(List<Recipe> recipes, ParseException e) {
+                if (e != null) {
+                    Log.e(TAG, "Issue with getting recipes", e);
+                    return;
+                }
+
+                Log.i("HomeActivity", "success getting recipes");
+                allRecipes = recipes;
+                recipeNameMap = new HashMap<String, Recipe>();
+                populateRecipeNameMap(allRecipes);
+                launchRecipeCarouselFragment();
+            }
+
+        });
+
+    }
+
+    private void populateRecipeNameMap(List<Recipe> recipes) {
+        recipeNameMap = new HashMap<String, Recipe>();
+        for (Recipe recipe : recipes) {
+            recipeNameMap.put(recipe.getTitle().toLowerCase(), recipe);
+        }
+    }
+
+    protected void launchRecipeCarouselFragment() {
+        RecipeCarouselFragment fragment = new RecipeCarouselFragment(allRecipes, recipeNameMap);
+        fragmentManager.beginTransaction().replace(R.id.flContainer, fragment).commit();
+        recipeNameMap = fragment.getRecipeNameMap();
+    }
 
     private void showLogoutDialog() {
         MaterialDialog mDialog = new MaterialDialog.Builder(this)

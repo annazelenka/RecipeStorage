@@ -1,9 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
+<androidx.cardview.widget.CardView
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:layout_margin="16dp">
+    app:cardElevation="10dp"
+    app:cardUseCompatPadding="true"
+    app:cardCornerRadius="10dp">
+
+<RelativeLayout
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="8dp"
+    android:layout_marginBottom="16dp"
+    >
 
     <TextView
         android:id="@+id/tvTitle"
@@ -25,16 +36,27 @@
         android:layout_below="@+id/tvTitle"
         android:src="@drawable/fried_rice"
         android:layout_centerHorizontal="true"
+        android:scaleType="centerCrop"
         ></ImageView>
 
-    <Button
+    <ImageButton
         android:id="@+id/btnEditRecipe"
         android:layout_width="wrap_content"
-        android:layout_height="50dp"
-        android:layout_marginTop="0dp"
-        android:text="Edit"
-        android:layout_below="@id/ivPicture"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="16dp"></Button>
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_edit_24px"
+        android:layout_alignEnd="@+id/ivPicture"
+        android:layout_alignBottom="@+id/ivPicture"></ImageButton>
+
+
+
+<!--    <Button-->
+<!--        android:id="@+id/btnEditRecipe"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="50dp"-->
+<!--        android:layout_marginTop="0dp"-->
+<!--        android:text="Edit"-->
+<!--        android:layout_below="@id/ivPicture"-->
+<!--        android:layout_centerHorizontal="true"></Button>-->
 
 </RelativeLayout>
+</androidx.cardview.widget.CardView>

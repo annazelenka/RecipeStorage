@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -33,32 +34,31 @@ import coil.request.LoadRequest;
 public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder> {
 
     Context context;
-    List<Recipe> recipes;
+    List<Recipe> allRecipes;
     Activity activity;
     List<Recipe> recipesFiltered;
     CustomFilter filter;
-    List<Recipe> allRecipes;
 
     public RecipeAdapter(Activity setActivity, Context context, List<Recipe> setRecipes) {
         this.activity = setActivity;
         this.context = context;
-        this.recipes = setRecipes;
+        this.allRecipes = setRecipes;
 
         this.recipesFiltered = setRecipes;
     }
 
     public void addAll(List<Recipe> list) {
-        recipes.addAll(list);
+        allRecipes.addAll(list);
         recipesFiltered.addAll(list);
         notifyDataSetChanged();
     }
 
     public void setFilter(Map<String, Recipe> map) {
-        filter = new CustomFilter(recipes, this, map);
+        filter = new CustomFilter(allRecipes, this, map);
     }
 
     public void reloadRecipes() {
-        setList(recipes);
+        setList(allRecipes);
     }
 
     // set adapter filtered list
@@ -106,7 +106,7 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
 
         TextView tvTitle;
         ImageView ivPicture;
-        Button btnEditRecipe;
+        ImageButton btnEditRecipe;
 
 
         public ViewHolder(@NonNull View itemView) {
@@ -156,7 +156,7 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
             //make sure position is valid, ie actually exists in the view
             if (position != RecyclerView.NO_POSITION) {
                 // get the movie at the position, this won't work if the class is static
-                Recipe data = recipes.get(position);
+                Recipe data = allRecipes.get(position);
             }
         }
 
