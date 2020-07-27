@@ -6,17 +6,13 @@ package com.example.recipestorage.utils;
 // Both Insert and Find run in O(m) time, where m is the length of the key.
 // more info: https://www.geeksforgeeks.org/trie-insert-and-search/
 
-
 import com.example.recipestorage.Recipe;
-
 import java.util.ArrayList;
+import java.util.List;
 
 public class Trie {
-    public static final int ALPHABET_SIZE = 26;
-    public static final char END_OF_WORD = '.';
-
-    private TrieNode root;
-    private ArrayList<Recipe> leafNodes;
+    public TrieNode root;
+    public ArrayList<Recipe> leafNodes;
 
     public class TrieNode {
         ArrayList<TrieNode> children;
@@ -61,7 +57,6 @@ public class Trie {
         return root;
     }
 
-
     /**
      Attempts to find given key in trie.
      @param key the key to search for
@@ -69,6 +64,7 @@ public class Trie {
      contain that key. Otherwise returns null.
      */
     public ArrayList<Recipe> find(String key) {
+        key = key.toLowerCase();
         TrieNode current = root;
 
         outerloop:
@@ -77,7 +73,7 @@ public class Trie {
             for (TrieNode child: current.children) {
                 if (child.value == c) {
                     current = child;
-                    break outerloop;
+                    continue outerloop;
                 }
             }
             // none of the children match, so key doesn't exist in this trie
@@ -108,6 +104,7 @@ public class Trie {
     }
 
     public void insert(String key, Recipe recipe) {
+        key = key.toLowerCase();
         TrieNode current = root;
         int insertPosition = key.length();
 
@@ -140,5 +137,11 @@ public class Trie {
         recipeNode.recipe = recipe;
 
         current.children.add(recipeNode);
+    }
+
+    public void populateRecipeTrie(List<Recipe> recipes) {
+        for (Recipe recipe : recipes) {
+            insert(recipe.getTitle(), recipe);
+        }
     }
 }

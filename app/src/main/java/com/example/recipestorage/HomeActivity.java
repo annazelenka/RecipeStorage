@@ -15,6 +15,7 @@ import android.widget.ImageButton;
 import android.widget.Toast;
 
 import com.example.recipestorage.fragments.RecipeCarouselFragment;
+import com.example.recipestorage.utils.Trie;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.parse.FindCallback;
 import com.parse.ParseException;
@@ -41,7 +42,7 @@ public class HomeActivity extends AppCompatActivity implements Filterable {
     FloatingActionButton fabAddRecipe;
     ImageButton btnLogout;
     Button btnAllRecipes;
-    Map<String, Recipe> recipeNameMap;
+    Trie recipeTrie;
 
     List<Recipe> allRecipes;
 
@@ -88,7 +89,8 @@ public class HomeActivity extends AppCompatActivity implements Filterable {
     private void launchAllRecipesScreen() {
         Intent intent = new Intent(HomeActivity.this, AllRecipesActivity.class);
         intent.putExtra("allRecipes", Parcels.wrap(allRecipes));
-        intent.putExtra("recipeNameMap", Parcels.wrap(recipeNameMap));
+        //intent.putExtra("recipeTrie", Parcels.wrap(recipeTrie));
+
         startActivity(intent);
     }
 
@@ -110,8 +112,8 @@ public class HomeActivity extends AppCompatActivity implements Filterable {
 
                 Log.i("HomeActivity", "success getting recipes");
                 allRecipes = recipes;
-                recipeNameMap = new HashMap<String, Recipe>();
-                populateRecipeNameMap(allRecipes);
+                recipeTrie = new Trie();
+                recipeTrie.populateRecipeTrie(allRecipes);
                 launchRecipeCarouselFragment();
             }
 
@@ -119,17 +121,10 @@ public class HomeActivity extends AppCompatActivity implements Filterable {
 
     }
 
-    private void populateRecipeNameMap(List<Recipe> recipes) {
-        recipeNameMap = new HashMap<String, Recipe>();
-        for (Recipe recipe : recipes) {
-            recipeNameMap.put(recipe.getTitle().toLowerCase(), recipe);
-        }
-    }
 
     protected void launchRecipeCarouselFragment() {
-        RecipeCarouselFragment fragment = new RecipeCarouselFragment(allRecipes, recipeNameMap);
+        RecipeCarouselFragment fragment = new RecipeCarouselFragment(allRecipes, recipeTrie);
         fragmentManager.beginTransaction().replace(R.id.flContainer, fragment).commit();
-        recipeNameMap = fragment.getRecipeNameMap();
     }
 
     private void showLogoutDialog() {

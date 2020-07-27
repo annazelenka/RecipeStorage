@@ -30,38 +30,35 @@ import static org.junit.Assert.assertTrue;
  */
 @RunWith(AndroidJUnit4.class)
 public class TrieUnitTest {
-    Context appContext;
+    private static Context appContext;
+    private static Recipe recipe;
+    private static Recipe recipe2;
+    private static Recipe recipe3;
+    private static ArrayList<Recipe> recipes;
+    private static ArrayList<Recipe> expectedRecipes;
+
+
     @Before
-    public void setUp() {
+    public void testSetUp() {
+        // Set up Parse so that we can use Recipe objects.
+        // for more info, see ParseApplication.
         appContext = InstrumentationRegistry.getInstrumentation().getTargetContext();
 
         ParseObject.registerSubclass(Recipe.class);
 
-        // Use for monitoring Parse OkHttp traffic
-        // Can be Level.BASIC, Level.HEADERS, or Level.BODY
-        // See http://square.github.io/okhttp/3.x/logging-interceptor/ to see the options.
+        // for more info, see ParseApplication
         OkHttpClient.Builder builder = new OkHttpClient.Builder();
         HttpLoggingInterceptor httpLoggingInterceptor = new HttpLoggingInterceptor();
         httpLoggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
         builder.networkInterceptors().add(httpLoggingInterceptor);
 
-        // set applicationId, and server server based on the values in the Heroku settings.
-        // clientKey is not needed unless explicitly configured
-        // any network interceptors must be added with the Configuration Builder given this syntax
         Parse.initialize(new Parse.Configuration.Builder(appContext)
                 .applicationId(BuildConfig.APP_ID) // should correspond to APP_ID env variable
                 .clientKey(BuildConfig.MASTER_KEY)  // set explicitly unless clientKey is explicitly configured on Parse server
                 .clientBuilder(builder)
                 .server(BuildConfig.SERVER_URL).build()); // USE HTTPS!!
+
     }
-
-//    @Test
-//    public void useAppContext() {
-//        // Context of the app under test.
-//        appContext = InstrumentationRegistry.getInstrumentation().getTargetContext();
-//        assertEquals("com.example.recipestorage", appContext.getPackageName());
-//    }
-
 
     @Test
     public void testFindNullTree() {
@@ -78,7 +75,6 @@ public class TrieUnitTest {
     }
 
 
-
     @Test
     public void testSimpleInsertAndFind() {
         String key = "a";
@@ -86,7 +82,7 @@ public class TrieUnitTest {
         Trie trie = new Trie();
         trie.insert(key, null);
 
-        ArrayList<Recipe> expectedRecipes = new ArrayList<Recipe>();
+        expectedRecipes = new ArrayList<Recipe>();
         expectedRecipes.add(null);
 
         assertTrue(expectedRecipes.equals(trie.find(key)));
@@ -95,39 +91,42 @@ public class TrieUnitTest {
     @Test
     public void testOneInsertAndFind() {
         String key = "tacos";
-        Recipe recipe = new Recipe();
-        recipe.setTitle("tacos");
-        recipe.setIsFavorite(true);
+        Recipe recipe4 = new Recipe();
+        recipe4.setTitle("tacos");
+        recipe4.setIsFavorite(true);
 
 
         Trie trie = new Trie();
-        trie.insert(key, recipe);
+        trie.insert(key, recipe4);
 
-        ArrayList<Recipe> expectedRecipes = new ArrayList<Recipe>();
-        expectedRecipes.add(recipe);
-
+        expectedRecipes = new ArrayList<Recipe>();
+        expectedRecipes.add(recipe4);
         assertTrue(expectedRecipes.equals(trie.find(key)));
     }
 
     @Test
     public void testMultipleInsertAndFind() {
+        // set up some default recipes
         ArrayList<Recipe> recipes = new ArrayList<Recipe>();
         ArrayList<Recipe> expectedRecipes = new ArrayList<Recipe>();
 
-        Recipe recipe1 = (Recipe) ParseObject.create("Recipe");
-        Recipe recipe2 = (Recipe) ParseObject.create("Recipe");
-        Recipe recipe3 = (Recipe) ParseObject.create("Recipe");
-        recipe1.setTitle("tacos");
-        recipe1.setIsFavorite(true);
+        recipe = (Recipe) ParseObject.create("Recipe");
+        recipe2 = (Recipe) ParseObject.create("Recipe");
+        recipe3 = (Recipe) ParseObject.create("Recipe");
+        recipe.setTitle("tacos");
+        recipe.setIsFavorite(true);
         recipe2.setTitle("pecan pie");
         recipe2.setCookTimeMin(45);
         recipe3.setTitle("taco");
 
-        recipes.add(recipe1);
+        recipes.add(recipe);
         recipes.add(recipe2);
         recipes.add(recipe3);
 
+        expectedRecipes = new ArrayList<Recipe>();
+
         Trie trie = new Trie();
+        expectedRecipes = new ArrayList<Recipe>();
 
         for (Recipe recipe: recipes) {
             trie.insert(recipe.getTitle(), recipe);
@@ -141,7 +140,7 @@ public class TrieUnitTest {
         assertNull(trie.find(key3));
 
         // make sure searching for "taco" returns both taco AND tacos recipe
-        expectedRecipes.add(recipe1);
+        expectedRecipes.add(recipe);
         expectedRecipes.add(recipe3);
         assertEquals(expectedRecipes,trie.find(key));
 

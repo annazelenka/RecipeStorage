@@ -10,6 +10,7 @@ import android.view.View;
 import androidx.appcompat.widget.SearchView;
 
 import com.example.recipestorage.adapters.RecipeAdapter;
+import com.example.recipestorage.utils.Trie;
 import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseQuery;
@@ -30,6 +31,7 @@ public class AllRecipesActivity extends AppCompatActivity {
     List<Recipe> allRecipes;
     RecipeAdapter adapter;
     Map<String, Recipe> recipeNameMap;
+    Trie recipeTrie;
     SearchView searchView;
 
     ParseUser currentUser;
@@ -46,8 +48,12 @@ public class AllRecipesActivity extends AppCompatActivity {
         rvRecipes = findViewById(R.id.rvRecipes);
 
         currentUser = ParseUser.getCurrentUser();
-        allRecipes = (List<Recipe>) Parcels.unwrap(getIntent().getParcelableExtra("allRecipes"));
-        recipeNameMap = (Map<String, Recipe>) Parcels.unwrap(getIntent().getParcelableExtra("recipeNameMap"));
+        allRecipes = Parcels.unwrap(getIntent().getParcelableExtra("allRecipes"));
+        recipeNameMap = Parcels.unwrap(getIntent().getParcelableExtra("recipeNameMap"));
+        //recipeTrie = Parcels.unwrap(getIntent().getParcelableExtra("recipeTrie"));
+        recipeTrie = new Trie();
+        recipeTrie.populateRecipeTrie(allRecipes);
+
 
         // Initialize the list of tweets and adapter
         //allRecipes = new ArrayList<Recipe>();
@@ -56,7 +62,7 @@ public class AllRecipesActivity extends AppCompatActivity {
         // Recycler view setup: layout manager and the adapter
         rvRecipes.setLayoutManager(new GridLayoutManager(this, NUM_COLUMNS));
         rvRecipes.setAdapter(adapter);
-        adapter.setFilter(recipeNameMap);
+        adapter.setFilter(recipeTrie);
 
         setupSearchView();
     }
@@ -74,18 +80,19 @@ public class AllRecipesActivity extends AppCompatActivity {
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                //Log.e("onQueryTextChange", "called");
-                if (newText.isEmpty()) {
-                    adapter.filterList(newText);
-                    return true;
-                }
-                return false;
+                Log.e("onQueryTextChange", "called");
+//                if (newText.isEmpty()) {
+//                    adapter.filterList(newText);
+//                    return true;
+//                }
+                adapter.filterList(newText);
+                return true;
             }
 
             @Override
             public boolean onQueryTextSubmit(String query) {
-                adapter.filterList(query);
-                return true;
+                //adapter.filterList(query);
+                return false;
             }
 
         });

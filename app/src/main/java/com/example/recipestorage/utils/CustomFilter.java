@@ -8,20 +8,19 @@ import com.example.recipestorage.adapters.RecipeSectionAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 public class CustomFilter extends Filter {
 
     private List<Recipe> recipeList;
     private List<Recipe> filteredRecipeList;
     private RecipeAdapter adapter;
-    private Map<String, Recipe> recipeNameMap;
+    private Trie recipeTrie;
 
-    public CustomFilter(List<Recipe> setRecipeList, RecipeAdapter setAdapter, Map<String, Recipe> setRecipeNameMap) {
+    public CustomFilter(List<Recipe> setRecipeList, RecipeAdapter setAdapter, Trie setRecipeTrie) {
         this.adapter = setAdapter;
         this.recipeList = setRecipeList;
         this.filteredRecipeList = new ArrayList();
-        this.recipeNameMap = setRecipeNameMap;
+        this.recipeTrie = setRecipeTrie;
     }
 
     @Override
@@ -40,10 +39,9 @@ public class CustomFilter extends Filter {
         if (searchTextString == null || searchTextString.equals("")) {
             filteredRecipeList.addAll(recipeList);
         } else {
-            // TODO: replace with trie
-            Recipe recipe = recipeNameMap.get(searchTextString);
-            if (recipe != null) {
-                filteredRecipeList.add(recipe);
+            List<Recipe> recipes = recipeTrie.find(searchTextString);
+            if (recipes != null) {
+                filteredRecipeList.addAll(recipes);
             }
         }
 

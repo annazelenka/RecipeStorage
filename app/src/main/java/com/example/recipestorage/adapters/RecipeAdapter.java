@@ -21,6 +21,7 @@ import com.example.recipestorage.EditRecipeActivity;
 import com.example.recipestorage.R;
 import com.example.recipestorage.Recipe;
 import com.example.recipestorage.utils.CustomFilter;
+import com.example.recipestorage.utils.Trie;
 
 import org.parceler.Parcels;
 
@@ -53,8 +54,8 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
         notifyDataSetChanged();
     }
 
-    public void setFilter(Map<String, Recipe> map) {
-        filter = new CustomFilter(allRecipes, this, map);
+    public void setFilter(Trie recipeTrie) {
+        filter = new CustomFilter(allRecipes, this, recipeTrie);
     }
 
     public void reloadRecipes() {

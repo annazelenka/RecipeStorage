@@ -22,6 +22,7 @@ import android.widget.TextView;
 import com.example.recipestorage.R;
 import com.example.recipestorage.Recipe;
 import com.example.recipestorage.EditRecipeActivity;
+import com.example.recipestorage.utils.Trie;
 import com.jama.carouselview.CarouselView;
 import com.jama.carouselview.CarouselViewListener;
 import com.jama.carouselview.enums.IndicatorAnimationType;
@@ -48,16 +49,16 @@ public class RecipeCarouselFragment extends Fragment {
     private List<Recipe> allRecipes;
     CarouselView carouselView;
 
-    Map<String, Recipe> recipeNameMap;
+    Trie recipeTrie;
 
     public RecipeCarouselFragment() {
         // Required empty public constructor
     }
 
-    public RecipeCarouselFragment(List<Recipe> setAllRecipes, Map<String,Recipe> setRecipeNameMap) {
+    public RecipeCarouselFragment(List<Recipe> setAllRecipes, Trie setRecipeTrie) {
         // Required empty public constructor
         this.allRecipes = setAllRecipes;
-        this.recipeNameMap = setRecipeNameMap;
+        this.recipeTrie = setRecipeTrie;
     }
 
 
@@ -144,38 +145,6 @@ public class RecipeCarouselFragment extends Fragment {
 
     public void setRecipes(List<Recipe> recipes) {
         allRecipes = recipes;
-
     }
-
-//    protected void populateRecipes(final View view) {
-//
-//        // query recipes
-//        ParseQuery<Recipe> query = ParseQuery.getQuery(Recipe.class);
-//        query.include(Recipe.KEY_USER);
-//        query.setLimit(RECIPE_LIMIT);
-//        query.whereEqualTo(Recipe.KEY_USER, ParseUser.getCurrentUser());
-//        query.addDescendingOrder(Recipe.KEY_CREATED_KEY);
-//        query.findInBackground(new FindCallback<Recipe>() {
-//            @Override
-//            public void done(List<Recipe> recipes, ParseException e) {
-//                if (e != null) {
-//                    Log.e(TAG, "Issue with getting recipes", e);
-//                    return;
-//                }
-//
-//                Log.i("HomeActivity", "success getting recipes");
-//                allRecipes = recipes;
-//                recipeNameMap = new HashMap<String, Recipe>();
-//                handleCarouselView(view);
-//            }
-//
-//        });
-//
-//    }
-
-    public Map<String, Recipe> getRecipeNameMap() {
-        return recipeNameMap;
-    }
-
 
 }
