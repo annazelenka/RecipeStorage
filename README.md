@@ -27,24 +27,27 @@ A mobile Android app developed in Java. Users can create profiles and store reci
 
 **Required Must-have Stories**
 
-* Log in/log out of app as a user *(FBU requirement)*
-* Can sign up with new user profile *(FBU requirement)*
-* Can add new recipe w/ recipe ingredients, instructions, notes, prep/cook time
-* Can delete recipe
-* Can edit recipe
-* Store at least 5 most recent recipes when user logs out using Parse *(FBU requirement: interact with a database)*
-* Can take photo of what you've made and record alongside recipe *(FBU requirement: use camera)*
-* [Facebook SDK](https://developers.facebook.com/docs/android/), maybe for logging in or sharing *(FBU requirement: SDK)*
-* Sort OR search for recipes somehow *(FBU requirement: complex algorithm)*
-* double tap to favorite *(FBU requirement: gesture recognizer)*
-* animation *(FBU requirement)*
-* uses an external library (eg Glide) [(more ideas)](https://medium.com/better-programming/30-best-android-libraries-and-projects-of-2019-a1e35124f110) *(FBU requirement)*
+- [X]  Log in/log out of app as a user *(FBU requirement)*
+- [X]  Can sign up with new user profile *(FBU requirement)*
+- [X]  Can add new recipe w/ recipe ingredients, instructions, notes, prep/cook time
+- [X]  Can delete recipe
+- [X]  Can edit recipe
+- [X]  Original: Store at least 5 most recent recipes when user logs out using Parse *(FBU requirement: interact with a database)*
+  - [X]  Edited: Store all user-created recipes in Parse so that when app is relaunched, they see all their recipes. 
+- [X]  Can take photo of what you've made and record alongside recipe *(FBU requirement: use camera)*
+- [X]  [Facebook SDK](https://developers.facebook.com/docs/android/), maybe for logging in or sharing *(FBU requirement: SDK)*
+- [X]  search for recipes somehow *(FBU requirement: complex algorithm)*
+- [X]  double tap to favorite *(FBU requirement: gesture recognizer)*
+- [X]  animation *(FBU requirement)*
+- [X]  uses an external library (eg Glide) [(more ideas)](https://medium.com/better-programming/30-best-android-libraries-and-projects-of-2019-a1e35124f110) *(FBU requirement)*
 
 **Optional Nice-to-have Stories**
 
-* add option to write down notes about recipe
-* integrate [Spoonacular API](https://spoonacular.com/food-api) (maybe recommend recipes or pull recipes directly from Spoonacular)
-* use 
+- [X]  add option to write down notes about recipe
+- [ ]  Improve searching functionality: replace map usage with trie. Change search view so that it updates search filter every time user types, instead of only once user clicks search button.
+- [ ]  Integrate Facebook Graphs API: use Facebook Graphs API somehow, eg share post.
+- [ ]  When adding a photo to picture, add ability to choose photo from device’s photo library instead of using the camera.
+- [ ]  integrate [Spoonacular API](https://spoonacular.com/food-api) (maybe recommend recipes or pull recipes directly from Spoonacular)
 
 ### 2. Screen Archetypes
 
