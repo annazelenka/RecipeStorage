@@ -130,7 +130,7 @@ public class TrieUnitTest {
 
         for (Recipe recipe: recipes) {
             trie.insert(recipe.getTitle(), recipe);
-        } //problem putting in recipe2, "taco"
+        }
 
         String key = "taco";
         String key2 = "pecan pie";
@@ -148,5 +148,61 @@ public class TrieUnitTest {
         expectedRecipes.set(0, recipe2);
         expectedRecipes.remove(1);
         assertEquals(expectedRecipes, trie.find(key2));
+    }
+
+    // test deleting a recipe when there are recipes w/ same prefix, ie key is PARTIALLY deleted
+    @Test
+    public void testDeleteRecipeAndKey() {
+        Trie trie = new Trie();
+        recipe = (Recipe) ParseObject.create("Recipe");
+        recipe.setTitle("tacos");
+        recipe3 = (Recipe) ParseObject.create("Recipe");
+        recipe3.setTitle("taco");
+        trie.insert(recipe3.getTitle(), recipe3);
+
+        trie.delete(recipe);
+        ArrayList<Recipe> recipes = new ArrayList<Recipe>();
+        recipes.add(recipe3);
+
+        assertNull(trie.find(recipe.getTitle()));
+        assertEquals(recipes, trie.find(recipe3.getTitle()));
+    }
+
+    // test deleting a recipe when there are no recipes w/ same prefix and whole key is deleted
+    @Test
+    public void testDeleteRecipe() {
+        Trie trie = new Trie();
+        recipe2 = (Recipe) ParseObject.create("Recipe");
+        recipe2.setTitle("pecan pie");
+        trie.insert(recipe2.getTitle(), recipe2);
+
+        trie.delete(recipe2);
+
+        assertNull(trie.find(recipe2.getTitle()));
+        assertEquals(0, trie.getRoot().getChildren().size());
+    }
+
+    // test deleting a recipe when there are "sibling" recipes, ie key is NOT deleted
+    @Test
+    public void testDeleteRecipeWithSiblings() {
+        Trie trie = new Trie();
+        recipe = (Recipe) ParseObject.create("Recipe");
+        recipe.setTitle("tacos");
+        recipe3 = (Recipe) ParseObject.create("Recipe");
+        recipe3.setTitle("tacos");
+        ArrayList<Recipe> expectedRecipes = new ArrayList<Recipe>();
+        expectedRecipes.add(recipe);
+        expectedRecipes.add(recipe3);
+
+        trie.insert(recipe.getTitle(), recipe);
+        trie.insert(recipe3.getTitle(), recipe3);
+
+        // make sure recipes were inserted correctly
+        assertEquals(expectedRecipes, trie.find(recipe.getTitle()));
+
+        trie.delete(recipe);
+        expectedRecipes.remove(recipe);
+
+        assertEquals(expectedRecipes, trie.find(recipe3.getTitle()));
     }
 }
