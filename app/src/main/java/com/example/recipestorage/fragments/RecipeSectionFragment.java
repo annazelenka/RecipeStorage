@@ -29,7 +29,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.recipestorage.AddRecipeActivity;
-import com.example.recipestorage.AllRecipesActivity;
 import com.example.recipestorage.HomeActivity;
 import com.example.recipestorage.R;
 import com.example.recipestorage.Recipe;
@@ -304,7 +303,7 @@ public class RecipeSectionFragment extends Fragment implements RecipeSectionAdap
     }
 
     private void launchAllRecipesActivity() {
-        Intent intent = new Intent(getContext(), AllRecipesActivity.class);
+        Intent intent = new Intent(getContext(), HomeActivity.class);
         intent.putExtra("newRecipe", Parcels.wrap(newRecipe));
         // set result code and bundle data for response
         getActivity().setResult(AddRecipeActivity.RESULT_OK, intent);

@@ -6,46 +6,58 @@
     android:layout_height="match_parent"
     tools:context=".HomeActivity">
 
-
-    <ImageButton
-        android:id="@+id/btnLogout"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_margin="16dp"
-        android:src="@drawable/ic_power_settings_new_black_18dp"
-        android:layout_toRightOf="@+id/recipe_search"
-        ></ImageButton>
-
-
-
     <FrameLayout
         android:id="@+id/flContainer"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:minHeight="500dp">
+        android:layout_height="match_parent"
+        android:layout_above="@+id/bubbleNavigation">
 
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/fabAddRecipe"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@color/colorFacebookBlue"
-            android:src="@drawable/ic_add_24px"
-            app:fabSize="normal"
-            android:layout_margin="16dp"
-            android:layout_gravity="bottom|right"
-            android:layout_weight="1"/>
     </FrameLayout>
 
-    <Button
-        android:id="@+id/btnAllRecipes"
-        android:layout_width="wrap_content"
+    <com.gauravk.bubblenavigation.BubbleNavigationConstraintView
+        android:id="@+id/bubbleNavigation"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@color/colorWhite"
+        android:elevation="4dp"
+        android:padding="16dp"
+        app:bnc_mode="inside"
         android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:layout_margin="16dp"
-        android:text="All Recipes"
+        >
 
-        ></Button>
+        <com.gauravk.bubblenavigation.BubbleToggleView
+            android:id="@+id/miHome"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:bt_active="true"
+            app:bt_colorActive="@color/red_active"
+            app:bt_colorInactive="@color/red_inactive"
+            app:bt_icon="@drawable/ic_home_black_18dp"
+            app:bt_title="home"
+            app:bt_padding="@dimen/internal_padding"
+            android:layout_marginRight="8dp"/>
+
+        <com.gauravk.bubblenavigation.BubbleToggleView
+            android:id="@+id/miAllRecipes"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:bt_active="false"
+            app:bt_colorActive="@color/blue_active"
+            app:bt_colorInactive="@color/blue_inactive"
+            app:bt_icon="@drawable/ic_list_24px"
+            app:bt_title="all recipes"
+            app:bt_padding="@dimen/internal_padding"/>
+
+        <com.gauravk.bubblenavigation.BubbleToggleView
+            android:id="@+id/miMore"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:bt_active="false"
+            app:bt_colorActive="@color/purple_active"
+            app:bt_colorInactive="@color/purple_inactive"
+            app:bt_icon="@drawable/ic_more_horiz_black_18dp"
+            app:bt_title="more"
+            app:bt_padding="@dimen/internal_padding"/>
+    </com.gauravk.bubblenavigation.BubbleNavigationConstraintView>
 
 </RelativeLayout>

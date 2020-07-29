@@ -16,7 +16,6 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.example.recipestorage.AllRecipesActivity;
 import com.example.recipestorage.EditRecipeActivity;
 import com.example.recipestorage.HomeActivity;
 import com.example.recipestorage.LoginActivity;

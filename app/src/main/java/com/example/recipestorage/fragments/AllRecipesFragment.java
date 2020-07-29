@@ -1,16 +1,23 @@
-package com.example.recipestorage;
-
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
+package com.example.recipestorage.fragments;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.View;
-import androidx.appcompat.widget.SearchView;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.widget.SearchView;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+
+import com.example.recipestorage.AddRecipeActivity;
+import com.example.recipestorage.R;
+import com.example.recipestorage.Recipe;
 import com.example.recipestorage.adapters.RecipeAdapter;
 import com.example.recipestorage.utils.RecipeTrie;
 import com.facebook.AccessToken;
@@ -28,15 +35,17 @@ import java.net.URL;
 import java.util.List;
 import java.util.Map;
 
-public class AllRecipesActivity extends AppCompatActivity {
+public class AllRecipesFragment extends Fragment {
+
     public static final String TAG = "AllRecipesActivity";
     public static final int NUM_COLUMNS = 2;
     private static final int REQUEST_CODE = 24;
+    private static final int RESULT_OK = 24;
+
 
     RecyclerView rvRecipes;
     List<Recipe> allRecipes;
     RecipeAdapter adapter;
-    Map<String, Recipe> recipeNameMap;
     RecipeTrie recipeTrie;
     SearchView searchView;
     FloatingActionButton fabAddRecipe;
@@ -44,32 +53,40 @@ public class AllRecipesActivity extends AppCompatActivity {
     ParseUser currentUser;
     Boolean isFacebookUser;
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_all_recipes);
 
-        searchView = findViewById(R.id.recipe_search);
+    public AllRecipesFragment(List<Recipe> setAllRecipes, RecipeTrie setTrie, boolean setIsFacebookUser) {
+        // Required empty public constructor
+        this.allRecipes = setAllRecipes;
+        this.recipeTrie = setTrie;
+        this.isFacebookUser = setIsFacebookUser;
+        this.currentUser = ParseUser.getCurrentUser();
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        // Inflate the layout for this fragment
+        return inflater.inflate(R.layout.fragment_all_recipes, container, false);
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        searchView = view.findViewById(R.id.recipe_search);
 
         // Find the recycler view
-        rvRecipes = findViewById(R.id.rvRecipes);
-        fabAddRecipe = findViewById(R.id.fabAddRecipe);
-
-        currentUser = ParseUser.getCurrentUser();
-        allRecipes = Parcels.unwrap(getIntent().getParcelableExtra("allRecipes"));
-        recipeNameMap = Parcels.unwrap(getIntent().getParcelableExtra("recipeNameMap"));
-        isFacebookUser = getIntent().getBooleanExtra("isFacebookUser", false);
-        //recipeTrie = Parcels.unwrap(getIntent().getParcelableExtra("recipeTrie"));
-        recipeTrie = new RecipeTrie();
-        recipeTrie.populateRecipeTrie(allRecipes);
+        rvRecipes = view.findViewById(R.id.rvRecipes);
+        fabAddRecipe = view.findViewById(R.id.fabAddRecipe);
+        rvRecipes = view.findViewById(R.id.rvRecipes);
 
 
         // Initialize the list of tweets and adapter
         //allRecipes = new ArrayList<Recipe>();
-        adapter = new RecipeAdapter(AllRecipesActivity.this, this, allRecipes);
+        adapter = new RecipeAdapter(getActivity(), getContext(), allRecipes);
 
         // Recycler view setup: layout manager and the adapter
-        rvRecipes.setLayoutManager(new GridLayoutManager(this, NUM_COLUMNS));
+        rvRecipes.setLayoutManager(new GridLayoutManager(getContext(), NUM_COLUMNS));
         rvRecipes.setAdapter(adapter);
         adapter.setFilter(recipeTrie);
 
@@ -88,7 +105,7 @@ public class AllRecipesActivity extends AppCompatActivity {
     }
 
     private void launchAddRecipe() {
-        Intent intent = new Intent(AllRecipesActivity.this, AddRecipeActivity.class);
+        Intent intent = new Intent(getContext(), AddRecipeActivity.class);
         startActivityForResult(intent, REQUEST_CODE);
     }
 
@@ -159,21 +176,4 @@ public class AllRecipesActivity extends AppCompatActivity {
 
         });
     }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        if (requestCode == REQUEST_CODE && resultCode == RESULT_OK) {
-            // Get data (Tweet) from the intent (need to use Parcelable b/c Tweet is custom object)
-            Recipe recipe = Parcels.unwrap(data.getParcelableExtra("newRecipe"));
-            // Update the Recycler View with this new tweet
-
-            // Modify data source of tweets
-            allRecipes.add(0, recipe);
-            // Update adapter
-            adapter.notifyItemInserted(0);
-            rvRecipes.smoothScrollToPosition(0);
-        }
-        super.onActivityResult(requestCode, resultCode, data);
-    }
-
 }

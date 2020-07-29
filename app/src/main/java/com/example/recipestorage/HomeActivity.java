@@ -1,5 +1,6 @@
 package com.example.recipestorage;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -15,6 +16,7 @@ import android.widget.Filterable;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
+import com.example.recipestorage.fragments.AllRecipesFragment;
 import com.example.recipestorage.fragments.HomeFragment;
 import com.example.recipestorage.fragments.MoreFragment;
 import com.example.recipestorage.utils.RecipeTrie;
@@ -36,6 +38,7 @@ public class HomeActivity extends AppCompatActivity implements Filterable {
     public static final int MORE_POSITION = 2;
     private static final int RECIPE_LIMIT = 20;
     private static final String TAG = "HomeActivity";
+    private static final int REQUEST_CODE = 24;
 
 
     final FragmentManager fragmentManager = getSupportFragmentManager();
@@ -85,10 +88,8 @@ public class HomeActivity extends AppCompatActivity implements Filterable {
     }
 
     private void launchAllRecipesScreen() {
-        Intent intent = new Intent(HomeActivity.this, AllRecipesActivity.class);
-        intent.putExtra("allRecipes", Parcels.wrap(allRecipes));
-        intent.putExtra("isFacebookUser", isFacebookUser);
-        startActivity(intent);
+        Fragment fragment = new AllRecipesFragment(allRecipes, recipeTrie, isFacebookUser);
+        fragmentManager.beginTransaction().replace(R.id.flContainer, fragment).commit();
     }
 
     protected void populateRecipes() {
@@ -119,5 +120,18 @@ public class HomeActivity extends AppCompatActivity implements Filterable {
     @Override
     public Filter getFilter() {
         return null;
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        if (requestCode == REQUEST_CODE && resultCode == RESULT_OK) {
+            // Get data (Tweet) from the intent (need to use Parcelable b/c Tweet is custom object)
+            Recipe recipe = Parcels.unwrap(data.getParcelableExtra("newRecipe"));
+            // Update the Recycler View with this new tweet
+
+            // Modify data source of tweets
+            allRecipes.add(0, recipe);
+        }
+        super.onActivityResult(requestCode, resultCode, data);
     }
 }
