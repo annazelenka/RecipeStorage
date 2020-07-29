@@ -122,8 +122,6 @@ public class AddRecipeActivity extends AppCompatActivity implements RecipeSectio
 
         bubbleNavigation.setVisibility(View.GONE);
         setVisibilityFabSubmit(false);
-
-
     }
 
     @Override

@@ -1,11 +1,13 @@
 package com.example.recipestorage;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Filter;
@@ -13,33 +15,32 @@ import android.widget.Filterable;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
-import com.example.recipestorage.fragments.RecipeCarouselFragment;
+import com.example.recipestorage.fragments.HomeFragment;
+import com.example.recipestorage.fragments.MoreFragment;
 import com.example.recipestorage.utils.RecipeTrie;
 import com.facebook.AccessToken;
 import com.facebook.Profile;
+import com.gauravk.bubblenavigation.BubbleNavigationConstraintView;
+import com.gauravk.bubblenavigation.listener.BubbleNavigationChangeListener;
 import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
-import com.shreyaspatil.MaterialDialog.MaterialDialog;
-import com.shreyaspatil.MaterialDialog.interfaces.DialogInterface;
-
 import org.parceler.Parcels;
 
 import java.util.List;
 
-//import me.ibrahimsn.lib.OnItemSelectedListener;
-//import me.ibrahimsn.lib.SmoothBottomBar;
-
 public class HomeActivity extends AppCompatActivity implements Filterable {
-
-    private static final String TAG = "HomeActivity";
+    public static final int HOME_POSITION = 0;
+    public static final int ALL_RECIPES_POSITION = 1;
+    public static final int MORE_POSITION = 2;
     private static final int RECIPE_LIMIT = 20;
+    private static final String TAG = "HomeActivity";
+
+
     final FragmentManager fragmentManager = getSupportFragmentManager();
 
-    ImageButton btnLogout;
-    Button btnAllRecipes;
-    TextView tvWelcome;
+    BubbleNavigationConstraintView bubbleNavigation;
 
     RecipeTrie recipeTrie;
     List<Recipe> allRecipes;
@@ -51,56 +52,42 @@ public class HomeActivity extends AppCompatActivity implements Filterable {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
-        // TODO: Set default selection
-        //queryRecipes();
-
-        btnLogout = findViewById(R.id.btnLogout);
-        btnAllRecipes = findViewById(R.id.btnAllRecipes);
-        tvWelcome = findViewById(R.id.tvWelcome);
-
+        bubbleNavigation = findViewById(R.id.bubbleNavigation);
         currentUser = ParseUser.getCurrentUser();
-        btnAllRecipes.setVisibility(View.GONE);
-
-
-        btnLogout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                showLogoutDialog();
-            }
-        });
-
-
-        btnAllRecipes.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (allRecipes != null) {
-                    launchAllRecipesScreen();
-                }
-            }
-        });
-
-        String name;
-        isFacebookUser = isFacebookUser();
-        if (isFacebookUser) {
-            name = Profile.getCurrentProfile().getFirstName();
-        } else {
-            name = currentUser.getUsername();
-        }
-        tvWelcome.setText("Welcome, " + name + "!");
 
         populateRecipes();
     }
 
-    public boolean isFacebookUser() {
-        return AccessToken.getCurrentAccessToken() != null;
+    public void setupBubbleNavigation() {
+        bubbleNavigation.setNavigationChangeListener(new BubbleNavigationChangeListener() {
+            @Override
+            public void onNavigationChanged(View view, int position) {
+                Fragment fragment = null;
+                switch (position) {
+                    case HOME_POSITION:
+                        fragment = new HomeFragment(allRecipes, recipeTrie);
+                        break;
+                    case ALL_RECIPES_POSITION: //miDirections
+                        launchAllRecipesScreen();
+                        break;
+                    case MORE_POSITION: //miNotes
+                        fragment = new MoreFragment(currentUser);
+                        break;
+                    default:
+                        break;
+                }
+                if (fragment != null) {
+                    fragmentManager.beginTransaction().replace(R.id.flContainer, fragment).commit();
+                }
+            }
+        });
+        bubbleNavigation.setCurrentActiveItem(HOME_POSITION);
     }
 
     private void launchAllRecipesScreen() {
         Intent intent = new Intent(HomeActivity.this, AllRecipesActivity.class);
         intent.putExtra("allRecipes", Parcels.wrap(allRecipes));
         intent.putExtra("isFacebookUser", isFacebookUser);
-        //intent.putExtra("recipeTrie", Parcels.wrap(recipeTrie));
-
         startActivity(intent);
     }
 
@@ -124,53 +111,13 @@ public class HomeActivity extends AppCompatActivity implements Filterable {
                 allRecipes = recipes;
                 recipeTrie = new RecipeTrie();
                 recipeTrie.populateRecipeTrie(allRecipes);
-                launchRecipeCarouselFragment();
-                btnAllRecipes.setVisibility(View.VISIBLE);
+                setupBubbleNavigation();
             }
-
         });
-
     }
-
-
-    protected void launchRecipeCarouselFragment() {
-        RecipeCarouselFragment fragment = new RecipeCarouselFragment(allRecipes, recipeTrie);
-        fragmentManager.beginTransaction().replace(R.id.flContainer, fragment).commit();
-    }
-
-    private void showLogoutDialog() {
-        MaterialDialog mDialog = new MaterialDialog.Builder(this)
-                .setTitle("log out?")
-                .setMessage("Are you sure you want to log out?")
-                .setCancelable(false)
-                .setPositiveButton("Yes", R.drawable.ic_power_settings_new_black_18dp, new MaterialDialog.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int which) {
-                        // Delete Operation
-                        Intent intent = new Intent(HomeActivity.this, LoginActivity.class);
-                        ParseUser.logOut();
-                        startActivity(intent);
-                        dialogInterface.dismiss();
-                        finish();
-                    }
-                })
-                .setNegativeButton("Cancel", R.drawable.ic_clear_24px, new MaterialDialog.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int which) {
-                        dialogInterface.dismiss();
-                    }
-                })
-                .build();
-
-        // Show Dialog
-        mDialog.show();
-    }
-
 
     @Override
     public Filter getFilter() {
         return null;
     }
-
-
 }

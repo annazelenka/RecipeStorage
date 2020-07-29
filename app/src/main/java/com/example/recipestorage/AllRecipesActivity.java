@@ -41,10 +41,8 @@ public class AllRecipesActivity extends AppCompatActivity {
     SearchView searchView;
     FloatingActionButton fabAddRecipe;
 
-
     ParseUser currentUser;
     Boolean isFacebookUser;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

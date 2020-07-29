@@ -4,16 +4,24 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".fragments.RecipeCarouselFragment">
+    tools:context=".HomeActivity"
+    android:layout_margin="16dp">
 
-
-
-
-    <FrameLayout
+    <TextView
+        android:id="@+id/tvWelcome"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/frameLayout"
-        android:layout_marginTop="96dp">
+        android:text="Welcome!"
+        android:textAlignment="center"
+        android:textSize="48sp"
+        android:textStyle="bold"></TextView>
+    <FrameLayout
+        android:id="@+id/flContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_below="@+id/tvWelcome"
+        android:layout_above="@+id/bubbleNavigation">
 
         <com.jama.carouselview.CarouselView
             android:id="@+id/carouselView"
@@ -34,7 +42,6 @@
             app:resource="@layout/item_recipe_preview" />
 
     </FrameLayout>
-
 
 
 </RelativeLayout>

@@ -13,6 +13,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.facebook.login.widget.LoginButton;
 import com.google.android.material.textfield.TextInputLayout;
 import com.parse.LogInCallback;
 import com.parse.ParseException;
@@ -31,7 +32,7 @@ public class LoginActivity extends AppCompatActivity {
     EditText etPassword;
     Button btnLogin;
     Button btnSignup;
-    Button btnLoginFacebook;
+    LoginButton btnLoginFacebook;
 
 
     @Override
@@ -49,6 +50,11 @@ public class LoginActivity extends AppCompatActivity {
         btnLogin = findViewById(R.id.btnLogin);
         btnSignup = findViewById(R.id.btnSignup);
         btnLoginFacebook = findViewById(R.id.btnLoginFacebook);
+        //btnLoginFacebook.setReadPermissions(Arrays.asList("user_status, user_birthday, user_location"));
+        btnLoginFacebook.setPermissions(Arrays.asList("user_status, user_birthday, user_location"));
+
+
+
 
         btnLogin.setOnClickListener(new View.OnClickListener() {
             @Override
