@@ -87,8 +87,6 @@ public class AddRecipeActivity extends AppCompatActivity implements RecipeSectio
         ivRecipeImage = findViewById(R.id.ivRecipeImage);
         etRecipeTitle = findViewById(R.id.etRecipeTitle);
         bubbleNavigation = findViewById(R.id.equal_navigation_bar);
-        //miHelp =  toolbar.get
-        //btnDelete = findViewById(R.id.btnDelete);
 
         initializeRecipe();
 
@@ -99,8 +97,6 @@ public class AddRecipeActivity extends AppCompatActivity implements RecipeSectio
         // Make sure the toolbar exists in the activity and is not null
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
-
-        setupBubbleNavigation();
 
         fabSubmitRecipe = findViewById(R.id.fabSubmitRecipe);
         fabSubmitRecipe.setOnClickListener(new View.OnClickListener() {
@@ -124,21 +120,8 @@ public class AddRecipeActivity extends AppCompatActivity implements RecipeSectio
 //            }
 //        });
 
-        KeyboardUtils.addKeyboardToggleListener(this, new KeyboardUtils.SoftKeyboardToggleListener()
-        {
-            @Override
-            public void onToggleSoftKeyboard(boolean isVisible)
-            {
-                if (isVisible) {
-                    // hide fabSubmit button and bubble navigation bar
-                    fabSubmitRecipe.setVisibility(View.INVISIBLE);
-                    bubbleNavigation.setVisibility(View.INVISIBLE);
-                } else {
-                    fabSubmitRecipe.setVisibility(View.VISIBLE);
-                    bubbleNavigation.setVisibility(View.VISIBLE);
-                }
-            }
-        });
+        bubbleNavigation.setVisibility(View.GONE);
+        setVisibilityFabSubmit(false);
 
 
     }
@@ -156,37 +139,6 @@ public class AddRecipeActivity extends AppCompatActivity implements RecipeSectio
             return true;
         }
         return super.onOptionsItemSelected(item);
-    }
-
-    protected void setupBubbleNavigation() {
-        bubbleNavigation.setNavigationChangeListener(new BubbleNavigationChangeListener() {
-            @Override
-            public void onNavigationChanged(View view, int position) {
-                Fragment fragment;
-                switch (position) {
-                    case HOME_POSITION:
-                        toolbar.setVisibility(View.GONE);
-                        fragment = new RecipeSummaryFragment();
-                        break;
-                    case INGREDIENTS_POSITION: //miDirections
-                        toolbar.setVisibility(View.VISIBLE);
-                        fragment = new RecipeSectionFragment(true, RecipeSectionFragment.RecipeSection.INGREDIENT, ingredients);
-                        break;
-                    case DIRECTIONS_POSITION: //miNotes
-                        toolbar.setVisibility(View.VISIBLE);
-                        fragment = new RecipeSectionFragment(true, RecipeSectionFragment.RecipeSection.DIRECTION, directions);
-                        break;
-                    case NOTES_POSITION:
-                    default:
-                        toolbar.setVisibility(View.VISIBLE);
-                        fragment = new RecipeSectionFragment(true, RecipeSectionFragment.RecipeSection.NOTE, notes);
-                        break;
-                }
-                startAnimatedFragment(fragment);
-                fragmentManager.beginTransaction().replace(R.id.flContainer, fragment).commit();
-            }
-        });
-        bubbleNavigation.setCurrentActiveItem(HOME_POSITION);
     }
 
     // Menu icons are inflated just as they were with actionbar
@@ -252,9 +204,24 @@ public class AddRecipeActivity extends AppCompatActivity implements RecipeSectio
         if (photoFile == null || ivRecipeImage.getDrawable() == null) {
             Toast.makeText(AddRecipeActivity.this, "There is no image!", Toast.LENGTH_SHORT).show();
             saveRecipe(ParseUser.getCurrentUser(), false, photoFile);
+            launchHomeActivity();
         } else {
             saveRecipe(ParseUser.getCurrentUser(), true, photoFile);
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+
+        int count = getSupportFragmentManager().getBackStackEntryCount();
+
+        if (count == 0) {
+            super.onBackPressed();
+            //additional code
+        } else {
+            getSupportFragmentManager().popBackStack();
+        }
+
     }
 
     protected boolean canSubmitRecipe() {

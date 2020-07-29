@@ -44,25 +44,6 @@
 
                 </com.google.android.material.textfield.TextInputLayout>
 
-<!--                <ImageButton-->
-<!--                    android:id="@+id/btnHelp"-->
-<!--                    android:layout_width="wrap_content"-->
-<!--                    android:layout_height="wrap_content"-->
-<!--                    android:src="@drawable/ic_help_outline_24px"-->
-<!--                    android:layout_margin="16dp"-->
-<!--                    android:layout_toStartOf="@+id/btnDelete"-->
-<!--                    ></ImageButton>-->
-
-<!--                <ImageButton-->
-<!--                    android:id="@+id/btnDelete"-->
-<!--                    android:layout_width="wrap_content"-->
-<!--                    android:layout_height="wrap_content"-->
-<!--                    android:layout_margin="16dp"-->
-<!--                    android:layout_alignParentEnd="true"-->
-<!--                    android:src="@drawable/ic_delete_outline_24px">-->
-
-<!--                </ImageButton>-->
-
 
             </RelativeLayout>
         </androidx.appcompat.widget.Toolbar>

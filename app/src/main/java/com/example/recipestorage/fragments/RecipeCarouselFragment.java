@@ -1,6 +1,5 @@
 package com.example.recipestorage.fragments;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 
@@ -10,11 +9,9 @@ import androidx.core.app.ActivityOptionsCompat;
 import androidx.core.util.Pair;
 import androidx.fragment.app.Fragment;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -22,21 +19,15 @@ import android.widget.TextView;
 import com.example.recipestorage.R;
 import com.example.recipestorage.Recipe;
 import com.example.recipestorage.EditRecipeActivity;
-import com.example.recipestorage.utils.Trie;
+import com.example.recipestorage.utils.RecipeTrie;
 import com.jama.carouselview.CarouselView;
 import com.jama.carouselview.CarouselViewListener;
 import com.jama.carouselview.enums.IndicatorAnimationType;
 import com.jama.carouselview.enums.OffsetType;
-import com.parse.FindCallback;
-import com.parse.ParseException;
-import com.parse.ParseQuery;
-import com.parse.ParseUser;
 
 import org.parceler.Parcels;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import coil.Coil;
 import coil.ImageLoader;
@@ -49,13 +40,13 @@ public class RecipeCarouselFragment extends Fragment {
     private List<Recipe> allRecipes;
     CarouselView carouselView;
 
-    Trie recipeTrie;
+    RecipeTrie recipeTrie;
 
     public RecipeCarouselFragment() {
         // Required empty public constructor
     }
 
-    public RecipeCarouselFragment(List<Recipe> setAllRecipes, Trie setRecipeTrie) {
+    public RecipeCarouselFragment(List<Recipe> setAllRecipes, RecipeTrie setRecipeTrie) {
         // Required empty public constructor
         this.allRecipes = setAllRecipes;
         this.recipeTrie = setRecipeTrie;
@@ -114,7 +105,7 @@ public class RecipeCarouselFragment extends Fragment {
                             .build();
                     imageLoader.execute(request);
                 } else {
-                    ivPicture.setVisibility(View.GONE);
+                    ivPicture.setVisibility(View.INVISIBLE);
                 }
 
                 tvTitle.setText(recipe.getTitle());

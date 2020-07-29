@@ -10,6 +10,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 
 import android.os.Environment;
 import android.provider.MediaStore;
@@ -24,11 +25,18 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import com.example.recipestorage.AddRecipeActivity;
 import com.example.recipestorage.BitmapScaler;
 import com.example.recipestorage.HomeActivity;
 import com.example.recipestorage.R;
 import com.example.recipestorage.Recipe;
+import com.facebook.share.model.SharePhoto;
+import com.facebook.share.model.SharePhotoContent;
+import com.facebook.share.widget.ShareButton;
+import com.facebook.share.widget.ShareDialog;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.parse.GetDataCallback;
+import com.parse.ParseException;
+import com.parse.ParseFile;
 import com.pedromassango.doubleclick.DoubleClick;
 import com.pedromassango.doubleclick.DoubleClickListener;
 import com.shreyaspatil.MaterialDialog.MaterialDialog;
@@ -59,24 +67,28 @@ public class RecipeSummaryFragment extends Fragment {
 
     ImageButton btnCamera;
     ImageButton btnFavorite;
+    ShareButton btnShare;
     ImageButton btnDelete;
     EditText etTitle;
     EditText etRecipeTime;
     ImageView ivRecipeImage;
+    FloatingActionButton fabSubmit;
+
 
     boolean isFavoriteRecipe;
-    boolean hasRecipe;
+    boolean hasExistingRecipe;
+    SharePhotoContent photoContent;
 
     public RecipeSummaryFragment() {
         // Required empty public constructor
-        this.recipe = null;
-        this.hasRecipe = false;
+        this.recipe = new Recipe();
+        this.hasExistingRecipe = false;
         this.isFavoriteRecipe = false;
     }
 
     public RecipeSummaryFragment(Recipe setRecipe) {
         this.recipe = setRecipe;
-        this.hasRecipe = true;
+        this.hasExistingRecipe = true;
         this.isFavoriteRecipe = recipe.isFavorite();
     }
 
@@ -94,18 +106,26 @@ public class RecipeSummaryFragment extends Fragment {
 
         btnCamera = view.findViewById(R.id.btnCamera);
         btnFavorite = view.findViewById(R.id.btnFavorite);
+        btnShare = view.findViewById(R.id.btnShare);
         btnDelete = view.findViewById(R.id.btnDelete);
+        fabSubmit = view.findViewById(R.id.fabSubmit);
 
         ivRecipeImage = view.findViewById(R.id.ivRecipeImage);
         etTitle = view.findViewById(R.id.etTitle);
         etRecipeTime = view.findViewById(R.id.etRecipeTime);
 
-        if (hasRecipe) {
+        etTitle.setHint("recipe title");
+        etRecipeTime.setHint("recipe time");
+
+        if (hasExistingRecipe) {
             populateRecipeFields();
+            setUpFacebookShareContent();
+            fabSubmit.setVisibility(View.GONE);
         } else {
             btnDelete.setVisibility(View.GONE);
-            etTitle.setHint("Add a recipe name!");
-            ivRecipeImage.setVisibility(View.INVISIBLE);
+            btnShare.setVisibility(View.GONE);
+            ivRecipeImage.setVisibility(View.GONE);
+            setupFab();
         }
 
 
@@ -123,6 +143,14 @@ public class RecipeSummaryFragment extends Fragment {
                 handleFavoriting();
             }
         });
+
+        btnShare.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                shareOnFacebook();
+            }
+        });
+
         ivRecipeImage.setOnClickListener( new DoubleClick(new DoubleClickListener() {
             @Override
             public void onSingleClick(View view) {
@@ -138,6 +166,84 @@ public class RecipeSummaryFragment extends Fragment {
             }
             // TODO: change after testing on physical device
           }, 500));
+    }
+
+    private void setupFab() {
+        fabSubmit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                boolean hasTitle = hasTitle();
+                boolean hasRecipeTime = hasRecipeTime();
+
+                if (!hasTitle && !hasRecipeTime) {
+                    Toast.makeText(getContext(), "Title and recipe time are missing!", Toast.LENGTH_SHORT).show();
+                    return;
+                } else if (!hasTitle) {
+                    Toast.makeText(getContext(), "Title is missing!", Toast.LENGTH_SHORT).show();
+                    return;
+                } else if (!hasRecipeTime) {
+                    Toast.makeText(getContext(), "Recipe time is missing!", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                launchIngredientsFragment();
+            }
+        });
+    }
+
+    private void launchIngredientsFragment() {
+        String title = etTitle.getText().toString();
+        int recipeTime = Integer.parseInt(etRecipeTime.getText().toString());
+        recipe.setTitle(title);
+        recipe.setCookTimeMin(recipeTime);
+
+        RecipeSectionFragment fragment = new RecipeSectionFragment(true, RecipeSectionFragment.RecipeSection.INGREDIENT, recipe);
+        getActivity().getSupportFragmentManager()
+                .beginTransaction()
+                .addToBackStack(null)
+                .replace(R.id.flContainer, fragment, "AddRecipe summary to ingredients")
+                .commit();
+    }
+
+    private boolean hasTitle() {
+        return !etTitle.getText().toString().isEmpty();
+    }
+
+    private boolean hasRecipeTime() {
+        return !etRecipeTime.getText().toString().isEmpty();
+    }
+
+    private void setUpFacebookShareContent() {
+        ParseFile fileObject = recipe.getImage();
+
+        if (fileObject != null) {
+            fileObject.getDataInBackground(new GetDataCallback() {
+                public void done(byte[] data, ParseException e) {
+                    if (e == null) {
+                        Bitmap bmp = BitmapFactory.decodeByteArray(data, 0, data.length);
+                        SharePhoto photo = new SharePhoto.Builder()
+                                .setBitmap(bmp)
+                                .build();
+                        photoContent = new SharePhotoContent.Builder()
+                                .addPhoto(photo)
+                                .build();
+
+                        btnShare.setShareContent(photoContent);
+                    } else {
+                        Log.d("test",
+                                "Problem load image the data.");
+                    }
+                }
+            });
+        }
+
+
+    }
+
+    private void shareOnFacebook() {
+        ShareDialog shareDialog = new ShareDialog(RecipeSummaryFragment.this);
+        shareDialog.show(photoContent, ShareDialog.Mode.AUTOMATIC);
+
+        Toast.makeText(getContext(), "Shared photo!", Toast.LENGTH_SHORT).show();
     }
 
     private void populateRecipeFields() {
@@ -182,7 +288,7 @@ public class RecipeSummaryFragment extends Fragment {
             btnFavorite.setImageResource(R.drawable.ic_favorite_black_18dp);
         }
 
-        if (hasRecipe) {
+        if (hasExistingRecipe) {
             recipe.setIsFavorite(isFavoriteRecipe);
             recipe.saveRecipe();
         }
@@ -315,6 +421,7 @@ public class RecipeSummaryFragment extends Fragment {
                 // Load the taken image into a preview
                 ivRecipeImage.setImageBitmap(takenImage);
                 ivRecipeImage.setVisibility(View.VISIBLE);
+                recipe.setImage(new ParseFile(photoFile));
             } else { // Result was a failure
                 Toast.makeText(getActivity(), "Picture wasn't taken!", Toast.LENGTH_SHORT).show();
             }

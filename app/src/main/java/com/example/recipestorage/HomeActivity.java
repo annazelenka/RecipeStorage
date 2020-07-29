@@ -8,15 +8,15 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.ImageButton;
-import android.widget.Toast;
+import android.widget.TextView;
 
 import com.example.recipestorage.fragments.RecipeCarouselFragment;
-import com.example.recipestorage.utils.Trie;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.example.recipestorage.utils.RecipeTrie;
+import com.facebook.AccessToken;
+import com.facebook.Profile;
 import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseQuery;
@@ -26,9 +26,7 @@ import com.shreyaspatil.MaterialDialog.interfaces.DialogInterface;
 
 import org.parceler.Parcels;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 //import me.ibrahimsn.lib.OnItemSelectedListener;
 //import me.ibrahimsn.lib.SmoothBottomBar;
@@ -39,12 +37,14 @@ public class HomeActivity extends AppCompatActivity implements Filterable {
     private static final int RECIPE_LIMIT = 20;
     final FragmentManager fragmentManager = getSupportFragmentManager();
 
-    FloatingActionButton fabAddRecipe;
     ImageButton btnLogout;
     Button btnAllRecipes;
-    Trie recipeTrie;
+    TextView tvWelcome;
 
+    RecipeTrie recipeTrie;
     List<Recipe> allRecipes;
+    ParseUser currentUser;
+    boolean isFacebookUser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,17 +54,13 @@ public class HomeActivity extends AppCompatActivity implements Filterable {
         // TODO: Set default selection
         //queryRecipes();
 
-        fabAddRecipe = findViewById(R.id.fabAddRecipe);
         btnLogout = findViewById(R.id.btnLogout);
         btnAllRecipes = findViewById(R.id.btnAllRecipes);
+        tvWelcome = findViewById(R.id.tvWelcome);
 
-        fabAddRecipe.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(HomeActivity.this, AddRecipeActivity.class);
-                startActivity(intent);
-            }
-        });
+        currentUser = ParseUser.getCurrentUser();
+        btnAllRecipes.setVisibility(View.GONE);
+
 
         btnLogout.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -83,12 +79,26 @@ public class HomeActivity extends AppCompatActivity implements Filterable {
             }
         });
 
+        String name;
+        isFacebookUser = isFacebookUser();
+        if (isFacebookUser) {
+            name = Profile.getCurrentProfile().getFirstName();
+        } else {
+            name = currentUser.getUsername();
+        }
+        tvWelcome.setText("Welcome, " + name + "!");
+
         populateRecipes();
+    }
+
+    public boolean isFacebookUser() {
+        return AccessToken.getCurrentAccessToken() != null;
     }
 
     private void launchAllRecipesScreen() {
         Intent intent = new Intent(HomeActivity.this, AllRecipesActivity.class);
         intent.putExtra("allRecipes", Parcels.wrap(allRecipes));
+        intent.putExtra("isFacebookUser", isFacebookUser);
         //intent.putExtra("recipeTrie", Parcels.wrap(recipeTrie));
 
         startActivity(intent);
@@ -100,7 +110,7 @@ public class HomeActivity extends AppCompatActivity implements Filterable {
         ParseQuery<Recipe> query = ParseQuery.getQuery(Recipe.class);
         query.include(Recipe.KEY_USER);
         query.setLimit(RECIPE_LIMIT);
-        query.whereEqualTo(Recipe.KEY_USER, ParseUser.getCurrentUser());
+        query.whereEqualTo(Recipe.KEY_USER, currentUser);
         query.addDescendingOrder(Recipe.KEY_CREATED_KEY);
         query.findInBackground(new FindCallback<Recipe>() {
             @Override
@@ -112,9 +122,10 @@ public class HomeActivity extends AppCompatActivity implements Filterable {
 
                 Log.i("HomeActivity", "success getting recipes");
                 allRecipes = recipes;
-                recipeTrie = new Trie();
+                recipeTrie = new RecipeTrie();
                 recipeTrie.populateRecipeTrie(allRecipes);
                 launchRecipeCarouselFragment();
+                btnAllRecipes.setVisibility(View.VISIBLE);
             }
 
         });

@@ -59,4 +59,16 @@
 
             </com.google.android.material.textfield.TextInputLayout>
 
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fabSubmit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@color/green_active"
+        android:src="@drawable/ic_done_24px"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:layout_margin="16dp">
+
+    </com.google.android.material.floatingactionbutton.FloatingActionButton>
+
 </RelativeLayout>

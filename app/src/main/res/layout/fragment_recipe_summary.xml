@@ -45,7 +45,6 @@
             android:imeOptions="actionDone"
             android:singleLine="true"
             android:layout_centerHorizontal="true"
-            android:text="title"
             android:textAlignment="center"
             android:textSize="36dp"
             android:textStyle="bold"/>
@@ -57,15 +56,17 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:layout_below="@id/etTitleLayout">
+        android:layout_below="@id/etTitleLayout"
+        android:layout_margin="16dp"
+        android:layout_marginTop="0dp"
+        android:layout_centerHorizontal="true">
 
         <ImageButton
             android:id="@+id/btnCamera"
-            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
             android:layout_margin="16dp"
             android:src="@drawable/ic_photo_camera_24px"
-            android:layout_weight="1"
             android:backgroundTint="@color/colorWhite"
             >
 
@@ -74,7 +75,7 @@
 
         <ImageButton
             android:id="@+id/btnFavorite"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="16dp"
             android:src="@drawable/ic_favorite_border_black_18dp"
@@ -84,17 +85,31 @@
 
         </ImageButton>
 
+        <com.facebook.share.widget.ShareButton
+            android:id="@+id/btnShare"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="16dp"
+            android:backgroundTint="@color/colorWhite"
+            android:src="@drawable/ic_share_24px"
+            android:layout_gravity="center">
+
+        </com.facebook.share.widget.ShareButton>
+
         <ImageButton
             android:id="@+id/btnDelete"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="16dp"
             android:src="@drawable/ic_delete_outline_24px"
-            android:layout_weight="1"
             android:backgroundTint="@color/colorWhite"
             >
-
         </ImageButton>
+
     </LinearLayout>
 
     <com.google.android.material.textfield.TextInputLayout
@@ -114,12 +129,23 @@
             android:imeOptions="actionDone"
             android:singleLine="true"
             android:layout_centerHorizontal="true"
-            android:text="title"
             android:textAlignment="center"
             android:textSize="16dp"
             android:textStyle="bold"/>
 
     </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fabSubmit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@color/green_active"
+        android:src="@drawable/ic_done_24px"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:layout_margin="16dp">
+
+    </com.google.android.material.floatingactionbutton.FloatingActionButton>
 
     </RelativeLayout>
     </ScrollView>

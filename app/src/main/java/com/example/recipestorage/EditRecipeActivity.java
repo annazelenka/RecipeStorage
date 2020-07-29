@@ -11,6 +11,7 @@ import androidx.fragment.app.Fragment;
 
 import com.example.recipestorage.fragments.RecipeSectionFragment;
 import com.example.recipestorage.fragments.RecipeSummaryFragment;
+import com.example.recipestorage.utils.KeyboardUtils;
 import com.gauravk.bubblenavigation.listener.BubbleNavigationChangeListener;
 import com.parse.ParseException;
 import com.parse.ParseFile;
@@ -29,6 +30,25 @@ public class EditRecipeActivity<recipe> extends AddRecipeActivity {
         super.onCreate(savedInstanceState);
 
         etRecipeTitle.setText(recipe.getTitle());
+        setupBubbleNavigation();
+
+        setVisibilityFabSubmit(true);
+
+        KeyboardUtils.addKeyboardToggleListener(this, new KeyboardUtils.SoftKeyboardToggleListener()
+        {
+            @Override
+            public void onToggleSoftKeyboard(boolean isVisible)
+            {
+                if (isVisible) {
+                    // hide fabSubmit button and bubble navigation bar
+                    fabSubmitRecipe.setVisibility(View.INVISIBLE);
+                    bubbleNavigation.setVisibility(View.INVISIBLE);
+                } else {
+                    fabSubmitRecipe.setVisibility(View.VISIBLE);
+                    bubbleNavigation.setVisibility(View.VISIBLE);
+                }
+            }
+        });
     }
 
     @Override
@@ -46,7 +66,6 @@ public class EditRecipeActivity<recipe> extends AddRecipeActivity {
         notes = recipe.getParsedNotes();
     }
 
-    @Override
     public void setupBubbleNavigation() {
         bubbleNavigation.setNavigationChangeListener(new BubbleNavigationChangeListener() {
             @Override
@@ -120,6 +139,8 @@ public class EditRecipeActivity<recipe> extends AddRecipeActivity {
         }
         return canSubmitRecipe;
     }
+
+
 
     @Override
     protected void saveRecipe(ParseUser currentUser, boolean hasPhotoFile, File photoFile) {

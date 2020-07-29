@@ -1,6 +1,7 @@
 package com.example.recipestorage.fragments;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
@@ -16,6 +17,7 @@ import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -26,30 +28,42 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.recipestorage.AddRecipeActivity;
+import com.example.recipestorage.AllRecipesActivity;
+import com.example.recipestorage.HomeActivity;
 import com.example.recipestorage.R;
 import com.example.recipestorage.Recipe;
 import com.example.recipestorage.adapters.RecipeAdapter;
 import com.example.recipestorage.adapters.RecipeSectionAdapter;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.parse.ParseException;
+import com.parse.ParseFile;
+import com.parse.ParseUser;
+import com.parse.SaveCallback;
 
+import org.parceler.Parcels;
+
+import java.io.File;
 import java.util.ArrayList;
 
 public class RecipeSectionFragment extends Fragment implements RecipeSectionAdapter.AdapterInterface {
+    public static final String TAG = "RecipeSectionFragment";
+    private static final Object RESULT_OK = 24;
 
     TextView tvTitle;
-
     RecipeSection recipeSection;
     String recipeSectionString;
-    Recipe recipe;
     ArrayList<String> recipeSectionContents;
     boolean isBlankRecipe;
     RecyclerView rvItems;
 
     EditText etAddRecipeSection;
+    FloatingActionButton fabSubmit;
 
-    ArrayAdapter<String> itemsAdapter;
+    RecipeSectionAdapter recipeSectionAdapter;
     OnDataPass dataPasser;
 
-    RecipeAdapter recipeAdapter;
+    Recipe newRecipe;
 
 
     public enum RecipeSection {
@@ -68,10 +82,10 @@ public class RecipeSectionFragment extends Fragment implements RecipeSectionAdap
         public void setVisibilityBubbleNavigation(boolean setVisible);
     }
 
-    public RecipeSectionFragment() {
-        // Required empty public constructor
-        recipeSectionString = "empty";
-    }
+//    public RecipeSectionFragment() {
+//        // Required empty public constructor
+//        recipeSectionString = "empty";
+//    }
 
     public RecipeSectionFragment(boolean setIsBlankRecipe, RecipeSection setRecipeSection, ArrayList<String> setRecipeSectionContents) {
         this.isBlankRecipe = setIsBlankRecipe;
@@ -87,6 +101,30 @@ public class RecipeSectionFragment extends Fragment implements RecipeSectionAdap
                 break;
             case NOTE:
                 recipeSectionString = "note";
+                break;
+            default:
+                recipeSectionString = "empty";
+        }
+    }
+
+    // for AddRecipe
+    public RecipeSectionFragment(boolean setIsBlankRecipe, RecipeSection setRecipeSection, Recipe setNewRecipe) {
+        this.isBlankRecipe = setIsBlankRecipe;
+        this.recipeSection = setRecipeSection;
+        this.newRecipe = setNewRecipe;
+
+        switch(recipeSection) {
+            case INGREDIENT:
+                recipeSectionString = "ingredient";
+                recipeSectionContents = newRecipe.getParsedIngredients();
+                break;
+            case DIRECTION:
+                recipeSectionString = "direction";
+                recipeSectionContents = newRecipe.getParsedDirections();
+                break;
+            case NOTE:
+                recipeSectionString = "note";
+                recipeSectionContents = newRecipe.getParsedNotes();
                 break;
             default:
                 recipeSectionString = "empty";
@@ -160,6 +198,7 @@ public class RecipeSectionFragment extends Fragment implements RecipeSectionAdap
         rvItems = view.findViewById(R.id.rvItems);
         tvTitle = view.findViewById(R.id.tvTitle);
         etAddRecipeSection = view.findViewById(R.id.etAddRecipeSection);
+        fabSubmit = view.findViewById(R.id.fabSubmit);
 
 
         setUpRecyclerView();
@@ -168,6 +207,9 @@ public class RecipeSectionFragment extends Fragment implements RecipeSectionAdap
 
         if (!isBlankRecipe) {
             passData(recipeSection, recipeSectionContents);
+            fabSubmit.setVisibility(View.GONE);
+        } else {
+            setupFab();
         }
 
 
@@ -194,45 +236,92 @@ public class RecipeSectionFragment extends Fragment implements RecipeSectionAdap
         });
     }
 
+    private void setupFab() {
+        fabSubmit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                recipeSectionContents = (ArrayList<String>) recipeSectionAdapter.getItems();
+                if (recipeSection != RecipeSection.NOTE && recipeSectionContents.isEmpty()) {
+                    Toast.makeText(getContext(), recipeSectionString + "s cannot be empty!", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                launchNextFragment();
+            }
+        });
+    }
+
+    private void launchNextFragment() {
+        RecipeSectionFragment fragment;
+        switch(recipeSection) {
+            case INGREDIENT:
+                newRecipe.clearIngredients();
+                newRecipe.addIngredients(recipeSectionContents);
+                fragment = new RecipeSectionFragment(true, RecipeSectionFragment.RecipeSection.DIRECTION, newRecipe);
+                getActivity().getSupportFragmentManager()
+                        .beginTransaction()
+                        .addToBackStack(null)
+                        .replace(R.id.flContainer, fragment, "AddRecipe ingredients to directions")
+                        .commit();
+                return;
+            case DIRECTION:
+                newRecipe.clearDirections();
+                newRecipe.addDirections(recipeSectionContents);
+                fragment = new RecipeSectionFragment(true, RecipeSectionFragment.RecipeSection.NOTE, newRecipe);
+                recipeSectionString = "direction";
+                getActivity().getSupportFragmentManager()
+                        .beginTransaction()
+                        .addToBackStack(null)
+                        .replace(R.id.flContainer, fragment, "AddRecipe directions to notes")
+                        .commit();
+                return;
+            case NOTE:
+                newRecipe.clearNotes();
+                newRecipe.addNotes(recipeSectionContents);
+                recipeSectionString = "note";
+                saveRecipe();
+                break;
+            default:
+                recipeSectionString = "empty";
+        }
+
+    }
+
+    protected void saveRecipe() {
+        newRecipe.setUser(ParseUser.getCurrentUser());
+
+        newRecipe.saveInBackground(new SaveCallback() {
+            @Override
+            public void done(ParseException e) {
+                if (e != null) {
+                    Log.e(TAG, "Error while saving", e);
+                    Toast.makeText(getContext(), "error while saving!", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                Toast.makeText(getContext(), "Saved!", Toast.LENGTH_LONG).show();
+                launchAllRecipesActivity();
+            }
+        });
+    }
+
+    private void launchAllRecipesActivity() {
+        Intent intent = new Intent(getContext(), AllRecipesActivity.class);
+        intent.putExtra("newRecipe", Parcels.wrap(newRecipe));
+        // set result code and bundle data for response
+        getActivity().setResult(AddRecipeActivity.RESULT_OK, intent);
+        // closes the activity, pass data to parent
+        getActivity().finish();
+    }
+
+
 
     private void setUpRecyclerView() {
         rvItems.setLayoutManager(new LinearLayoutManager(getContext()));
-        RecipeSectionAdapter recipeSectionAdapter = new RecipeSectionAdapter(getContext(), RecipeSectionFragment.this, recipeSectionContents);
+        recipeSectionAdapter = new RecipeSectionAdapter(getContext(), RecipeSectionFragment.this, recipeSectionContents);
         recipeSectionAdapter.setUndoOn(true);
         rvItems.setAdapter(recipeSectionAdapter);
         rvItems.setHasFixedSize(true);
         setUpItemTouchHelper();
         setUpAnimationDecoratorHelper();
-
-//        // Create the adapter
-//        recipeAdapter = new RecipeAdapter(getContext(), recipeSectionContents);
-//
-//        // Set the adapter on the recycler view
-//        rvItems.setAdapter(recipeAdapter);
-//
-//        // Set the Layout Manager on the recycler view
-//        rvItems.setLayoutManager(new LinearLayoutManager(getContext()));
-//
-//        final ItemTouchHelper.SimpleCallback simpleItemTouchCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT | ItemTouchHelper.DOWN | ItemTouchHelper.UP) {
-//
-//            @Override
-//            public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
-//                Toast.makeText(getContext(), "on Move", Toast.LENGTH_SHORT).show();
-//                return false;
-//            }
-//
-//            @Override
-//            public void onSwiped(RecyclerView.ViewHolder viewHolder, int swipeDir) {
-//                Toast.makeText(getContext(), "on Swiped ", Toast.LENGTH_SHORT).show();
-//                //Remove swiped item from list and notify the RecyclerView
-//                int position = viewHolder.getAdapterPosition();
-//                recipeSectionContents.remove(position);
-//                recipeAdapter.notifyDataSetChanged();
-//
-//            }
-//        };
-//        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleItemTouchCallback);
-//        itemTouchHelper.attachToRecyclerView(rvItems);
     }
 
     /**
@@ -409,11 +498,4 @@ public class RecipeSectionFragment extends Fragment implements RecipeSectionAdap
         });
     }
 
-
-
-//    private void populateListView(View view) {
-//        itemsAdapter = new ArrayAdapter<String>(getContext(), android.R.layout.simple_list_item_1, recipeSectionContents);
-//        ListView listView = (ListView) view.findViewById(R.id.rvItems);
-//        listView.setAdapter(itemsAdapter);
-//    }
 }

@@ -75,6 +75,10 @@ public class RecipeSectionAdapter extends RecyclerView.Adapter implements Filter
         lastInsertedIndex = setItems.size();
     }
 
+    public List<String> getItems() {
+        return items;
+    }
+
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         final AdapterInterface newAdapterInterface = adapterInterface;
