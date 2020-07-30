@@ -14,12 +14,14 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Filter;
 import android.widget.Filterable;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.recipestorage.R;
+import com.google.android.material.textfield.TextInputLayout;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -130,7 +132,8 @@ public class RecipeSectionAdapter extends RecyclerView.Adapter implements Filter
 
         if (itemsPendingRemoval.contains(item)) {
             // we need to show the "undo" state of the row
-            viewHolder.etData.setVisibility(View.GONE);
+            viewHolder.etDataLayout.setVisibility(View.GONE);
+            viewHolder.ivMore.setVisibility(View.GONE);
             viewHolder.itemView.setBackgroundColor(Color.RED);
             viewHolder.undoButton.setVisibility(View.VISIBLE);
             viewHolder.undoButton.setOnClickListener(new View.OnClickListener() {
@@ -148,8 +151,10 @@ public class RecipeSectionAdapter extends RecyclerView.Adapter implements Filter
         } else {
             // we need to show the "normal" state
             viewHolder.itemView.setBackgroundColor(Color.WHITE);
-            viewHolder.etData.setVisibility(View.VISIBLE);
+            viewHolder.etDataLayout.setVisibility(View.VISIBLE);
             viewHolder.etData.setText(item);
+            viewHolder.ivMore.setVisibility(View.VISIBLE);
+
             viewHolder.undoButton.setVisibility(View.GONE);
             viewHolder.undoButton.setOnClickListener(null);
         }
@@ -249,10 +254,10 @@ public class RecipeSectionAdapter extends RecyclerView.Adapter implements Filter
  */
 // TODO: figure out if this should be static
  class TestViewHolder extends RecyclerView.ViewHolder {
-
-    TextView tvData;
+    TextInputLayout etDataLayout;
     EditText etData;
     Button undoButton;
+    ImageView ivMore;
 
     private RecipeSectionAdapter.AdapterInterface newAdapterInterface;
 
@@ -261,7 +266,9 @@ public class RecipeSectionAdapter extends RecyclerView.Adapter implements Filter
         //tvData = (TextView) itemView.findViewById(R.id.tvData);
         this.newAdapterInterface = setAdapterInterface;
         undoButton = (Button) itemView.findViewById(R.id.undo_button);
+        etDataLayout = (TextInputLayout) itemView.findViewById(R.id.etDataLayout);
         etData = (EditText) itemView.findViewById(R.id.etData);
+        ivMore = (ImageView) itemView.findViewById(R.id.ivMore);
         final int position = getAdapterPosition();
 
     }

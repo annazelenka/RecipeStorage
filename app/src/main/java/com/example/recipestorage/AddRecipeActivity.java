@@ -126,13 +126,7 @@ public class AddRecipeActivity extends AppCompatActivity implements RecipeSectio
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.miFavorite) { // Compose icon has been selected
-            // Navigate to compose activity
-            return true; // true to consume the tap of this item
-        } else if (item.getItemId() == R.id.miHelp) {
-
-            return true;
-        } else if (item.getItemId() == R.id.miDelete) {
+        if (item.getItemId() == R.id.miDelete) {
             showDeleteDialog();
             return true;
         }

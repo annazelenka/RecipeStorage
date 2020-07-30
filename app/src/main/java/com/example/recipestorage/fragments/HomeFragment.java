@@ -90,9 +90,11 @@ public class HomeFragment extends Fragment {
 
 
     private void handleCarouselView(View view) {
+        int allRecipesSize = allRecipes == null ? 0 : allRecipes.size();
+
         carouselView = view.findViewById(R.id.carouselView);
 
-        carouselView.setSize(allRecipes.size());
+        carouselView.setSize(allRecipesSize);
         carouselView.setResource(R.layout.item_recipe_preview);
         carouselView.setAutoPlay(false);
         carouselView.setScaleOnScroll(true);

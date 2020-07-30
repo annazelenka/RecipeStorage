@@ -3,19 +3,6 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
-        android:id="@+id/miHelp"
-        android:icon="@drawable/ic_help_outline_24px"
-        app:showAsAction="ifRoom"
-        android:title="help">
-
-    </item>
-    <item
-        android:id="@+id/miFavorite"
-        android:icon="@drawable/ic_favorite_border_black_18dp"
-        app:showAsAction="ifRoom"
-        android:title="Favorite">
-    </item>
-    <item
         android:id="@+id/miDelete"
         android:icon="@drawable/ic_delete_outline_24px"
         app:showAsAction="ifRoom"

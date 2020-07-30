@@ -316,7 +316,7 @@ public class RecipeSectionFragment extends Fragment implements RecipeSectionAdap
     private void setUpRecyclerView() {
         rvItems.setLayoutManager(new LinearLayoutManager(getContext()));
         recipeSectionAdapter = new RecipeSectionAdapter(getContext(), RecipeSectionFragment.this, recipeSectionContents);
-        recipeSectionAdapter.setUndoOn(true);
+        //recipeSectionAdapter.setUndoOn(true);
         rvItems.setAdapter(recipeSectionAdapter);
         rvItems.setHasFixedSize(true);
         setUpItemTouchHelper();
