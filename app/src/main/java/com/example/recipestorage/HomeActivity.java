@@ -8,20 +8,14 @@ import androidx.fragment.app.FragmentManager;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.Filter;
 import android.widget.Filterable;
-import android.widget.ImageButton;
-import android.widget.TextView;
 
 import com.example.recipestorage.fragments.AllRecipesFragment;
 import com.example.recipestorage.fragments.HomeFragment;
 import com.example.recipestorage.fragments.MoreFragment;
 import com.example.recipestorage.utils.RecipeTrie;
-import com.facebook.AccessToken;
-import com.facebook.Profile;
 import com.gauravk.bubblenavigation.BubbleNavigationConstraintView;
 import com.gauravk.bubblenavigation.listener.BubbleNavigationChangeListener;
 import com.parse.FindCallback;
@@ -39,6 +33,7 @@ public class HomeActivity extends AppCompatActivity implements Filterable {
     private static final int RECIPE_LIMIT = 20;
     private static final String TAG = "HomeActivity";
     private static final int REQUEST_CODE = 24;
+    public static final int DELETE_REQUEST_CODE = 10;
 
 
     final FragmentManager fragmentManager = getSupportFragmentManager();
@@ -59,6 +54,7 @@ public class HomeActivity extends AppCompatActivity implements Filterable {
         currentUser = ParseUser.getCurrentUser();
 
         populateRecipes();
+        setupBubbleNavigation();
     }
 
     public void setupBubbleNavigation() {
@@ -112,7 +108,6 @@ public class HomeActivity extends AppCompatActivity implements Filterable {
                 allRecipes = recipes;
                 recipeTrie = new RecipeTrie();
                 recipeTrie.populateRecipeTrie(allRecipes);
-                setupBubbleNavigation();
             }
         });
     }
@@ -127,10 +122,15 @@ public class HomeActivity extends AppCompatActivity implements Filterable {
         if (requestCode == REQUEST_CODE && resultCode == RESULT_OK) {
             // Get data (Tweet) from the intent (need to use Parcelable b/c Tweet is custom object)
             Recipe recipe = Parcels.unwrap(data.getParcelableExtra("newRecipe"));
-            // Update the Recycler View with this new tweet
-
-            // Modify data source of tweets
+            // Update the Recycler View with this new recipe
             allRecipes.add(0, recipe);
+
+            recipeTrie.insert(recipe.getTitle(), recipe);
+        } else if (requestCode == DELETE_REQUEST_CODE && resultCode == RESULT_OK) {
+            // Get data (Tweet) from the intent (need to use Parcelable b/c Tweet is custom object)
+            Recipe recipe = Parcels.unwrap(data.getParcelableExtra("recipeToDelete"));
+
+            recipeTrie.delete(recipe);
         }
         super.onActivityResult(requestCode, resultCode, data);
     }

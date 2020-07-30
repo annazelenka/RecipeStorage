@@ -94,8 +94,6 @@
 
             android:layout_marginEnd="16dp"
             android:layout_marginBottom="16dp"
-            android:backgroundTint="@color/colorWhite"
-            android:src="@drawable/ic_share_24px"
             android:layout_gravity="center">
 
         </com.facebook.share.widget.ShareButton>

@@ -21,10 +21,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
-        android:text="recipe title"
         android:textAlignment="center"
         android:textSize="20sp"
         android:textStyle="bold"
+        android:layout_marginBottom="8dp"
         android:textColor="@color/colorBlack">
 
     </TextView>
@@ -34,7 +34,6 @@
         android:layout_width="150sp"
         android:layout_height="150sp"
         android:layout_below="@+id/tvTitle"
-        android:src="@drawable/fried_rice"
         android:layout_centerHorizontal="true"
         android:scaleType="centerCrop"
         ></ImageView>
@@ -45,18 +44,10 @@
         android:layout_height="wrap_content"
         android:src="@drawable/ic_edit_24px"
         android:layout_alignEnd="@+id/ivPicture"
-        android:layout_alignBottom="@+id/ivPicture"></ImageButton>
+        android:layout_alignBottom="@+id/ivPicture"
+        android:backgroundTint="@color/colorWhite"
+        ></ImageButton>
 
-
-
-<!--    <Button-->
-<!--        android:id="@+id/btnEditRecipe"-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:layout_height="50dp"-->
-<!--        android:layout_marginTop="0dp"-->
-<!--        android:text="Edit"-->
-<!--        android:layout_below="@id/ivPicture"-->
-<!--        android:layout_centerHorizontal="true"></Button>-->
 
 </RelativeLayout>
 </androidx.cardview.widget.CardView>

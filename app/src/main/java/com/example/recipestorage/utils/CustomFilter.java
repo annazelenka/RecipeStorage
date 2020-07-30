@@ -4,7 +4,6 @@ import android.widget.Filter;
 
 import com.example.recipestorage.Recipe;
 import com.example.recipestorage.adapters.RecipeAdapter;
-import com.example.recipestorage.adapters.RecipeSectionAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,9 +13,9 @@ public class CustomFilter extends Filter {
     private List<Recipe> recipeList;
     private List<Recipe> filteredRecipeList;
     private RecipeAdapter adapter;
-    private Trie recipeTrie;
+    private RecipeTrie recipeTrie;
 
-    public CustomFilter(List<Recipe> setRecipeList, RecipeAdapter setAdapter, Trie setRecipeTrie) {
+    public CustomFilter(List<Recipe> setRecipeList, RecipeAdapter setAdapter, RecipeTrie setRecipeTrie) {
         this.adapter = setAdapter;
         this.recipeList = setRecipeList;
         this.filteredRecipeList = new ArrayList();

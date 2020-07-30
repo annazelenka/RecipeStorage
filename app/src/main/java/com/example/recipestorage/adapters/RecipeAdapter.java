@@ -18,10 +18,11 @@ import androidx.core.util.Pair;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.recipestorage.EditRecipeActivity;
+import com.example.recipestorage.HomeActivity;
 import com.example.recipestorage.R;
 import com.example.recipestorage.Recipe;
 import com.example.recipestorage.utils.CustomFilter;
-import com.example.recipestorage.utils.Trie;
+import com.example.recipestorage.utils.RecipeTrie;
 
 import org.parceler.Parcels;
 
@@ -33,6 +34,7 @@ import coil.ImageLoader;
 import coil.request.LoadRequest;
 
 public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder> {
+    public static final int DELETE_REQUEST_CODE = 10;
 
     Context context;
     List<Recipe> allRecipes;
@@ -54,7 +56,7 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
         notifyDataSetChanged();
     }
 
-    public void setFilter(Trie recipeTrie) {
+    public void setFilter(RecipeTrie recipeTrie) {
         filter = new CustomFilter(allRecipes, this, recipeTrie);
     }
 
@@ -137,7 +139,7 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
                         .build();
                 imageLoader.execute(request);
             } else {
-                ivPicture.setVisibility(View.GONE);
+                ivPicture.setVisibility(View.VISIBLE);
             }
 
             tvTitle.setText(recipe.getTitle());
@@ -168,8 +170,7 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
             Pair<View, String> p2 = Pair.create((View)tvTitle, "tvTitle");
             ActivityOptionsCompat options = ActivityOptionsCompat.
                     makeSceneTransitionAnimation(activity, p1, p2);
-            context.startActivity(intent, options.toBundle());
-
+            ((HomeActivity) context).startActivityForResult(intent, DELETE_REQUEST_CODE, options.toBundle());
         }
     }
 }
