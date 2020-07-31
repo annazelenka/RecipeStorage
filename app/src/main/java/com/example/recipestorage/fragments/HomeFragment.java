@@ -9,6 +9,8 @@ import androidx.core.app.ActivityOptionsCompat;
 import androidx.core.util.Pair;
 import androidx.fragment.app.Fragment;
 
+import android.os.Handler;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +18,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.ethanhua.skeleton.Skeleton;
 import com.ethanhua.skeleton.SkeletonScreen;
 import com.example.recipestorage.EditRecipeActivity;
 import com.example.recipestorage.R;
@@ -31,6 +34,7 @@ import com.parse.ParseUser;
 
 import org.parceler.Parcels;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import coil.Coil;
@@ -51,11 +55,14 @@ public class HomeFragment extends Fragment {
     View onCreatedView;
 
     SkeletonScreen skeletonScreen;
+    List<SkeletonScreen> screens;
+    boolean isLoading;
 
-    public HomeFragment(List<Recipe> setAllRecipes, RecipeTrie setTrie) {
+    public HomeFragment(List<Recipe> setAllRecipes, RecipeTrie setTrie, boolean setIsLoading) {
         // Required empty public constructor
         this.allRecipes = setAllRecipes;
         this.trie = setTrie;
+        this.isLoading = setIsLoading;
     }
 
 
@@ -84,7 +91,9 @@ public class HomeFragment extends Fragment {
         tvWelcome.setText("Welcome, " + name + "!");
 
         onCreatedView = view;
-        setupCarouselView(view);
+        screens = new ArrayList<SkeletonScreen>();
+        int allRecipesSize = allRecipes == null ? 0 : allRecipes.size();
+        setupCarouselView(view, 5, isLoading);
     }
 
     public boolean isFacebookUser() {
@@ -93,22 +102,55 @@ public class HomeFragment extends Fragment {
 
     public void reloadCarouselView(List<Recipe> setAllRecipes) {
         this.allRecipes = setAllRecipes;
-        setupCarouselView(onCreatedView);
-    }
-
-    private void setupCarouselView(View view) {
         int allRecipesSize = allRecipes == null ? 0 : allRecipes.size();
 
+        final Runnable r = new Runnable() {
+            public void run() {
+
+                setupCarouselView(onCreatedView, allRecipesSize, false);
+            }
+        };
+        Handler handler = new Handler();
+        handler.postDelayed(r, 500);
+    }
+
+    private void setupCarouselView(View view, int allRecipesSize, boolean isSkeletonView) {
         carouselView = view.findViewById(R.id.carouselView);
 
+
+        int layout;
+        if (isSkeletonView) {
+            layout = R.layout.item_recipe_skeleton;
+            carouselView.setSize(allRecipesSize);
+            carouselView.setResource(layout);
+            carouselView.setAutoPlay(false);
+            carouselView.setScaleOnScroll(true);
+            carouselView.setIndicatorAnimationType(IndicatorAnimationType.SLIDE);
+            carouselView.setCarouselOffset(OffsetType.CENTER);
+            carouselView.setCarouselViewListener(new CarouselViewListener() {
+                @Override
+                public void onBindView(View view, int position) {
+                    // Example here is setting up a full image carousel
+                    skeletonScreen = Skeleton.bind(view)
+                            .load(R.layout.item_recipe_skeleton)
+                            .show();
+                    screens.add(skeletonScreen);
+
+                }
+
+            });
+            carouselView.show();
+
+            return;
+        }
+
+        for (SkeletonScreen screen: screens) {
+            screen.hide();
+        }
+
+        layout = R.layout.item_recipe_preview;
         carouselView.setSize(allRecipesSize);
-//        if (carouselView.getChildCount() > 1) {
-//            skeletonScreen = Skeleton.bind(carouselView.getChildAt(carouselView.getChildCount() - 1))
-//                    .load(R.layout.item_recipe_preview)
-//                    .shimmer(true)
-//                    .show();
-//        }
-        carouselView.setResource(R.layout.item_recipe_preview);
+        carouselView.setResource(layout);
         carouselView.setAutoPlay(false);
         carouselView.setScaleOnScroll(true);
         carouselView.setIndicatorAnimationType(IndicatorAnimationType.SLIDE);

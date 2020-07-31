@@ -68,7 +68,7 @@ public class HomeActivity extends AppCompatActivity implements Filterable {
                 switch (position) {
                     case HOME_POSITION:
                     default:
-                        currentFragment = new HomeFragment(allRecipes, recipeTrie);
+                        currentFragment = new HomeFragment(allRecipes, recipeTrie, false);
                         break;
                     case ALL_RECIPES_POSITION: //miDirections
                         currentFragment = new AllRecipesFragment(allRecipes, recipeTrie, isFacebookUser);
@@ -82,7 +82,7 @@ public class HomeActivity extends AppCompatActivity implements Filterable {
             }
         });
         bubbleNavigation.setCurrentActiveItem(HOME_POSITION);
-        currentFragment = new HomeFragment(allRecipes, recipeTrie);
+        currentFragment = new HomeFragment(allRecipes, recipeTrie, true);
         fragmentManager.beginTransaction().replace(R.id.flContainer, currentFragment).commit();
     }
 

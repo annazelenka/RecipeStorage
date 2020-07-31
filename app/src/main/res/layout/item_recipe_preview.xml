@@ -31,8 +31,8 @@
 
     <ImageView
         android:id="@+id/ivPicture"
-        android:layout_width="150sp"
-        android:layout_height="150sp"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
         android:layout_below="@+id/tvTitle"
         android:layout_centerHorizontal="true"
         android:scaleType="centerCrop"

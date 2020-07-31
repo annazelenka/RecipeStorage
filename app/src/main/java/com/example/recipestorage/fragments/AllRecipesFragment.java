@@ -95,18 +95,18 @@ public class AllRecipesFragment extends Fragment {
         rvRecipes.setAdapter(adapter);
         adapter.setFilter(recipeTrie);
 
-        // set up placeholders when loading
-//        skeletonScreen = Skeleton.bind(rvRecipes)
-//                .adapter(adapter)
-//                .load(R.layout.item_recipe_preview)
-//                .show();
+         // set up placeholders when loading
+        skeletonScreen = Skeleton.bind(rvRecipes)
+                .adapter(adapter)
+                .load(R.layout.item_recipe_skeleton)
+                .show();
 
-//        rvRecipes.postDelayed(new Runnable() {
-//            @Override
-//            public void run() {
-//                skeletonScreen.hide();
-//            }
-//        }, 0);
+        rvRecipes.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                skeletonScreen.hide();
+            }
+        }, 500);
 
         setupSearchView();
 

@@ -80,6 +80,7 @@ public class RecipeSummaryFragment extends Fragment {
     EditText etRecipeTime;
     ImageView ivRecipeImage;
     FloatingActionButton fabSubmit;
+    MaterialDialog mDialog;
 
     boolean isFavoriteRecipe;
     boolean hasExistingRecipe;
@@ -339,7 +340,7 @@ public class RecipeSummaryFragment extends Fragment {
 
 
     private void showDeleteDialog() {
-        MaterialDialog mDialog = new MaterialDialog.Builder(getActivity())
+        mDialog = new MaterialDialog.Builder(getActivity())
                 .setTitle("Delete?")
                 .setMessage("Are you sure you want to delete this file?")
                 .setCancelable(false)
@@ -369,6 +370,7 @@ public class RecipeSummaryFragment extends Fragment {
 
     // deletes the recipe then launches home activity
     private void launchHomeActivityAfterDeletion() {
+        mDialog.dismiss();
         Intent data = new Intent();
         data.putExtra("titleToDelete", recipe.getTitle());
         data.putExtra("objectIdToDelete", recipe.getObjectId());
