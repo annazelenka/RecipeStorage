@@ -29,6 +29,8 @@ import com.example.recipestorage.BitmapScaler;
 import com.example.recipestorage.HomeActivity;
 import com.example.recipestorage.R;
 import com.example.recipestorage.Recipe;
+import com.facebook.share.model.ShareHashtag;
+import com.facebook.share.model.ShareLinkContent;
 import com.facebook.share.model.SharePhoto;
 import com.facebook.share.model.SharePhotoContent;
 import com.facebook.share.widget.ShareButton;
@@ -60,8 +62,6 @@ public class RecipeSummaryFragment extends Fragment {
 
     private File photoFile;
     public String photoFileName = "photo.jpg";
-
-    //CAPTURE IMAGE REQUEST CODE = 1034???
 
     Recipe recipe;
 
@@ -220,17 +220,24 @@ public class RecipeSummaryFragment extends Fragment {
                 public void done(byte[] data, ParseException e) {
                     if (e == null) {
                         Bitmap bmp = BitmapFactory.decodeByteArray(data, 0, data.length);
+
                         SharePhoto photo = new SharePhoto.Builder()
                                 .setBitmap(bmp)
                                 .build();
-                        photoContent = new SharePhotoContent.Builder()
+
+                        String hashtag =  "#" + recipe.getTitle().replaceAll("\\s","");
+                        SharePhotoContent photoContent = new SharePhotoContent.Builder()
                                 .addPhoto(photo)
+                                .setShareHashtag(new ShareHashtag.Builder()
+                                        .setHashtag(hashtag)
+                                        .build())
+
                                 .build();
 
                         btnShare.setShareContent(photoContent);
                     } else {
                         Log.d("test",
-                                "Problem load image the data.");
+                                "failed to load the image data");
                     }
                 }
             });
@@ -242,8 +249,6 @@ public class RecipeSummaryFragment extends Fragment {
     private void shareOnFacebook() {
         ShareDialog shareDialog = new ShareDialog(RecipeSummaryFragment.this);
         shareDialog.show(photoContent, ShareDialog.Mode.AUTOMATIC);
-
-        Toast.makeText(getContext(), "Shared photo!", Toast.LENGTH_SHORT).show();
     }
 
     private void populateRecipeFields() {
