@@ -15,6 +15,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.ethanhua.skeleton.Skeleton;
+import com.ethanhua.skeleton.SkeletonScreen;
 import com.example.recipestorage.AddRecipeActivity;
 import com.example.recipestorage.R;
 import com.example.recipestorage.Recipe;
@@ -39,7 +41,9 @@ public class AllRecipesFragment extends Fragment {
 
     public static final String TAG = "AllRecipesActivity";
     public static final int NUM_COLUMNS = 2;
-    private static final int REQUEST_CODE = 24;
+    private static final int ADD_REQUEST_CODE = 24;
+    public static final int EDIT_REQUEST_CODE = 5;
+
     private static final int RESULT_OK = 24;
 
 
@@ -52,6 +56,7 @@ public class AllRecipesFragment extends Fragment {
 
     ParseUser currentUser;
     Boolean isFacebookUser;
+    SkeletonScreen skeletonScreen;
 
 
     public AllRecipesFragment(List<Recipe> setAllRecipes, RecipeTrie setTrie, boolean setIsFacebookUser) {
@@ -82,13 +87,26 @@ public class AllRecipesFragment extends Fragment {
 
 
         // Initialize the list of tweets and adapter
-        //allRecipes = new ArrayList<Recipe>();
         adapter = new RecipeAdapter(getActivity(), getContext(), allRecipes);
+
 
         // Recycler view setup: layout manager and the adapter
         rvRecipes.setLayoutManager(new GridLayoutManager(getContext(), NUM_COLUMNS));
         rvRecipes.setAdapter(adapter);
         adapter.setFilter(recipeTrie);
+
+        // set up placeholders when loading
+//        skeletonScreen = Skeleton.bind(rvRecipes)
+//                .adapter(adapter)
+//                .load(R.layout.item_recipe_preview)
+//                .show();
+
+//        rvRecipes.postDelayed(new Runnable() {
+//            @Override
+//            public void run() {
+//                skeletonScreen.hide();
+//            }
+//        }, 0);
 
         setupSearchView();
 
@@ -106,7 +124,25 @@ public class AllRecipesFragment extends Fragment {
 
     private void launchAddRecipe() {
         Intent intent = new Intent(getContext(), AddRecipeActivity.class);
-        startActivityForResult(intent, REQUEST_CODE);
+        getActivity().startActivityForResult(intent, ADD_REQUEST_CODE);
+    }
+
+    public void notifyDatasetChanged() {
+        adapter.notifyDataSetChanged();
+    }
+
+    public void notifyItemInserted(int position) {
+        adapter.notifyItemInserted(position);
+        rvRecipes.smoothScrollToPosition(position);
+    }
+
+    public void notifyItemChanged(int position) {
+        adapter.notifyItemChanged(position);
+        rvRecipes.smoothScrollToPosition(position);
+    }
+
+    public void notifyItemRemoved(int position) {
+        adapter.notifyItemRemoved(position);
     }
 
     private void loadGraphData() {

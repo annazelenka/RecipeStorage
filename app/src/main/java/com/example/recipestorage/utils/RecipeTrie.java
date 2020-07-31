@@ -196,7 +196,11 @@ public class RecipeTrie {
      @param recipeToDelete the recipe to be deleted
      */
     public void delete(Recipe recipeToDelete) {
-        TrieNode current = getInsertionNode(recipeToDelete.getTitle(), true);
+        delete(recipeToDelete.getTitle(), recipeToDelete.getObjectId());
+    }
+
+    public void delete(String title, String objectId) {
+        TrieNode current = getInsertionNode(title, true);
         leafNodes = new ArrayList<TrieNode>();
         populateLeafNodesAtSubroot(current);
 
@@ -207,7 +211,7 @@ public class RecipeTrie {
         boolean shouldDeleteKey = (leafNodes.size() == 1);
 
         for (TrieNode recipeNode: leafNodes) {
-            if (recipeNode.recipe == recipeToDelete) {
+            if (recipeNode.recipe.getObjectId().equals(objectId)) {
                 current.children.remove(recipeNode);
                 recipeNode = null;
             }

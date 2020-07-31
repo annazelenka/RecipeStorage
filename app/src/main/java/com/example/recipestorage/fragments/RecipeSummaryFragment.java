@@ -1,5 +1,6 @@
 package com.example.recipestorage.fragments;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -15,6 +16,7 @@ import androidx.fragment.app.FragmentManager;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,6 +25,7 @@ import android.view.animation.AnimationUtils;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.recipestorage.BitmapScaler;
@@ -44,11 +47,14 @@ import com.pedromassango.doubleclick.DoubleClickListener;
 import com.shreyaspatil.MaterialDialog.MaterialDialog;
 import com.shreyaspatil.MaterialDialog.interfaces.DialogInterface;
 
+import org.parceler.Parcels;
+
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 
 import coil.Coil;
 import coil.ImageLoader;
@@ -62,6 +68,7 @@ public class RecipeSummaryFragment extends Fragment {
 
     private File photoFile;
     public String photoFileName = "photo.jpg";
+    String originalTitle;
 
     Recipe recipe;
 
@@ -74,10 +81,12 @@ public class RecipeSummaryFragment extends Fragment {
     ImageView ivRecipeImage;
     FloatingActionButton fabSubmit;
 
-
     boolean isFavoriteRecipe;
     boolean hasExistingRecipe;
     SharePhotoContent photoContent;
+    OnDataPass dataPasser;
+    int position;
+    String returnFragment;
 
     public RecipeSummaryFragment() {
         // Required empty public constructor
@@ -86,10 +95,13 @@ public class RecipeSummaryFragment extends Fragment {
         this.isFavoriteRecipe = false;
     }
 
-    public RecipeSummaryFragment(Recipe setRecipe) {
+    public RecipeSummaryFragment(Recipe setRecipe, int setPosition, String setReturnFragment) {
         this.recipe = setRecipe;
+        this.originalTitle = setRecipe.getTitle();
         this.hasExistingRecipe = true;
         this.isFavoriteRecipe = recipe.isFavorite();
+        this.position = setPosition;
+        this.returnFragment = setReturnFragment;
     }
 
 
@@ -166,6 +178,30 @@ public class RecipeSummaryFragment extends Fragment {
             }
             // TODO: change after testing on physical device
           }, 500));
+
+        etTitle.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
+                String text = etTitle.getText().toString();
+                if (text.isEmpty()) {
+                    return false;
+                }
+                dataPasser.onChangeTitlePass(text);
+                return true;
+            }
+        });
+    }
+
+    public interface OnDataPass {
+        public void setOriginalTitle(String originalTitle);
+        public void onChangeTitlePass(String newTitle);
+        public void onChangeImagePass(File newPhotoFile);
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        dataPasser = (RecipeSummaryFragment.OnDataPass) context;
     }
 
     private void setupFab() {
@@ -202,6 +238,8 @@ public class RecipeSummaryFragment extends Fragment {
                 .addToBackStack(null)
                 .replace(R.id.flContainer, fragment, "AddRecipe summary to ingredients")
                 .commit();
+
+        dataPasser.setOriginalTitle(originalTitle);
     }
 
     private boolean hasTitle() {
@@ -309,8 +347,7 @@ public class RecipeSummaryFragment extends Fragment {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int which) {
                         // Delete Operation
-                        recipe.deleteInBackground();
-                        launchHomeActivity();
+                        launchHomeActivityAfterDeletion();
                     }
                 })
                 .setNegativeButton("Cancel", R.drawable.ic_clear_24px, new MaterialDialog.OnClickListener() {
@@ -328,6 +365,18 @@ public class RecipeSummaryFragment extends Fragment {
     private void launchHomeActivity() {
         Intent intent = new Intent(getActivity(), HomeActivity.class);
         startActivity(intent);
+    }
+
+    // deletes the recipe then launches home activity
+    private void launchHomeActivityAfterDeletion() {
+        Intent data = new Intent();
+        data.putExtra("titleToDelete", recipe.getTitle());
+        data.putExtra("objectIdToDelete", recipe.getObjectId());
+        data.putExtra("returnFragment", returnFragment);
+        data.putExtra("position", position);
+        recipe.deleteInBackground();
+        getActivity().setResult(RESULT_OK, data); // set result code and bundle data for response
+        getActivity().finish(); // closes the activity, pass data to parent
     }
 
     protected void launchCamera() {
@@ -427,6 +476,7 @@ public class RecipeSummaryFragment extends Fragment {
                 ivRecipeImage.setImageBitmap(takenImage);
                 ivRecipeImage.setVisibility(View.VISIBLE);
                 recipe.setImage(new ParseFile(photoFile));
+                dataPasser.onChangeImagePass(photoFile);
             } else { // Result was a failure
                 Toast.makeText(getActivity(), "Picture wasn't taken!", Toast.LENGTH_SHORT).show();
             }

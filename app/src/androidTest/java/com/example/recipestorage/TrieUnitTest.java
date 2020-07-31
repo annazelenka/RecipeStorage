@@ -5,7 +5,7 @@ import android.content.Context;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.platform.app.InstrumentationRegistry;
 
-import com.example.recipestorage.utils.Trie;
+import com.example.recipestorage.utils.RecipeTrie;
 import com.parse.Parse;
 import com.parse.ParseObject;
 
@@ -62,12 +62,12 @@ public class TrieUnitTest {
 
     @Test
     public void testFindNullTree() {
-        Trie trie = new Trie();
+        RecipeTrie trie = new RecipeTrie();
 
         assertEquals(null, trie.find("a"));
 
         // make sure find didn't break anything
-        Trie.TrieNode root = trie.getRoot();
+        RecipeTrie.TrieNode root = trie.getRoot();
         assertFalse(root.isRecipe());
         assertEquals(0, root.getValue());
         assertEquals(0, root.getChildren().size());
@@ -79,7 +79,7 @@ public class TrieUnitTest {
     public void testSimpleInsertAndFind() {
         String key = "a";
 
-        Trie trie = new Trie();
+        RecipeTrie trie = new RecipeTrie();
         trie.insert(key, null);
 
         expectedRecipes = new ArrayList<Recipe>();
@@ -96,7 +96,7 @@ public class TrieUnitTest {
         recipe4.setIsFavorite(true);
 
 
-        Trie trie = new Trie();
+        RecipeTrie trie = new RecipeTrie();
         trie.insert(key, recipe4);
 
         expectedRecipes = new ArrayList<Recipe>();
@@ -125,7 +125,7 @@ public class TrieUnitTest {
 
         expectedRecipes = new ArrayList<Recipe>();
 
-        Trie trie = new Trie();
+        RecipeTrie trie = new RecipeTrie();
         expectedRecipes = new ArrayList<Recipe>();
 
         for (Recipe recipe: recipes) {
@@ -153,11 +153,13 @@ public class TrieUnitTest {
     // test deleting a recipe when there are recipes w/ same prefix, ie key is PARTIALLY deleted
     @Test
     public void testDeleteRecipeAndKey() {
-        Trie trie = new Trie();
+        RecipeTrie trie = new RecipeTrie();
         recipe = (Recipe) ParseObject.create("Recipe");
         recipe.setTitle("tacos");
+        recipe.setObjectId("5a4d");
         recipe3 = (Recipe) ParseObject.create("Recipe");
         recipe3.setTitle("taco");
+        recipe3.setObjectId("3a9d");
         trie.insert(recipe3.getTitle(), recipe3);
 
         trie.delete(recipe);
@@ -171,9 +173,10 @@ public class TrieUnitTest {
     // test deleting a recipe when there are no recipes w/ same prefix and whole key is deleted
     @Test
     public void testDeleteRecipe() {
-        Trie trie = new Trie();
+        RecipeTrie trie = new RecipeTrie();
         recipe2 = (Recipe) ParseObject.create("Recipe");
         recipe2.setTitle("pecan pie");
+        recipe2.setObjectId("87e32");
         trie.insert(recipe2.getTitle(), recipe2);
 
         trie.delete(recipe2);
@@ -185,11 +188,13 @@ public class TrieUnitTest {
     // test deleting a recipe when there are "sibling" recipes, ie key is NOT deleted
     @Test
     public void testDeleteRecipeWithSiblings() {
-        Trie trie = new Trie();
+        RecipeTrie trie = new RecipeTrie();
         recipe = (Recipe) ParseObject.create("Recipe");
         recipe.setTitle("tacos");
+        recipe.setObjectId("5a4d");
         recipe3 = (Recipe) ParseObject.create("Recipe");
         recipe3.setTitle("tacos");
+        recipe3.setObjectId("3a9d");
         ArrayList<Recipe> expectedRecipes = new ArrayList<Recipe>();
         expectedRecipes.add(recipe);
         expectedRecipes.add(recipe3);

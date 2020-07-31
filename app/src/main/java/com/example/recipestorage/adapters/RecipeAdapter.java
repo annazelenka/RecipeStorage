@@ -34,6 +34,7 @@ import coil.ImageLoader;
 import coil.request.LoadRequest;
 
 public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder> {
+    public static final int EDIT_REQUEST_CODE = 5;
     public static final int DELETE_REQUEST_CODE = 10;
 
     Context context;
@@ -46,8 +47,8 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
         this.activity = setActivity;
         this.context = context;
         this.allRecipes = setRecipes;
-
         this.recipesFiltered = setRecipes;
+
     }
 
     public void addAll(List<Recipe> list) {
@@ -99,10 +100,13 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
         holder.bind(data);
     }
 
-    //Returns teh total count of items in teh list
+    //Returns the total count of items in the list
     @Override
     public int getItemCount() {
-        return recipesFiltered.size();
+        if (recipesFiltered != null) {
+            return recipesFiltered.size();
+        }
+        return 0;
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
@@ -147,7 +151,7 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
             btnEditRecipe.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    launchRecipeEditActivity(recipe, ivPicture, tvTitle);
+                    launchRecipeEditActivity(recipe, ivPicture, tvTitle, getAdapterPosition());
                 }
             });
         }
@@ -163,14 +167,16 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
             }
         }
 
-        private void launchRecipeEditActivity(Recipe recipe, ImageView ivPicture, TextView tvTitle) {
+        private void launchRecipeEditActivity(Recipe recipe, ImageView ivPicture, TextView tvTitle, int position) {
             Intent intent = new Intent(context, EditRecipeActivity.class);
             intent.putExtra("recipe", Parcels.wrap(recipe));
+            intent.putExtra("returnFragment", "AllRecipesFragment");
+            intent.putExtra("position", position);
             Pair<View, String> p1 = Pair.create((View)ivPicture, "recipeImage");
             Pair<View, String> p2 = Pair.create((View)tvTitle, "tvTitle");
             ActivityOptionsCompat options = ActivityOptionsCompat.
                     makeSceneTransitionAnimation(activity, p1, p2);
-            ((HomeActivity) context).startActivityForResult(intent, DELETE_REQUEST_CODE, options.toBundle());
+            ((HomeActivity) context).startActivityForResult(intent, EDIT_REQUEST_CODE, options.toBundle());
         }
     }
 }

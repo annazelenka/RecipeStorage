@@ -28,21 +28,30 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/etUsernameLayout"
-                    android:layout_width="match_parent"
+                <TextView
+                    android:id="@+id/tvTitle"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:hint="Put the recipe title here!"
-                    android:layout_margin="16dp"
-                    android:layout_marginTop="32dp">
+                    android:text=" title"
+                    android:textStyle="bold"
+                    android:textSize="48sp"></TextView>
 
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/etRecipeTitle"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        />
 
-                </com.google.android.material.textfield.TextInputLayout>
+<!--                <com.google.android.material.textfield.TextInputLayout-->
+<!--                    android:id="@+id/etUsernameLayout"-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:hint="Put the recipe title here!"-->
+<!--                    android:layout_margin="16dp"-->
+<!--                    android:layout_marginTop="32dp">-->
+
+<!--                    <com.google.android.material.textfield.TextInputEditText-->
+<!--                        android:id="@+id/etRecipeTitle"-->
+<!--                        android:layout_width="match_parent"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        />-->
+<!---->
+<!--                </com.google.android.material.textfield.TextInputLayout>-->
 
 
             </RelativeLayout>
@@ -69,7 +78,8 @@
         app:fabSize="normal"
         android:layout_marginRight="16dp"
         android:layout_marginBottom="96dp"
-        android:layout_gravity="bottom|right"/>
+        android:layout_gravity="bottom|right"
+        android:backgroundTint="@color/colorWhite"/>
 
 
     <com.gauravk.bubblenavigation.BubbleNavigationConstraintView

@@ -17,6 +17,8 @@ import com.parse.ParseException;
 import com.parse.ParseFile;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
+import com.shreyaspatil.MaterialDialog.MaterialDialog;
+import com.shreyaspatil.MaterialDialog.interfaces.DialogInterface;
 
 import org.parceler.Parcels;
 
@@ -24,14 +26,16 @@ import java.io.File;
 
 public class EditRecipeActivity<recipe> extends AddRecipeActivity {
 
+    int adapterPosition;
+    String returnFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        etRecipeTitle.setText(recipe.getTitle());
-        setupBubbleNavigation();
+        tvTitle.setText(recipe.getTitle());
 
+        setupBubbleNavigation();
         setVisibilityFabSubmit(true);
 
         KeyboardUtils.addKeyboardToggleListener(this, new KeyboardUtils.SoftKeyboardToggleListener()
@@ -53,8 +57,10 @@ public class EditRecipeActivity<recipe> extends AddRecipeActivity {
 
     @Override
     protected void setDefaultFragment() {
+        returnFragment = getIntent().getStringExtra("returnFragment");
+        adapterPosition = getIntent().getIntExtra("position",0);
         toolbar.setVisibility(View.GONE);
-        Fragment fragment = new RecipeSummaryFragment(recipe);
+        Fragment fragment = new RecipeSummaryFragment(recipe, adapterPosition, returnFragment);
         fragmentManager.beginTransaction().replace(R.id.flContainer, fragment).commit();
     }
 
@@ -74,7 +80,7 @@ public class EditRecipeActivity<recipe> extends AddRecipeActivity {
                 switch (position) {
                     case HOME_POSITION:
                         toolbar.setVisibility(View.GONE);
-                        fragment = new RecipeSummaryFragment(recipe);
+                        fragment = new RecipeSummaryFragment(recipe, adapterPosition, returnFragment);
                         break;
                     case INGREDIENTS_POSITION: //miDirections
                         toolbar.setVisibility(View.VISIBLE);
@@ -94,37 +100,10 @@ public class EditRecipeActivity<recipe> extends AddRecipeActivity {
             }
         });
         bubbleNavigation.setCurrentActiveItem(HOME_POSITION);
+        setDefaultFragment();
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        Fragment fragment;
-        switch (item.getItemId()) {
-            case R.id.miDelete:
-                showDeleteDialog();
-                return true;
-            case R.id.miHome:
-                fragment = new RecipeSummaryFragment(recipe);
-                break;
-            case R.id.miIngredients:
-                toolbar.setVisibility(View.VISIBLE);
-                fragment = new RecipeSectionFragment(false, RecipeSectionFragment.RecipeSection.INGREDIENT, recipe.getParsedIngredients());
-                break;
-            case R.id.miDirections:
-                toolbar.setVisibility(View.VISIBLE);
-                fragment = new RecipeSectionFragment(false, RecipeSectionFragment.RecipeSection.DIRECTION, recipe.getParsedDirections());
-                break;
-            case R.id.miNotes:
-            default:
-                toolbar.setVisibility(View.VISIBLE);
-                fragment = new RecipeSectionFragment(false, RecipeSectionFragment.RecipeSection.NOTE, recipe.getParsedNotes());
-                break;
 
-        }
-        //fragmentManager.beginTransaction().replace(R.id.flContainer, fragment).commit();
-        startAnimatedFragment(fragment);
-        return true;
-    }
 
     @Override
     protected boolean canSubmitRecipe() {
@@ -141,7 +120,8 @@ public class EditRecipeActivity<recipe> extends AddRecipeActivity {
     @Override
     protected void saveRecipe(ParseUser currentUser, boolean hasPhotoFile, File photoFile) {
         recipe.setUser(currentUser);
-        recipe.setTitle(etRecipeTitle.getText().toString());
+        //recipe.setTitle(etRecipeTitle.getText().toString());
+
 
         if (ingredientsDataChanged) {
             recipe.clearIngredients();
@@ -161,7 +141,11 @@ public class EditRecipeActivity<recipe> extends AddRecipeActivity {
             recipe.addNotes(notes);
         }
 
-        if (hasPhotoFile) {
+        if (titleChanged) {
+            recipe.setTitle(title);
+        }
+
+        if (imageChanged) {
             recipe.setImage(new ParseFile(photoFile));
         }
 
@@ -174,8 +158,20 @@ public class EditRecipeActivity<recipe> extends AddRecipeActivity {
                     return;
                 }
                 Toast.makeText(EditRecipeActivity.this, "Saved!", Toast.LENGTH_LONG).show();
-                Intent intent = new Intent(EditRecipeActivity.this, HomeActivity.class);
-                startActivity(intent);
+
+                String returnFragment = getIntent().getStringExtra("fragmentType");
+
+                Intent intent = new Intent();
+                intent.putExtra("recipeToEdit", Parcels.wrap(recipe));
+                intent.putExtra("returnFragment", returnFragment);
+                intent.putExtra("position", adapterPosition);
+
+                if (titleChanged) {
+                    intent.putExtra("originalTitle", originalTitle);
+                }
+                // Activity finished ok, return the data
+                setResult(RESULT_OK, intent); // set result code and bundle data for response
+                finish(); // closes the activity, pass data to parent
             }
         });
     }

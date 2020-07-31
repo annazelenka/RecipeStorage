@@ -12,8 +12,11 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="username"
-        android:layout_margin="16dp"
-        android:layout_marginTop="32dp">
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginTop="32dp"
+        android:layout_marginBottom="0dp"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/etUsername"
@@ -26,20 +29,23 @@
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/etPasswordLayout"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="password"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="0dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"
         android:layout_below="@+id/etUsernameLayout"
-        app:endIconMode="password_toggle"
-        >
+        android:hint="password"
+        app:endIconMode="password_toggle">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/etPassword"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="16dp"
-            android:layout_marginRight="16dp"
-            android:inputType="textPassword"/>
+            android:includeFontPadding="false"
+            android:inputType="textPassword" />
 
     </com.google.android.material.textfield.TextInputLayout>
 
@@ -51,9 +57,6 @@
         android:layout_below="@+id/etPasswordLayout"
         android:layout_alignLeft="@+id/etPasswordLayout"
         android:layout_alignRight="@+id/etPasswordLayout"
-        android:layout_marginLeft="16dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginRight="16dp"
         android:text="Log In without Facebook" />
 
     <Button
@@ -77,5 +80,6 @@
         android:textSize="16sp"
         android:layout_alignParentBottom="true"
         android:layout_marginBottom="16dp"
+        android:backgroundTint="@color/colorPrimary"
         />
 </RelativeLayout>

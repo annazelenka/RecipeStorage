@@ -81,11 +81,6 @@ public class RecipeSectionFragment extends Fragment implements RecipeSectionAdap
         public void setVisibilityBubbleNavigation(boolean setVisible);
     }
 
-//    public RecipeSectionFragment() {
-//        // Required empty public constructor
-//        recipeSectionString = "empty";
-//    }
-
     public RecipeSectionFragment(boolean setIsBlankRecipe, RecipeSection setRecipeSection, ArrayList<String> setRecipeSectionContents) {
         this.isBlankRecipe = setIsBlankRecipe;
         this.recipeSection = setRecipeSection;
@@ -287,7 +282,6 @@ public class RecipeSectionFragment extends Fragment implements RecipeSectionAdap
 
     protected void saveRecipe() {
         newRecipe.setUser(ParseUser.getCurrentUser());
-
         newRecipe.saveInBackground(new SaveCallback() {
             @Override
             public void done(ParseException e) {
@@ -303,7 +297,7 @@ public class RecipeSectionFragment extends Fragment implements RecipeSectionAdap
     }
 
     private void launchAllRecipesActivity() {
-        Intent intent = new Intent(getContext(), HomeActivity.class);
+        Intent intent = new Intent();
         intent.putExtra("newRecipe", Parcels.wrap(newRecipe));
         // set result code and bundle data for response
         getActivity().setResult(AddRecipeActivity.RESULT_OK, intent);

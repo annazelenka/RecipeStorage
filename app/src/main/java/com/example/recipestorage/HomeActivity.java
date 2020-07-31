@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Filter;
 import android.widget.Filterable;
+import android.widget.Toast;
 
 import com.example.recipestorage.fragments.AllRecipesFragment;
 import com.example.recipestorage.fragments.HomeFragment;
@@ -32,11 +33,12 @@ public class HomeActivity extends AppCompatActivity implements Filterable {
     public static final int MORE_POSITION = 2;
     private static final int RECIPE_LIMIT = 20;
     private static final String TAG = "HomeActivity";
-    private static final int REQUEST_CODE = 24;
-    public static final int DELETE_REQUEST_CODE = 10;
+    private static final int ADD_RECIPE_REQUEST_CODE = 24;
+    public static final int EDIT_REQUEST_CODE = 5;
 
 
     final FragmentManager fragmentManager = getSupportFragmentManager();
+    Fragment currentFragment;
 
     BubbleNavigationConstraintView bubbleNavigation;
 
@@ -53,43 +55,38 @@ public class HomeActivity extends AppCompatActivity implements Filterable {
         bubbleNavigation = findViewById(R.id.bubbleNavigation);
         currentUser = ParseUser.getCurrentUser();
 
-        populateRecipes();
+        currentFragment = null;
         setupBubbleNavigation();
+        populateRecipes();
     }
 
     public void setupBubbleNavigation() {
         bubbleNavigation.setNavigationChangeListener(new BubbleNavigationChangeListener() {
             @Override
             public void onNavigationChanged(View view, int position) {
-                Fragment fragment = null;
+                currentFragment = null;
                 switch (position) {
                     case HOME_POSITION:
-                        fragment = new HomeFragment(allRecipes, recipeTrie);
+                    default:
+                        currentFragment = new HomeFragment(allRecipes, recipeTrie);
                         break;
                     case ALL_RECIPES_POSITION: //miDirections
-                        launchAllRecipesScreen();
+                        currentFragment = new AllRecipesFragment(allRecipes, recipeTrie, isFacebookUser);
                         break;
                     case MORE_POSITION: //miNotes
-                        fragment = new MoreFragment(currentUser);
-                        break;
-                    default:
+                        currentFragment = new MoreFragment(currentUser);
                         break;
                 }
-                if (fragment != null) {
-                    fragmentManager.beginTransaction().replace(R.id.flContainer, fragment).commit();
-                }
+                fragmentManager.beginTransaction().replace(R.id.flContainer, currentFragment).commit();
+
             }
         });
         bubbleNavigation.setCurrentActiveItem(HOME_POSITION);
-    }
-
-    private void launchAllRecipesScreen() {
-        Fragment fragment = new AllRecipesFragment(allRecipes, recipeTrie, isFacebookUser);
-        fragmentManager.beginTransaction().replace(R.id.flContainer, fragment).commit();
+        currentFragment = new HomeFragment(allRecipes, recipeTrie);
+        fragmentManager.beginTransaction().replace(R.id.flContainer, currentFragment).commit();
     }
 
     protected void populateRecipes() {
-
         // query recipes
         ParseQuery<Recipe> query = ParseQuery.getQuery(Recipe.class);
         query.include(Recipe.KEY_USER);
@@ -106,7 +103,12 @@ public class HomeActivity extends AppCompatActivity implements Filterable {
 
                 Log.i("HomeActivity", "success getting recipes");
                 allRecipes = recipes;
+
+                if (currentFragment != null && currentFragment.getClass() == HomeFragment.class) {
+                    ((HomeFragment) currentFragment).reloadCarouselView(allRecipes);
+                }
                 recipeTrie = new RecipeTrie();
+
                 recipeTrie.populateRecipeTrie(allRecipes);
             }
         });
@@ -119,19 +121,56 @@ public class HomeActivity extends AppCompatActivity implements Filterable {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        if (requestCode == REQUEST_CODE && resultCode == RESULT_OK) {
-            // Get data (Tweet) from the intent (need to use Parcelable b/c Tweet is custom object)
+        super.onActivityResult(requestCode, resultCode, data);
+        if (data == null && resultCode != RESULT_CANCELED) {
+            Toast.makeText(this, "Data is null", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        if (requestCode == ADD_RECIPE_REQUEST_CODE) {
             Recipe recipe = Parcels.unwrap(data.getParcelableExtra("newRecipe"));
             // Update the Recycler View with this new recipe
             allRecipes.add(0, recipe);
-
             recipeTrie.insert(recipe.getTitle(), recipe);
-        } else if (requestCode == DELETE_REQUEST_CODE && resultCode == RESULT_OK) {
-            // Get data (Tweet) from the intent (need to use Parcelable b/c Tweet is custom object)
-            Recipe recipe = Parcels.unwrap(data.getParcelableExtra("recipeToDelete"));
-
-            recipeTrie.delete(recipe);
+            AllRecipesFragment fragment = (AllRecipesFragment) currentFragment;
+            fragment.notifyItemInserted(0);
+            fragmentManager.beginTransaction().replace(R.id.flContainer, currentFragment).commit();
+        } else if (requestCode == EDIT_REQUEST_CODE) {
+            int position = data.getIntExtra("position", 0);
+            String returnFragment = data.getStringExtra("returnFragment");
+            if (data.hasExtra("recipeToEdit")) {
+                Recipe recipeToEdit = (Recipe) Parcels.unwrap(data.getParcelableExtra("recipeToEdit"));
+                if (data.hasExtra("originalTitle")) {
+                    String originalTitle = data.getStringExtra("originalTitle");
+                    recipeTrie.delete(originalTitle, recipeToEdit.getObjectId());
+                    recipeTrie.insert(recipeToEdit.getTitle(), recipeToEdit);
+                }
+                allRecipes.set(position, recipeToEdit);
+                launchReturnFragment(returnFragment, false, position);
+            } else { // recipe was deleted
+                String title = data.getStringExtra("titleToDelete");
+                String objectId = data.getStringExtra("objectIdToDelete");
+                recipeTrie.delete(title, objectId);
+                allRecipes.remove(position);
+                launchReturnFragment(returnFragment, true, position);
+            }
         }
-        super.onActivityResult(requestCode, resultCode, data);
     }
+
+    private void launchReturnFragment(String returnFragment, boolean itemRemoved, int position) {
+        if (returnFragment == null) {
+            Log.i(TAG, "returnFragment is null");
+            return;
+        }
+        else if (returnFragment.equals("AllRecipesFragment")) {
+            AllRecipesFragment allRecipesFragment =  (AllRecipesFragment) currentFragment;
+            if (itemRemoved) allRecipesFragment.notifyItemRemoved(position);
+            else allRecipesFragment.notifyItemChanged(position);
+
+        } else if (returnFragment.equals("HomeFragment")) {
+            HomeFragment homeFragment = (HomeFragment) currentFragment;
+            homeFragment.reloadCarouselView(allRecipes);
+        }
+    }
+
+
 }

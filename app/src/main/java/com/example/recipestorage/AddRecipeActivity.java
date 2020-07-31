@@ -22,6 +22,7 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.recipestorage.fragments.RecipeSectionFragment;
@@ -44,7 +45,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 
-public class AddRecipeActivity extends AppCompatActivity implements RecipeSectionFragment.OnDataPass {
+public class AddRecipeActivity extends AppCompatActivity implements RecipeSectionFragment.OnDataPass, RecipeSummaryFragment.OnDataPass {
     public static final String TAG = "ComposeFragment";
     public static final int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 1034;
     public static final int CAMERA_POSITION = 4;
@@ -55,24 +56,24 @@ public class AddRecipeActivity extends AppCompatActivity implements RecipeSectio
 
     private File photoFile;
     public String photoFileName = "photo.jpg";
+    String originalTitle;
 
     final FragmentManager fragmentManager = getSupportFragmentManager();
     Toolbar toolbar;
     ImageView ivRecipeImage;
     Recipe recipe;
-    EditText etRecipeTitle;
-    ImageButton btnHelp;
-    ImageButton btnDelete;
+    //EditText etRecipeTitle;
+    TextView tvTitle;
     FloatingActionButton fabSubmitRecipe;
-    MenuItem miHelp;
-    MenuItem miFavorite;
-    MenuItem miDelete;
 
+    String title;
     ArrayList<String> ingredients;
     ArrayList<String> directions;
     ArrayList<String> notes;
 
     boolean recipeDataChanged;
+    boolean titleChanged;
+    boolean imageChanged;
     boolean ingredientsDataChanged;
     boolean directionsDataChanged;
     boolean notesDataChanged;
@@ -85,7 +86,8 @@ public class AddRecipeActivity extends AppCompatActivity implements RecipeSectio
         setContentView(R.layout.activity_add_recipe);
 
         ivRecipeImage = findViewById(R.id.ivRecipeImage);
-        etRecipeTitle = findViewById(R.id.etRecipeTitle);
+        //etRecipeTitle = findViewById(R.id.etRecipeTitle);
+        tvTitle = findViewById(R.id.tvTitle);
         bubbleNavigation = findViewById(R.id.equal_navigation_bar);
 
         initializeRecipe();
@@ -107,18 +109,12 @@ public class AddRecipeActivity extends AppCompatActivity implements RecipeSectio
         });
 
         setDefaultFragment();
+        titleChanged = false;
+        imageChanged = false;
         recipeDataChanged = false;
         ingredientsDataChanged = false;
         directionsDataChanged = false;
         notesDataChanged = false;
-
-        //btnHelp.setOnClickListener();
-//        btnDelete.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                showDeleteDialog();
-//            }
-//        });
 
         bubbleNavigation.setVisibility(View.GONE);
         setVisibilityFabSubmit(false);
@@ -126,10 +122,6 @@ public class AddRecipeActivity extends AppCompatActivity implements RecipeSectio
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.miDelete) {
-            showDeleteDialog();
-            return true;
-        }
         return super.onOptionsItemSelected(item);
     }
 
@@ -139,31 +131,6 @@ public class AddRecipeActivity extends AppCompatActivity implements RecipeSectio
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_recipe, menu);
         return true;
-    }
-
-    protected void showDeleteDialog() {
-        MaterialDialog mDialog = new MaterialDialog.Builder(this)
-                .setTitle("Delete?")
-                .setMessage("Are you sure you want to delete this file?")
-                .setCancelable(false)
-                .setPositiveButton("Delete", R.drawable.ic_delete_24px, new MaterialDialog.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int which) {
-                        // Delete Operation
-                        recipe.deleteInBackground();
-                        launchHomeActivity();
-                    }
-                })
-                .setNegativeButton("Cancel", R.drawable.ic_clear_24px, new MaterialDialog.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int which) {
-                        dialogInterface.dismiss();
-                    }
-                })
-                .build();
-
-        // Show Dialog
-        mDialog.show();
     }
 
     protected void initializeRecipe() {
@@ -217,7 +184,8 @@ public class AddRecipeActivity extends AppCompatActivity implements RecipeSectio
     }
 
     protected boolean canSubmitRecipe() {
-        boolean canSubmitRecipe = !etRecipeTitle.getText().toString().isEmpty() && ingredients.size() != 0 &&
+        // TODO: add title checking
+        boolean canSubmitRecipe =  ingredients.size() != 0 &&
                 directions.size() != 0;
         if (!canSubmitRecipe) {
             String toast = "Recipe is missing ingredients and/or directions";
@@ -228,7 +196,7 @@ public class AddRecipeActivity extends AppCompatActivity implements RecipeSectio
 
     protected void saveRecipe(ParseUser currentUser, boolean hasPhotoFile, File photoFile) {
         recipe.setUser(currentUser);
-        recipe.setTitle(etRecipeTitle.getText().toString());
+        //recipe.setTitle(etRecipeTitle.getText().toString());
         recipe.addIngredients(ingredients);
         recipe.addDirections(directions);
         recipe.addNotes(notes);
@@ -256,6 +224,7 @@ public class AddRecipeActivity extends AppCompatActivity implements RecipeSectio
         startActivity(intent);
         finishAfterTransition();
     }
+
 
     @Override
     public void onAddDataPass(RecipeSectionFragment.RecipeSection recipeSection, ArrayList<String>data) {
@@ -311,4 +280,23 @@ public class AddRecipeActivity extends AppCompatActivity implements RecipeSectio
     }
 
 
+    @Override
+    public void setOriginalTitle(String setOriginalTitle) {
+        this.originalTitle = setOriginalTitle;
+    }
+
+    @Override
+    public void onChangeTitlePass(String newTitle) {
+        title = newTitle;
+        tvTitle.setText(newTitle);
+        this.titleChanged = true;
+        this.recipeDataChanged = true;
+    }
+
+    @Override
+    public void onChangeImagePass(File newImage) {
+        this.photoFile = newImage;
+        this.imageChanged = true;
+        this.recipeDataChanged = true;
+    }
 }

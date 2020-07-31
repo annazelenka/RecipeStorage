@@ -55,3 +55,7 @@ app/src/main/java/com/example/recipestorage/utils/KeyboardUtils.java
 
 # clicking heart image; not my code
 app/src/main/res/anim/image_click.xml
+
+#AndroidManifest because it contains my Facebook SDK app ID
+app/src/main/AndroidManifest.xml
+AndroidManifest.xml
