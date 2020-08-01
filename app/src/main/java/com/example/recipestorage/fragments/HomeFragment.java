@@ -144,10 +144,6 @@ public class HomeFragment extends Fragment {
             return;
         }
 
-        for (SkeletonScreen screen: screens) {
-            screen.hide();
-        }
-
         layout = R.layout.item_recipe_preview;
         carouselView.setSize(allRecipesSize);
         carouselView.setResource(layout);
@@ -158,6 +154,10 @@ public class HomeFragment extends Fragment {
         carouselView.setCarouselViewListener(new CarouselViewListener() {
             @Override
             public void onBindView(View view, int position) {
+                skeletonScreen = Skeleton.bind(view)
+                        .load(R.layout.item_recipe_skeleton)
+                        .show();
+                screens.add(skeletonScreen);
                 // Example here is setting up a full image carousel
                 final TextView tvTitle = view.findViewById(R.id.tvTitle);
                 final ImageView ivPicture = view.findViewById(R.id.ivPicture);
@@ -200,7 +200,17 @@ public class HomeFragment extends Fragment {
             }
         });
         // After you finish setting up, show the CarouselView
-        carouselView.show();
+        final Runnable r = new Runnable() {
+            public void run() {
+
+                for (SkeletonScreen screen: screens) {
+                    screen.hide();
+                }
+                carouselView.show();
+            }
+        };
+        Handler handler = new Handler();
+        handler.postDelayed(r, 500);
     }
 
     private void launchRecipeEditActivity(Recipe recipe, ImageView ivPicture, TextView tvTitle, int position) {

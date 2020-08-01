@@ -4,14 +4,15 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.ImageDecoder;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
 
 import android.os.Environment;
 import android.provider.MediaStore;
@@ -33,7 +34,6 @@ import com.example.recipestorage.HomeActivity;
 import com.example.recipestorage.R;
 import com.example.recipestorage.Recipe;
 import com.facebook.share.model.ShareHashtag;
-import com.facebook.share.model.ShareLinkContent;
 import com.facebook.share.model.SharePhoto;
 import com.facebook.share.model.SharePhotoContent;
 import com.facebook.share.widget.ShareButton;
@@ -47,14 +47,11 @@ import com.pedromassango.doubleclick.DoubleClickListener;
 import com.shreyaspatil.MaterialDialog.MaterialDialog;
 import com.shreyaspatil.MaterialDialog.interfaces.DialogInterface;
 
-import org.parceler.Parcels;
-
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.ArrayList;
 
 import coil.Coil;
 import coil.ImageLoader;
@@ -65,6 +62,7 @@ import static com.example.recipestorage.AddRecipeActivity.CAPTURE_IMAGE_ACTIVITY
 
 public class RecipeSummaryFragment extends Fragment {
     public static final String TAG = "RecipeSummaryFragment";
+    public final static int PICK_PHOTO_CODE = 1046;
 
     private File photoFile;
     public String photoFileName = "photo.jpg";
@@ -81,6 +79,7 @@ public class RecipeSummaryFragment extends Fragment {
     ImageView ivRecipeImage;
     FloatingActionButton fabSubmit;
     MaterialDialog mDialog;
+    MaterialDialog photoDialog;
 
     boolean isFavoriteRecipe;
     boolean hasExistingRecipe;
@@ -145,7 +144,7 @@ public class RecipeSummaryFragment extends Fragment {
         btnCamera.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                launchCamera();
+                showPhotoDialog(view);
             }
         });
 
@@ -191,6 +190,65 @@ public class RecipeSummaryFragment extends Fragment {
                 return true;
             }
         });
+    }
+
+    private void showPhotoDialog(View view) {
+        photoDialog = new MaterialDialog.Builder(getActivity())
+                .setTitle("Add photo")
+                .setMessage("Add photo from gallery or take a photo?")
+                .setCancelable(true)
+                .setPositiveButton("photo gallery", R.drawable.ic_delete_24px, new MaterialDialog.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int which) {
+                        // Delete Operation
+                        onPickPhoto(view);
+                        photoDialog.dismiss();
+                    }
+                })
+                .setNegativeButton("camera", R.drawable.ic_clear_24px, new MaterialDialog.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int which) {
+                        launchCamera();
+//                        dialogInterface.dismiss();
+                        photoDialog.dismiss();
+                    }
+                })
+                .build();
+
+        // Show Dialog
+        photoDialog.show();
+    }
+
+    // Trigger gallery selection for a photo
+    public void onPickPhoto(View view) {
+        // Create intent for picking a photo from the gallery
+        Intent intent = new Intent(Intent.ACTION_PICK,
+                MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+
+        // If you call startActivityForResult() using an intent that no app can handle, your app will crash.
+        // So as long as the result is not null, it's safe to use the intent.
+        if (intent.resolveActivity(getActivity().getPackageManager()) != null) {
+            // Bring up gallery to select a photo
+            startActivityForResult(intent, PICK_PHOTO_CODE);
+        }
+    }
+
+    public Bitmap loadFromUri(Uri photoUri) {
+        Bitmap image = null;
+        try {
+            // check version of Android on device
+            if(Build.VERSION.SDK_INT > 27){
+                // on newer versions of Android, use the new decodeBitmap method
+                ImageDecoder.Source source = ImageDecoder.createSource(getActivity().getContentResolver(), photoUri);
+                image = ImageDecoder.decodeBitmap(source);
+            } else {
+                // support older versions of Android by using getBitmap
+                image = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), photoUri);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return image;
     }
 
     public interface OnDataPass {
@@ -467,6 +525,7 @@ public class RecipeSummaryFragment extends Fragment {
         super.onActivityResult(requestCode, resultCode, data);
         Log.i(TAG, "requestCode: " + String.valueOf(requestCode));
         if (requestCode == CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE) {
+            photoDialog.dismiss();
             Log.i(TAG, String.valueOf(resultCode));
             if (resultCode == RESULT_OK) { // User took picture
                 // by this point we have the camera photo on disk
@@ -482,6 +541,18 @@ public class RecipeSummaryFragment extends Fragment {
             } else { // Result was a failure
                 Toast.makeText(getActivity(), "Picture wasn't taken!", Toast.LENGTH_SHORT).show();
             }
+        } else if ((data != null) && requestCode == PICK_PHOTO_CODE) {
+            photoDialog.dismiss();
+            Uri photoUri = data.getData();
+
+            // Load the image located at photoUri into selectedImage
+            Bitmap selectedImage = loadFromUri(photoUri);
+
+            // Load the selected image into a preview
+            ivRecipeImage.setImageBitmap(selectedImage);
+            ivRecipeImage.setVisibility(View.VISIBLE);
+            recipe.setImage(new ParseFile(photoFile));
+            dataPasser.onChangeImagePass(photoFile);
         }
     }
 
