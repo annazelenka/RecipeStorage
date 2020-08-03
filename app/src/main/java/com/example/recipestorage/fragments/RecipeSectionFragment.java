@@ -77,8 +77,9 @@ public class RecipeSectionFragment extends Fragment implements RecipeSectionAdap
         public void onIngredientsChangedPass(boolean dataChanged);
         public void onDirectionsChangedPass(boolean dataChanged);
         public void onNotesChangedPass(boolean dataChanged);
-        public void setVisibilityFabSubmit(boolean setVisible);
         public void setVisibilityBubbleNavigation(boolean setVisible);
+        public void onSaveNewRecipePass(Recipe newRecipe);
+        public void onSaveExistingRecipePass();
     }
 
     public RecipeSectionFragment(boolean setIsBlankRecipe, RecipeSection setRecipeSection, ArrayList<String> setRecipeSectionContents) {
@@ -201,11 +202,8 @@ public class RecipeSectionFragment extends Fragment implements RecipeSectionAdap
 
         if (!isBlankRecipe) {
             passData(recipeSection, recipeSectionContents);
-            fabSubmit.setVisibility(View.GONE);
-        } else {
-            setupFab();
         }
-
+        setupFab();
 
         etAddRecipeSection.setHint("new " + recipeSectionString);
         etAddRecipeSection.setOnEditorActionListener(new TextView.OnEditorActionListener() {
@@ -239,7 +237,11 @@ public class RecipeSectionFragment extends Fragment implements RecipeSectionAdap
                     Toast.makeText(getContext(), recipeSectionString + "s cannot be empty!", Toast.LENGTH_SHORT).show();
                     return;
                 }
-                launchNextFragment();
+                if (isBlankRecipe) {
+                    launchNextFragment();
+                } else {
+                    dataPasser.onSaveExistingRecipePass();
+                }
             }
         });
     }
@@ -272,40 +274,15 @@ public class RecipeSectionFragment extends Fragment implements RecipeSectionAdap
                 newRecipe.clearNotes();
                 newRecipe.addNotes(recipeSectionContents);
                 recipeSectionString = "note";
-                saveRecipe();
+                //saveRecipe();
+                dataPasser.onSaveNewRecipePass(newRecipe);
+                //launchAllRecipesActivity();
                 break;
             default:
                 recipeSectionString = "empty";
         }
 
     }
-
-    protected void saveRecipe() {
-        newRecipe.setUser(ParseUser.getCurrentUser());
-        newRecipe.saveInBackground(new SaveCallback() {
-            @Override
-            public void done(ParseException e) {
-                if (e != null) {
-                    Log.e(TAG, "Error while saving", e);
-                    Toast.makeText(getContext(), "error while saving!", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-                Toast.makeText(getContext(), "Saved!", Toast.LENGTH_LONG).show();
-                launchAllRecipesActivity();
-            }
-        });
-    }
-
-    private void launchAllRecipesActivity() {
-        Intent intent = new Intent();
-        intent.putExtra("newRecipe", Parcels.wrap(newRecipe));
-        // set result code and bundle data for response
-        getActivity().setResult(AddRecipeActivity.RESULT_OK, intent);
-        // closes the activity, pass data to parent
-        getActivity().finish();
-    }
-
-
 
     private void setUpRecyclerView() {
         rvItems.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -487,7 +464,6 @@ public class RecipeSectionFragment extends Fragment implements RecipeSectionAdap
                 }
                 super.onDraw(c, parent, state);
             }
-
         });
     }
 

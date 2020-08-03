@@ -36,24 +36,6 @@
                     android:textStyle="bold"
                     android:textSize="48sp"></TextView>
 
-
-<!--                <com.google.android.material.textfield.TextInputLayout-->
-<!--                    android:id="@+id/etUsernameLayout"-->
-<!--                    android:layout_width="match_parent"-->
-<!--                    android:layout_height="wrap_content"-->
-<!--                    android:hint="Put the recipe title here!"-->
-<!--                    android:layout_margin="16dp"-->
-<!--                    android:layout_marginTop="32dp">-->
-
-<!--                    <com.google.android.material.textfield.TextInputEditText-->
-<!--                        android:id="@+id/etRecipeTitle"-->
-<!--                        android:layout_width="match_parent"-->
-<!--                        android:layout_height="wrap_content"-->
-<!--                        />-->
-<!---->
-<!--                </com.google.android.material.textfield.TextInputLayout>-->
-
-
             </RelativeLayout>
         </androidx.appcompat.widget.Toolbar>
     </com.google.android.material.appbar.AppBarLayout>
@@ -68,19 +50,6 @@
         android:layout_marginBottom="72dp"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
         />
-
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/fabSubmitRecipe"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="@color/green_active"
-        android:src="@drawable/ic_done_24px"
-        app:fabSize="normal"
-        android:layout_marginRight="16dp"
-        android:layout_marginBottom="96dp"
-        android:layout_gravity="bottom|right"
-        android:backgroundTint="@color/colorWhite"/>
-
 
     <com.gauravk.bubblenavigation.BubbleNavigationConstraintView
         android:id="@+id/equal_navigation_bar"

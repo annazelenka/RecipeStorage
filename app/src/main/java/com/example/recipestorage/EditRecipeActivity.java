@@ -36,7 +36,9 @@ public class EditRecipeActivity<recipe> extends AddRecipeActivity {
         tvTitle.setText(recipe.getTitle());
 
         setupBubbleNavigation();
-        setVisibilityFabSubmit(true);
+        setDefaultFragment();
+//        setVisibilityFabSubmit(false);
+        //fabSubmitRecipe.setVisibility(View.GONE);
 
         KeyboardUtils.addKeyboardToggleListener(this, new KeyboardUtils.SoftKeyboardToggleListener()
         {
@@ -45,10 +47,10 @@ public class EditRecipeActivity<recipe> extends AddRecipeActivity {
             {
                 if (isVisible) {
                     // hide fabSubmit button and bubble navigation bar
-                    fabSubmitRecipe.setVisibility(View.INVISIBLE);
+                    //fabSubmitRecipe.setVisibility(View.INVISIBLE);
                     bubbleNavigation.setVisibility(View.INVISIBLE);
                 } else {
-                    fabSubmitRecipe.setVisibility(View.VISIBLE);
+                    //fabSubmitRecipe.setVisibility(View.VISIBLE);
                     bubbleNavigation.setVisibility(View.VISIBLE);
                 }
             }
@@ -100,7 +102,6 @@ public class EditRecipeActivity<recipe> extends AddRecipeActivity {
             }
         });
         bubbleNavigation.setCurrentActiveItem(HOME_POSITION);
-        setDefaultFragment();
     }
 
 
@@ -120,8 +121,6 @@ public class EditRecipeActivity<recipe> extends AddRecipeActivity {
     @Override
     protected void saveRecipe(ParseUser currentUser, boolean hasPhotoFile, File photoFile) {
         recipe.setUser(currentUser);
-        //recipe.setTitle(etRecipeTitle.getText().toString());
-
 
         if (ingredientsDataChanged) {
             recipe.clearIngredients();
@@ -159,21 +158,26 @@ public class EditRecipeActivity<recipe> extends AddRecipeActivity {
                 }
                 Toast.makeText(EditRecipeActivity.this, "Saved!", Toast.LENGTH_LONG).show();
 
-                String returnFragment = getIntent().getStringExtra("fragmentType");
-
-                Intent intent = new Intent();
-                intent.putExtra("recipeToEdit", Parcels.wrap(recipe));
-                intent.putExtra("returnFragment", returnFragment);
-                intent.putExtra("position", adapterPosition);
-
-                if (titleChanged) {
-                    intent.putExtra("originalTitle", originalTitle);
-                }
-                // Activity finished ok, return the data
-                setResult(RESULT_OK, intent); // set result code and bundle data for response
-                finish(); // closes the activity, pass data to parent
+                launchHomeActivity();
             }
         });
+    }
+
+    @Override
+    protected void launchHomeActivity() {
+        String returnFragment = getIntent().getStringExtra("fragmentType");
+
+        Intent intent = new Intent();
+        intent.putExtra("recipeToEdit", Parcels.wrap(recipe));
+        intent.putExtra("returnFragment", returnFragment);
+        intent.putExtra("position", adapterPosition);
+
+        if (titleChanged) {
+            intent.putExtra("originalTitle", originalTitle);
+        }
+        // Activity finished ok, return the data
+        setResult(RESULT_OK, intent); // set result code and bundle data for response
+        finishAfterTransition(); // closes the activity, pass data to parent
     }
 
 }

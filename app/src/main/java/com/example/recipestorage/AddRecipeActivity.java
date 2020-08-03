@@ -38,6 +38,8 @@ import com.parse.SaveCallback;
 import com.shreyaspatil.MaterialDialog.MaterialDialog;
 import com.shreyaspatil.MaterialDialog.interfaces.DialogInterface;
 
+import org.parceler.Parcels;
+
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -64,12 +66,14 @@ public class AddRecipeActivity extends AppCompatActivity implements RecipeSectio
     Recipe recipe;
     //EditText etRecipeTitle;
     TextView tvTitle;
-    FloatingActionButton fabSubmitRecipe;
+    //FloatingActionButton fabSubmitRecipe;
 
     String title;
+    String returnFragment;
     ArrayList<String> ingredients;
     ArrayList<String> directions;
     ArrayList<String> notes;
+    ParseUser currentUser;
 
     boolean recipeDataChanged;
     boolean titleChanged;
@@ -100,13 +104,13 @@ public class AddRecipeActivity extends AppCompatActivity implements RecipeSectio
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
 
-        fabSubmitRecipe = findViewById(R.id.fabSubmitRecipe);
-        fabSubmitRecipe.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                handleSubmittingRecipe();
-            }
-        });
+//        fabSubmitRecipe = findViewById(R.id.fabSubmitRecipe);
+//        fabSubmitRecipe.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                handleSubmittingRecipe();
+//            }
+//        });
 
         setDefaultFragment();
         titleChanged = false;
@@ -117,7 +121,8 @@ public class AddRecipeActivity extends AppCompatActivity implements RecipeSectio
         notesDataChanged = false;
 
         bubbleNavigation.setVisibility(View.GONE);
-        setVisibilityFabSubmit(false);
+        //setVisibilityFabSubmit(false);
+        currentUser = ParseUser.getCurrentUser();
     }
 
     @Override
@@ -162,10 +167,10 @@ public class AddRecipeActivity extends AppCompatActivity implements RecipeSectio
 
         if (photoFile == null || ivRecipeImage.getDrawable() == null) {
             Toast.makeText(AddRecipeActivity.this, "There is no image!", Toast.LENGTH_SHORT).show();
-            saveRecipe(ParseUser.getCurrentUser(), false, photoFile);
+            saveRecipe(currentUser, false, photoFile);
             launchHomeActivity();
         } else {
-            saveRecipe(ParseUser.getCurrentUser(), true, photoFile);
+            saveRecipe(currentUser, true, photoFile);
         }
     }
 
@@ -196,10 +201,6 @@ public class AddRecipeActivity extends AppCompatActivity implements RecipeSectio
 
     protected void saveRecipe(ParseUser currentUser, boolean hasPhotoFile, File photoFile) {
         recipe.setUser(currentUser);
-        //recipe.setTitle(etRecipeTitle.getText().toString());
-        recipe.addIngredients(ingredients);
-        recipe.addDirections(directions);
-        recipe.addNotes(notes);
 
         if (hasPhotoFile) {
             recipe.setImage(new ParseFile(photoFile));
@@ -219,9 +220,13 @@ public class AddRecipeActivity extends AppCompatActivity implements RecipeSectio
         });
     }
 
-    private void launchHomeActivity() {
-        Intent intent = new Intent(AddRecipeActivity.this, HomeActivity.class);
-        startActivity(intent);
+    protected void launchHomeActivity() {
+        Intent intent = new Intent();
+        intent.putExtra("newRecipe", Parcels.wrap(recipe));
+        intent.putExtra("returnFragment", Parcels.wrap(returnFragment));
+        // set result code and bundle data for response
+        setResult(AddRecipeActivity.RESULT_OK, intent);
+        // closes the activity, pass data to parent
         finishAfterTransition();
     }
 
@@ -243,14 +248,14 @@ public class AddRecipeActivity extends AppCompatActivity implements RecipeSectio
         }
     }
 
-    @Override
-    public void setVisibilityFabSubmit(boolean setVisible) {
-        if (setVisible) {
-            fabSubmitRecipe.setVisibility(View.VISIBLE);
-        } else {
-            fabSubmitRecipe.setVisibility(View.GONE);
-        }
-    }
+//    @Override
+//    public void setVisibilityFabSubmit(boolean setVisible) {
+//        if (setVisible) {
+//            fabSubmitRecipe.setVisibility(View.VISIBLE);
+//        } else {
+//            fabSubmitRecipe.setVisibility(View.GONE);
+//        }
+//    }
 
     @Override
     public void setVisibilityBubbleNavigation(boolean setVisible) {
@@ -285,6 +290,12 @@ public class AddRecipeActivity extends AppCompatActivity implements RecipeSectio
         this.originalTitle = setOriginalTitle;
     }
 
+
+    @Override
+    public void setReturnFragment(String setReturnFragment) {
+        this.returnFragment = setReturnFragment;
+    }
+
     @Override
     public void onChangeTitlePass(String newTitle) {
         title = newTitle;
@@ -298,5 +309,21 @@ public class AddRecipeActivity extends AppCompatActivity implements RecipeSectio
         this.photoFile = newImage;
         this.imageChanged = true;
         this.recipeDataChanged = true;
+    }
+
+    @Override
+    public void onSaveRecipeSummaryPass() {
+        saveRecipe(currentUser, imageChanged, photoFile);
+    }
+
+    @Override
+    public void onSaveNewRecipePass(Recipe newRecipe) {
+        recipe = newRecipe;
+        saveRecipe(currentUser, imageChanged, photoFile);
+    }
+
+    @Override
+    public void onSaveExistingRecipePass() {
+        saveRecipe(currentUser, imageChanged, photoFile);
     }
 }

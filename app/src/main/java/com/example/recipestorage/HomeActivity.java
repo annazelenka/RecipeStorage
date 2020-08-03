@@ -126,7 +126,7 @@ public class HomeActivity extends AppCompatActivity implements Filterable {
             Toast.makeText(this, "Data is null", Toast.LENGTH_SHORT).show();
             return;
         }
-        if (requestCode == ADD_RECIPE_REQUEST_CODE) {
+        if (requestCode == ADD_RECIPE_REQUEST_CODE && resultCode == RESULT_OK) {
             Recipe recipe = Parcels.unwrap(data.getParcelableExtra("newRecipe"));
             // Update the Recycler View with this new recipe
             allRecipes.add(0, recipe);
@@ -134,7 +134,7 @@ public class HomeActivity extends AppCompatActivity implements Filterable {
             AllRecipesFragment fragment = (AllRecipesFragment) currentFragment;
             fragment.notifyItemInserted(0);
             fragmentManager.beginTransaction().replace(R.id.flContainer, currentFragment).commit();
-        } else if (requestCode == EDIT_REQUEST_CODE) {
+        } else if (requestCode == EDIT_REQUEST_CODE && resultCode == RESULT_OK) {
             int position = data.getIntExtra("position", 0);
             String returnFragment = data.getStringExtra("returnFragment");
             if (data.hasExtra("recipeToEdit")) {

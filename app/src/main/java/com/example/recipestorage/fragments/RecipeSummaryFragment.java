@@ -23,6 +23,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.view.animation.AnimationUtils;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -104,7 +105,6 @@ public class RecipeSummaryFragment extends Fragment {
         this.returnFragment = setReturnFragment;
     }
 
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -132,13 +132,14 @@ public class RecipeSummaryFragment extends Fragment {
         if (hasExistingRecipe) {
             populateRecipeFields();
             setUpFacebookShareContent();
-            fabSubmit.setVisibility(View.GONE);
+            //fabSubmit.setVisibility(View.GONE);
         } else {
             btnDelete.setVisibility(View.GONE);
             btnShare.setVisibility(View.GONE);
             ivRecipeImage.setVisibility(View.GONE);
-            setupFab();
         }
+        setupFabSubmit();
+
 
 
         btnCamera.setOnClickListener(new View.OnClickListener() {
@@ -186,10 +187,17 @@ public class RecipeSummaryFragment extends Fragment {
                 if (text.isEmpty()) {
                     return false;
                 }
+                hideSoftKeyboard(view);
                 dataPasser.onChangeTitlePass(text);
                 return true;
             }
         });
+    }
+
+    // from CodePath
+    public void hideSoftKeyboard(View view){
+        InputMethodManager imm =(InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
     }
 
     private void showPhotoDialog(View view) {
@@ -253,17 +261,21 @@ public class RecipeSummaryFragment extends Fragment {
 
     public interface OnDataPass {
         public void setOriginalTitle(String originalTitle);
+        public void setReturnFragment(String returnFragment);
         public void onChangeTitlePass(String newTitle);
         public void onChangeImagePass(File newPhotoFile);
+        public void onSaveRecipeSummaryPass();
     }
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
         dataPasser = (RecipeSummaryFragment.OnDataPass) context;
+        dataPasser.setReturnFragment("HomeActivity");
+        dataPasser.setOriginalTitle(originalTitle);
     }
 
-    private void setupFab() {
+    private void setupFabSubmit() {
         fabSubmit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -280,7 +292,12 @@ public class RecipeSummaryFragment extends Fragment {
                     Toast.makeText(getContext(), "Recipe time is missing!", Toast.LENGTH_SHORT).show();
                     return;
                 }
-                launchIngredientsFragment();
+
+                if (!hasExistingRecipe) {
+                    launchIngredientsFragment();
+                } else {
+                    dataPasser.onSaveRecipeSummaryPass();
+                }
             }
         });
     }
@@ -297,8 +314,6 @@ public class RecipeSummaryFragment extends Fragment {
                 .addToBackStack(null)
                 .replace(R.id.flContainer, fragment, "AddRecipe summary to ingredients")
                 .commit();
-
-        dataPasser.setOriginalTitle(originalTitle);
     }
 
     private boolean hasTitle() {
@@ -395,7 +410,6 @@ public class RecipeSummaryFragment extends Fragment {
             recipe.saveRecipe();
         }
     }
-
 
     private void showDeleteDialog() {
         mDialog = new MaterialDialog.Builder(getActivity())
@@ -547,7 +561,7 @@ public class RecipeSummaryFragment extends Fragment {
 
             // Load the image located at photoUri into selectedImage
             Bitmap selectedImage = loadFromUri(photoUri);
-
+            photoFile = getResizedPhotoFileUri(selectedImage);
             // Load the selected image into a preview
             ivRecipeImage.setImageBitmap(selectedImage);
             ivRecipeImage.setVisibility(View.VISIBLE);

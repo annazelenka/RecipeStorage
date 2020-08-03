@@ -186,10 +186,7 @@ public class HomeFragment extends Fragment {
                 } else {
                     ivPicture.setVisibility(View.INVISIBLE);
                 }
-                //skeletonScreen.hide();
-
                 tvTitle.setText(recipe.getTitle());
-
 
                 btnEditRecipe.setOnClickListener(new View.OnClickListener() {
                     @Override
