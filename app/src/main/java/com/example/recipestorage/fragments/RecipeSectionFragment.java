@@ -73,11 +73,9 @@ public class RecipeSectionFragment extends Fragment implements RecipeSectionAdap
 
     public interface OnDataPass {
         public void onAddDataPass(RecipeSection recipeSection, ArrayList<String> data);
-        // this method used only for RecipeEditActivity to notify RecipeActivity
         public void onIngredientsChangedPass(boolean dataChanged);
         public void onDirectionsChangedPass(boolean dataChanged);
         public void onNotesChangedPass(boolean dataChanged);
-        public void setVisibilityBubbleNavigation(boolean setVisible);
         public void onSaveNewRecipePass(Recipe newRecipe);
         public void onSaveExistingRecipePass();
     }

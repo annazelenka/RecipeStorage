@@ -43,6 +43,14 @@
         <item name="android:textStyle">italic</item>
     </style>
 
+    <style name="MyCustomTabLayout" parent="Widget.Design.TabLayout">
+        <item name="tabIconTint">@color/colorWhite</item>
+        <item name="tabIndicatorColor">@color/colorAccent</item>
+
+    </style>
+
     <color name="colorWhite">#ffffff</color>
     <color name="colorBlack">#000000</color>
+
+
 </resources>

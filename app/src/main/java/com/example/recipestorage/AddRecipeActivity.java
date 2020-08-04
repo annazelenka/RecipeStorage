@@ -7,6 +7,7 @@ import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.viewpager.widget.ViewPager;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -31,6 +32,7 @@ import com.example.recipestorage.utils.KeyboardUtils;
 import com.gauravk.bubblenavigation.BubbleNavigationConstraintView;
 import com.gauravk.bubblenavigation.listener.BubbleNavigationChangeListener;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.tabs.TabLayout;
 import com.parse.ParseException;
 import com.parse.ParseFile;
 import com.parse.ParseUser;
@@ -50,10 +52,6 @@ import java.util.ArrayList;
 public class AddRecipeActivity extends AppCompatActivity implements RecipeSectionFragment.OnDataPass, RecipeSummaryFragment.OnDataPass {
     public static final String TAG = "ComposeFragment";
     public static final int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 1034;
-    public static final int CAMERA_POSITION = 4;
-    public static final int INGREDIENTS_POSITION = 1;
-    public static final int DIRECTIONS_POSITION = 2;
-    public static final int NOTES_POSITION = 3;
     public static final int HOME_POSITION = 0;
 
     private File photoFile;
@@ -64,9 +62,7 @@ public class AddRecipeActivity extends AppCompatActivity implements RecipeSectio
     Toolbar toolbar;
     ImageView ivRecipeImage;
     Recipe recipe;
-    //EditText etRecipeTitle;
     TextView tvTitle;
-    //FloatingActionButton fabSubmitRecipe;
 
     String title;
     String returnFragment;
@@ -81,7 +77,8 @@ public class AddRecipeActivity extends AppCompatActivity implements RecipeSectio
     boolean ingredientsDataChanged;
     boolean directionsDataChanged;
     boolean notesDataChanged;
-    BubbleNavigationConstraintView bubbleNavigation;
+
+    //BubbleNavigationConstraintView bubbleNavigation;
 
 
     @Override
@@ -90,11 +87,10 @@ public class AddRecipeActivity extends AppCompatActivity implements RecipeSectio
         setContentView(R.layout.activity_add_recipe);
 
         ivRecipeImage = findViewById(R.id.ivRecipeImage);
-        //etRecipeTitle = findViewById(R.id.etRecipeTitle);
         tvTitle = findViewById(R.id.tvTitle);
-        bubbleNavigation = findViewById(R.id.equal_navigation_bar);
 
         initializeRecipe();
+        setupTabLayout();
 
         // Find the toolbar view inside the activity layout
         toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -104,14 +100,6 @@ public class AddRecipeActivity extends AppCompatActivity implements RecipeSectio
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
 
-//        fabSubmitRecipe = findViewById(R.id.fabSubmitRecipe);
-//        fabSubmitRecipe.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                handleSubmittingRecipe();
-//            }
-//        });
-
         setDefaultFragment();
         titleChanged = false;
         imageChanged = false;
@@ -119,10 +107,14 @@ public class AddRecipeActivity extends AppCompatActivity implements RecipeSectio
         ingredientsDataChanged = false;
         directionsDataChanged = false;
         notesDataChanged = false;
-
-        bubbleNavigation.setVisibility(View.GONE);
-        //setVisibilityFabSubmit(false);
         currentUser = ParseUser.getCurrentUser();
+    }
+
+    protected void setupTabLayout() {
+        TabLayout tabLayout = findViewById(R.id.sliding_tabs);
+        tabLayout.setVisibility(View.GONE);
+        ViewPager vpPager = findViewById(R.id.vpPager);
+        vpPager.setVisibility(View.GONE);
     }
 
     @Override
@@ -149,13 +141,6 @@ public class AddRecipeActivity extends AppCompatActivity implements RecipeSectio
         toolbar.setVisibility(View.GONE);
         Fragment fragment = new RecipeSummaryFragment();
         fragmentManager.beginTransaction().replace(R.id.flContainer, fragment).commit();
-    }
-
-    protected void startAnimatedFragment(Fragment newFragment) {
-        FragmentTransaction fts = getSupportFragmentManager().beginTransaction();
-        fts.setCustomAnimations(R.anim.slide_in_left, R.anim.slide_out_right);
-        fts.replace(R.id.flContainer, newFragment, "fragment");
-        fts.commit();
     }
 
     private void handleSubmittingRecipe() {
@@ -230,7 +215,6 @@ public class AddRecipeActivity extends AppCompatActivity implements RecipeSectio
         finishAfterTransition();
     }
 
-
     @Override
     public void onAddDataPass(RecipeSectionFragment.RecipeSection recipeSection, ArrayList<String>data) {
         Log.d("LOG","hello " + data);
@@ -245,24 +229,6 @@ public class AddRecipeActivity extends AppCompatActivity implements RecipeSectio
             default:
                 notes = data;
                 break;
-        }
-    }
-
-//    @Override
-//    public void setVisibilityFabSubmit(boolean setVisible) {
-//        if (setVisible) {
-//            fabSubmitRecipe.setVisibility(View.VISIBLE);
-//        } else {
-//            fabSubmitRecipe.setVisibility(View.GONE);
-//        }
-//    }
-
-    @Override
-    public void setVisibilityBubbleNavigation(boolean setVisible) {
-        if (setVisible) {
-            bubbleNavigation.setVisibility(View.VISIBLE);
-        } else {
-            bubbleNavigation.setVisibility(View.GONE);
         }
     }
 

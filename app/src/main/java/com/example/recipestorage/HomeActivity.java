@@ -86,6 +86,7 @@ public class HomeActivity extends AppCompatActivity implements Filterable {
         fragmentManager.beginTransaction().replace(R.id.flContainer, currentFragment).commit();
     }
 
+
     protected void populateRecipes() {
         // query recipes
         ParseQuery<Recipe> query = ParseQuery.getQuery(Recipe.class);

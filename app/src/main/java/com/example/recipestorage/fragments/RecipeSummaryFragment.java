@@ -227,6 +227,7 @@ public class RecipeSummaryFragment extends Fragment {
         photoDialog.show();
     }
 
+    // from CodePath guide
     // Trigger gallery selection for a photo
     public void onPickPhoto(View view) {
         // Create intent for picking a photo from the gallery

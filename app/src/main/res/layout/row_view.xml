@@ -19,7 +19,6 @@
         android:layout_alignEnd="@+id/tvData"
         android:elevation="8dp"
         android:layout_margin="8dp"
-
         >
 
         <com.google.android.material.textfield.TextInputEditText
