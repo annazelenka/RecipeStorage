@@ -28,7 +28,8 @@
         <com.jama.carouselview.CarouselView
             android:id="@+id/carouselView"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_margin="0dp"
             app:enableSnapping="false"
             app:scaleOnScroll="true"
             app:setAutoPlay="true"

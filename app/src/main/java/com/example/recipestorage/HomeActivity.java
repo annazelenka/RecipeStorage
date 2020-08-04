@@ -39,6 +39,7 @@ public class HomeActivity extends AppCompatActivity implements Filterable {
 
     final FragmentManager fragmentManager = getSupportFragmentManager();
     Fragment currentFragment;
+    HomeFragment homeFragment;
 
     BubbleNavigationConstraintView bubbleNavigation;
 
@@ -68,7 +69,9 @@ public class HomeActivity extends AppCompatActivity implements Filterable {
                 switch (position) {
                     case HOME_POSITION:
                     default:
-                        currentFragment = new HomeFragment(allRecipes, recipeTrie, false);
+                        currentFragment = homeFragment;
+                        ((HomeFragment) currentFragment).reloadCarouselView(allRecipes);
+
                         break;
                     case ALL_RECIPES_POSITION: //miDirections
                         currentFragment = new AllRecipesFragment(allRecipes, recipeTrie, isFacebookUser);
@@ -83,6 +86,7 @@ public class HomeActivity extends AppCompatActivity implements Filterable {
         });
         bubbleNavigation.setCurrentActiveItem(HOME_POSITION);
         currentFragment = new HomeFragment(allRecipes, recipeTrie, true);
+        homeFragment = (HomeFragment) currentFragment;
         fragmentManager.beginTransaction().replace(R.id.flContainer, currentFragment).commit();
     }
 
@@ -168,7 +172,7 @@ public class HomeActivity extends AppCompatActivity implements Filterable {
             else allRecipesFragment.notifyItemChanged(position);
 
         } else if (returnFragment.equals("HomeFragment")) {
-            HomeFragment homeFragment = (HomeFragment) currentFragment;
+//            HomeFragment homeFragment = (HomeFragment) currentFragment;
             homeFragment.reloadCarouselView(allRecipes);
         }
     }

@@ -43,6 +43,7 @@ import coil.request.LoadRequest;
 
 public class HomeFragment extends Fragment {
     public static final int EDIT_REQUEST_CODE = 5;
+    public static final int DEFAULT_SIZE = 5;
 
     TextView tvWelcome;
     CarouselView carouselView;
@@ -93,7 +94,7 @@ public class HomeFragment extends Fragment {
         onCreatedView = view;
         screens = new ArrayList<SkeletonScreen>();
         int allRecipesSize = allRecipes == null ? 0 : allRecipes.size();
-        setupCarouselView(view, 5, isLoading);
+        setupSkeleton();
     }
 
     public boolean isFacebookUser() {
@@ -101,8 +102,12 @@ public class HomeFragment extends Fragment {
     }
 
     public void reloadCarouselView(List<Recipe> setAllRecipes) {
+        carouselView = onCreatedView.findViewById(R.id.carouselView);
         this.allRecipes = setAllRecipes;
         int allRecipesSize = allRecipes == null ? 0 : allRecipes.size();
+        if (skeletonScreen == null) {
+            setupSkeleton();
+        }
 
         final Runnable r = new Runnable() {
             public void run() {
@@ -114,37 +119,37 @@ public class HomeFragment extends Fragment {
         handler.postDelayed(r, 500);
     }
 
+    public void setupSkeleton() {
+        int layout = R.layout.item_recipe_skeleton_carousel;
+        carouselView.setSize(DEFAULT_SIZE);
+        carouselView.setResource(layout);
+        carouselView.setAutoPlay(false);
+        carouselView.setScaleOnScroll(true);
+        carouselView.setIndicatorAnimationType(IndicatorAnimationType.SLIDE);
+        carouselView.setCarouselOffset(OffsetType.CENTER);
+        carouselView.setCarouselViewListener(new CarouselViewListener() {
+            @Override
+            public void onBindView(View view, int position) {
+                // Example here is setting up a full image carousel
+                skeletonScreen = Skeleton.bind(view)
+                        .load(R.layout.item_recipe_skeleton)
+                        .shimmer(true)
+                        .duration(200)
+                        .show();
+                screens.add(skeletonScreen);
+
+            }
+
+        });
+        carouselView.show();
+    }
+
+
     private void setupCarouselView(View view, int allRecipesSize, boolean isSkeletonView) {
         carouselView = view.findViewById(R.id.carouselView);
 
 
-        int layout;
-        if (isSkeletonView) {
-            layout = R.layout.item_recipe_skeleton;
-            carouselView.setSize(allRecipesSize);
-            carouselView.setResource(layout);
-            carouselView.setAutoPlay(false);
-            carouselView.setScaleOnScroll(true);
-            carouselView.setIndicatorAnimationType(IndicatorAnimationType.SLIDE);
-            carouselView.setCarouselOffset(OffsetType.CENTER);
-            carouselView.setCarouselViewListener(new CarouselViewListener() {
-                @Override
-                public void onBindView(View view, int position) {
-                    // Example here is setting up a full image carousel
-                    skeletonScreen = Skeleton.bind(view)
-                            .load(R.layout.item_recipe_skeleton)
-                            .show();
-                    screens.add(skeletonScreen);
-
-                }
-
-            });
-            carouselView.show();
-
-            return;
-        }
-
-        layout = R.layout.item_recipe_preview;
+        int layout = R.layout.item_recipe_preview;
         carouselView.setSize(allRecipesSize);
         carouselView.setResource(layout);
         carouselView.setAutoPlay(false);
