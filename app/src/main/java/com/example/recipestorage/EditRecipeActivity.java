@@ -32,6 +32,8 @@ public class EditRecipeActivity<recipe> extends AddRecipeActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        postponeEnterTransition();
+
         tvTitle.setText(recipe.getTitle());
         setDefaultFragment();
         setupTabLayout();

@@ -39,6 +39,7 @@ import com.facebook.share.model.SharePhoto;
 import com.facebook.share.model.SharePhotoContent;
 import com.facebook.share.widget.ShareButton;
 import com.facebook.share.widget.ShareDialog;
+import com.google.android.material.chip.Chip;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.parse.GetDataCallback;
 import com.parse.ParseException;
@@ -53,6 +54,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 
 import coil.Coil;
 import coil.ImageLoader;
@@ -76,14 +78,20 @@ public class RecipeSummaryFragment extends Fragment {
     ShareButton btnShare;
     ImageButton btnDelete;
     EditText etTitle;
-    EditText etRecipeTime;
+    //EditText etRecipeTime;
     ImageView ivRecipeImage;
     FloatingActionButton fabSubmit;
     MaterialDialog mDialog;
     MaterialDialog photoDialog;
+    Chip chipBreakfast;
+    Chip chipLunch;
+    Chip chipDinner;
+
+    ArrayList<Chip> chips;
 
     boolean isFavoriteRecipe;
     boolean hasExistingRecipe;
+    boolean tagsChanged;
     SharePhotoContent photoContent;
     OnDataPass dataPasser;
     int position;
@@ -121,24 +129,33 @@ public class RecipeSummaryFragment extends Fragment {
         btnShare = view.findViewById(R.id.btnShare);
         btnDelete = view.findViewById(R.id.btnDelete);
         fabSubmit = view.findViewById(R.id.fabSubmit);
+        chipBreakfast = view.findViewById(R.id.chipBreakfast);
+        chipLunch = view.findViewById(R.id.chipLunch);
+        chipDinner = view.findViewById(R.id.chipDinner);
 
-        ivRecipeImage = view.findViewById(R.id.ivRecipeImage);
+        chips = new ArrayList<Chip>();
+        chips.add(chipBreakfast);
+        chips.add(chipLunch);
+        chips.add(chipDinner);
+
+        ivRecipeImage = view.findViewById(R.id.ivPicture);
         etTitle = view.findViewById(R.id.etTitle);
-        etRecipeTime = view.findViewById(R.id.etRecipeTime);
+        //etRecipeTime = view.findViewById(R.id.etRecipeTime);
 
         etTitle.setHint("recipe title");
-        etRecipeTime.setHint("recipe time");
+        tagsChanged = false;
+        //etRecipeTime.setHint("recipe time");
 
         if (hasExistingRecipe) {
             populateRecipeFields();
             setUpFacebookShareContent();
-            //fabSubmit.setVisibility(View.GONE);
         } else {
             btnDelete.setVisibility(View.GONE);
             btnShare.setVisibility(View.GONE);
             ivRecipeImage.setVisibility(View.GONE);
         }
         setupFabSubmit();
+        setupChips();
 
 
 
@@ -193,6 +210,45 @@ public class RecipeSummaryFragment extends Fragment {
             }
         });
     }
+
+    private void setupChips() {
+        if (hasExistingRecipe) {
+            // show chips as selected if recipe contains tags
+            if (recipe.isBreakfast()) {
+                chipBreakfast.setChecked(true);
+            }
+
+            if (recipe.isLunch()) {
+                chipLunch.setChecked(true);
+            }
+            if (recipe.isDinner()) {
+                chipDinner.setChecked(true);
+            }
+        }
+
+        chipBreakfast.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                tagsChanged = true;
+            }
+        });
+
+        chipLunch.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                tagsChanged = true;
+            }
+        });
+
+        chipDinner.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                tagsChanged = true;
+            }
+        });
+
+    }
+
 
     // from CodePath
     public void hideSoftKeyboard(View view){
@@ -281,18 +337,12 @@ public class RecipeSummaryFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 boolean hasTitle = hasTitle();
-                boolean hasRecipeTime = hasRecipeTime();
-
-                if (!hasTitle && !hasRecipeTime) {
-                    Toast.makeText(getContext(), "Title and recipe time are missing!", Toast.LENGTH_SHORT).show();
-                    return;
-                } else if (!hasTitle) {
+                if (!hasTitle) {
                     Toast.makeText(getContext(), "Title is missing!", Toast.LENGTH_SHORT).show();
                     return;
-                } else if (!hasRecipeTime) {
-                    Toast.makeText(getContext(), "Recipe time is missing!", Toast.LENGTH_SHORT).show();
-                    return;
                 }
+
+                if (tagsChanged) saveChangedTags();
 
                 if (!hasExistingRecipe) {
                     launchIngredientsFragment();
@@ -305,9 +355,8 @@ public class RecipeSummaryFragment extends Fragment {
 
     private void launchIngredientsFragment() {
         String title = etTitle.getText().toString();
-        int recipeTime = Integer.parseInt(etRecipeTime.getText().toString());
+        //int recipeTime = Integer.parseInt(etRecipeTime.getText().toString());
         recipe.setTitle(title);
-        recipe.setCookTimeMin(recipeTime);
 
         RecipeSectionFragment fragment = new RecipeSectionFragment(true, RecipeSectionFragment.RecipeSection.INGREDIENT, recipe);
         getActivity().getSupportFragmentManager()
@@ -317,13 +366,38 @@ public class RecipeSummaryFragment extends Fragment {
                 .commit();
     }
 
+    private void saveChangedTags() {
+        if (hasExistingRecipe) {
+            if (chipBreakfast.isChecked() != recipe.isBreakfast()) {
+                recipe.setIsBreakfast(chipBreakfast.isChecked());
+            }
+            if (chipLunch.isChecked() != recipe.isLunch()) {
+                recipe.setIsLunch(chipLunch.isChecked());
+            }
+            if (chipDinner.isChecked() != recipe.isDinner()) {
+                recipe.setIsDinner(chipDinner.isChecked());
+            }
+            recipe.saveRecipe();
+        } else {
+            if (chipBreakfast.isChecked()) {
+                recipe.setIsBreakfast(true);
+            }
+            if (chipLunch.isChecked()) {
+                recipe.setIsLunch(true);
+            }
+            if (chipDinner.isChecked()) {
+                recipe.setIsDinner(true);
+            }
+        }
+    }
+
     private boolean hasTitle() {
         return !etTitle.getText().toString().isEmpty();
     }
 
-    private boolean hasRecipeTime() {
-        return !etRecipeTime.getText().toString().isEmpty();
-    }
+//    private boolean hasRecipeTime() {
+//        return !etRecipeTime.getText().toString().isEmpty();
+//    }
 
     private void setUpFacebookShareContent() {
         ParseFile fileObject = recipe.getImage();
@@ -379,8 +453,6 @@ public class RecipeSummaryFragment extends Fragment {
         }
 
         etTitle.setText(recipe.getTitle());
-        etRecipeTime.setText(String.valueOf(recipe.getCookTimeMin()));
-
 
         boolean hasImage = (recipe.getImage() != null);
         if (hasImage) {
@@ -451,7 +523,7 @@ public class RecipeSummaryFragment extends Fragment {
         data.putExtra("position", position);
         recipe.deleteInBackground();
         getActivity().setResult(RESULT_OK, data); // set result code and bundle data for response
-        getActivity().finish(); // closes the activity, pass data to parent
+        getActivity().finishAfterTransition(); // closes the activity, pass data to parent
     }
 
     protected void launchCamera() {
@@ -571,6 +643,7 @@ public class RecipeSummaryFragment extends Fragment {
         }
     }
 
+    // from CodePath
     /**
      * Schedules the shared element transition to be started immediately
      * after the shared element has been measured and laid out within the
@@ -589,7 +662,7 @@ public class RecipeSummaryFragment extends Fragment {
                     @Override
                     public boolean onPreDraw() {
                         sharedElement.getViewTreeObserver().removeOnPreDrawListener(this);
-                        startPostponedEnterTransition();
+                        getActivity().startPostponedEnterTransition();
                         return true;
                     }
                 });
