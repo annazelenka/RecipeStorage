@@ -512,11 +512,6 @@ public class RecipeSummaryFragment extends Fragment {
         mDialog.show();
     }
 
-    private void launchHomeActivity() {
-        Intent intent = new Intent(getActivity(), HomeActivity.class);
-        startActivity(intent);
-    }
-
     // deletes the recipe then launches home activity
     private void launchHomeActivityAfterDeletion() {
         mDialog.dismiss();

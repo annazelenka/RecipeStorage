@@ -49,6 +49,7 @@ public class HomeFragment extends Fragment {
     public static final int DEFAULT_SIZE = 5;
 
     TextView tvWelcome;
+//    TextView tvNoRecipes;
     CarouselView carouselView;
     ChipGroup chipGroup;
     Chip chipFavorites;
@@ -104,6 +105,7 @@ public class HomeFragment extends Fragment {
         chipBreakfast = view.findViewById(R.id.chipBreakfast);
         chipLunch = view.findViewById(R.id.chipLunch);
         chipDinner = view.findViewById(R.id.chipDinner);
+//        tvNoRecipes = view.findViewById(R.id.tvNoRecipes);
 
         String name;
         isFacebookUser = isFacebookUser();
@@ -139,21 +141,21 @@ public class HomeFragment extends Fragment {
     public void reloadCarouselView(Set<Recipe> filteredRecipes) {
         List<Recipe> filteredList = new ArrayList<Recipe>();
         filteredList.addAll(filteredRecipes);
-        reloadCarouselView(filteredList);
+        reloadCarouselView(filteredList, false);
     }
 
-    public void reloadCarouselView(List<Recipe> setAllRecipes) {
+    public void reloadCarouselView(List<Recipe> setAllRecipes, boolean shouldUseSkeleton) {
         carouselView = onCreatedView.findViewById(R.id.carouselView);
         this.displayedRecipes = setAllRecipes;
-        int allRecipesSize = setAllRecipes == null ? 0 : setAllRecipes.size();
+        int recipesSize = setAllRecipes == null ? 0 : setAllRecipes.size();
         if (skeletonScreen == null) {
             setupSkeleton();
         }
 
         final Runnable r = new Runnable() {
             public void run() {
-
-                setupCarouselView(onCreatedView, allRecipesSize, false);
+                if (shouldUseSkeleton) setupCarouselViewWithSkeletonLoad(onCreatedView, recipesSize, false);
+                else setupCarouselView(onCreatedView, recipesSize);
             }
         };
         Handler handler = new Handler();
@@ -214,10 +216,16 @@ public class HomeFragment extends Fragment {
         }
 
         if (!shouldIncludeFavorites && filteredRecipes.isEmpty()) {
-            reloadCarouselView(originalAllRecipes);
+            reloadCarouselView(originalAllRecipes, true);
             return;
         }
         reloadCarouselView(filteredRecipes);
+
+//        if (filteredRecipes.isEmpty()) {
+//            tvNoRecipes.setVisibility(View.VISIBLE);
+//        } else {
+//            tvNoRecipes.setVisibility(View.GONE);
+//        }
     }
 
     public void setupSkeleton() {
@@ -245,9 +253,58 @@ public class HomeFragment extends Fragment {
         carouselView.show();
     }
 
-
-    private void setupCarouselView(View view, int allRecipesSize, boolean isSkeletonView) {
+    private void setupCarouselView(View view, int size) {
         carouselView = view.findViewById(R.id.carouselView);
+        int layout = R.layout.item_recipe_preview;
+        carouselView.setSize(size);
+        carouselView.setResource(layout);
+        carouselView.setAutoPlay(false);
+        carouselView.setScaleOnScroll(true);
+        carouselView.setIndicatorAnimationType(IndicatorAnimationType.SLIDE);
+        carouselView.setCarouselOffset(OffsetType.CENTER);
+        carouselView.setCarouselViewListener(new CarouselViewListener() {
+            @Override
+            public void onBindView(View view, int position) {
+                final TextView tvTitle = view.findViewById(R.id.tvTitle);
+                final ImageView ivPicture = view.findViewById(R.id.ivPicture);
+                ImageButton btnEditRecipe = view.findViewById(R.id.btnEditRecipe);
+
+                ImageLoader imageLoader = Coil.imageLoader(getContext());
+
+                if (displayedRecipes == null || displayedRecipes.size() == 0 || position >= displayedRecipes.size()) {
+                    return;
+                }
+
+
+                final Recipe recipe = displayedRecipes.get(position);
+                boolean hasImage = (recipe.getImage() != null);
+                if (hasImage) {
+                    LoadRequest request = LoadRequest.builder(getContext())
+                            .data(recipe.getImage().getUrl())
+                            .crossfade(true)
+                            .target(ivPicture)
+                            .build();
+                    imageLoader.execute(request);
+                } else {
+                    ivPicture.setVisibility(View.INVISIBLE);
+                }
+                tvTitle.setText(recipe.getTitle());
+
+                btnEditRecipe.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        launchRecipeEditActivity(recipe, ivPicture, tvTitle, position);
+                    }
+                });
+            }
+        });
+       carouselView.show();
+    }
+
+
+    private void setupCarouselViewWithSkeletonLoad(View view, int allRecipesSize, boolean isSkeletonView) {
+        carouselView = view.findViewById(R.id.carouselView);
+//        tvNoRecipes.setVisibility(View.GONE);
 
         int layout = R.layout.item_recipe_preview;
         carouselView.setSize(allRecipesSize);
@@ -305,6 +362,7 @@ public class HomeFragment extends Fragment {
                     screen.hide();
                 }
                 carouselView.show();
+
             }
         };
         Handler handler = new Handler();
@@ -320,6 +378,7 @@ public class HomeFragment extends Fragment {
         Pair<View, String> p2 = Pair.create((View)tvTitle, "tvTitle");
         ActivityOptionsCompat options = ActivityOptionsCompat.
                 makeSceneTransitionAnimation(getActivity(), p1, p2);
-        startActivityForResult(intent, EDIT_REQUEST_CODE, options.toBundle());
+        getActivity().startActivityForResult(intent, EDIT_REQUEST_CODE, options.toBundle());
     }
+
 }

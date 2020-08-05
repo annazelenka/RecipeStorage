@@ -99,7 +99,6 @@ public class HomeActivity extends AppCompatActivity implements Filterable {
         // query recipes
         ParseQuery<Recipe> query = ParseQuery.getQuery(Recipe.class);
         query.include(Recipe.KEY_USER);
-        query.setLimit(RECIPE_LIMIT);
         query.whereEqualTo(Recipe.KEY_USER, currentUser);
         query.addDescendingOrder(Recipe.KEY_CREATED_KEY);
         query.findInBackground(new FindCallback<Recipe>() {
@@ -111,17 +110,16 @@ public class HomeActivity extends AppCompatActivity implements Filterable {
                 }
 
                 Log.i("HomeActivity", "success getting recipes");
+                boolean shouldUseSkeletonView = allRecipes == null;
                 allRecipes = recipes;
 
-                if (currentFragment != null && currentFragment.getClass() == HomeFragment.class) {
-                    ((HomeFragment) currentFragment).setOriginalAllRecipes(allRecipes);
-                    favoritedRecipes = getFavoritedRecipes();
-                    breakfastRecipes = getBreakfastRecipes();
-                    lunchRecipes = getLunchRecipes();
-                    dinnerRecipes = getDinnerRecipes();
-                    ((HomeFragment) currentFragment).setFilteredRecipes(favoritedRecipes, breakfastRecipes, lunchRecipes, dinnerRecipes);
-                    ((HomeFragment) currentFragment).filter();
-                }
+                homeFragment.setOriginalAllRecipes(allRecipes);
+                favoritedRecipes = getFavoritedRecipes();
+                breakfastRecipes = getBreakfastRecipes();
+                lunchRecipes = getLunchRecipes();
+                dinnerRecipes = getDinnerRecipes();
+                homeFragment.setFilteredRecipes(favoritedRecipes, breakfastRecipes, lunchRecipes, dinnerRecipes);
+                homeFragment.filter();
                 recipeTrie = new RecipeTrie();
 
                 recipeTrie.populateRecipeTrie(allRecipes);
@@ -222,23 +220,17 @@ public class HomeActivity extends AppCompatActivity implements Filterable {
             return;
         }
 
-        if (tagsChanged) {
-            populateRecipes();
-            favoritedRecipes = getFavoritedRecipes();
-            breakfastRecipes = getBreakfastRecipes();
-            lunchRecipes = getLunchRecipes();
-            dinnerRecipes = getDinnerRecipes();
-            homeFragment.setFilteredRecipes(favoritedRecipes, breakfastRecipes, lunchRecipes, dinnerRecipes);
-        }
-
         if (returnFragment.equals("AllRecipesFragment")) {
+            if (tagsChanged) populateRecipes();
             AllRecipesFragment allRecipesFragment =  (AllRecipesFragment) currentFragment;
             if (itemRemoved) allRecipesFragment.notifyItemRemoved(position);
             else allRecipesFragment.notifyItemChanged(position);
 
         } else if (returnFragment.equals("HomeFragment")) {
-            HomeFragment fragment =  (HomeFragment) currentFragment;
-            fragment.filter();
+            populateRecipes();
+            homeFragment = (HomeFragment) currentFragment;
+            fragmentManager.beginTransaction().replace(R.id.flContainer, currentFragment).commit();
+
         }
     }
 

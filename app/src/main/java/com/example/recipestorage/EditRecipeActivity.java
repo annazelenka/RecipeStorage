@@ -152,16 +152,18 @@ public class EditRecipeActivity<recipe> extends AddRecipeActivity {
 
     @Override
     protected void launchHomeActivity() {
-        String returnFragment = getIntent().getStringExtra("fragmentType");
+        String returnFragment = getIntent().getStringExtra("returnFragment");
 
         Intent intent = new Intent();
         intent.putExtra("recipeToEdit", Parcels.wrap(recipe));
         intent.putExtra("returnFragment", returnFragment);
         intent.putExtra("position", adapterPosition);
+        intent.putExtra("tagsChanged", tagsChanged);
 
         if (titleChanged) {
             intent.putExtra("originalTitle", originalTitle);
         }
+
         setResult(RESULT_OK, intent); // set result code and bundle data for response
         finishAfterTransition(); // closes the activity, pass data to parent
     }

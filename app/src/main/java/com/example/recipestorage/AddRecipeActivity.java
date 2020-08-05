@@ -1,52 +1,32 @@
 package com.example.recipestorage;
 
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.viewpager.widget.ViewPager;
 
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
-import android.provider.MediaStore;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.recipestorage.fragments.RecipeSectionFragment;
 import com.example.recipestorage.fragments.RecipeSummaryFragment;
-import com.example.recipestorage.utils.KeyboardUtils;
-import com.gauravk.bubblenavigation.BubbleNavigationConstraintView;
-import com.gauravk.bubblenavigation.listener.BubbleNavigationChangeListener;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.tabs.TabLayout;
 import com.parse.ParseException;
 import com.parse.ParseFile;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
-import com.shreyaspatil.MaterialDialog.MaterialDialog;
-import com.shreyaspatil.MaterialDialog.interfaces.DialogInterface;
 
 import org.parceler.Parcels;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.util.ArrayList;
 
 public class AddRecipeActivity extends AppCompatActivity implements RecipeSectionFragment.OnDataPass, RecipeSummaryFragment.OnDataPass {
@@ -69,6 +49,7 @@ public class AddRecipeActivity extends AppCompatActivity implements RecipeSectio
     ArrayList<String> ingredients;
     ArrayList<String> directions;
     ArrayList<String> notes;
+    ArrayList<String> tags;
     ParseUser currentUser;
 
     boolean recipeDataChanged;
@@ -77,6 +58,7 @@ public class AddRecipeActivity extends AppCompatActivity implements RecipeSectio
     boolean ingredientsDataChanged;
     boolean directionsDataChanged;
     boolean notesDataChanged;
+    boolean tagsChanged;
 
     //BubbleNavigationConstraintView bubbleNavigation;
 
@@ -86,7 +68,7 @@ public class AddRecipeActivity extends AppCompatActivity implements RecipeSectio
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_recipe);
 
-        ivRecipeImage = findViewById(R.id.ivRecipeImage);
+        ivRecipeImage = findViewById(R.id.ivPicture);
         tvTitle = findViewById(R.id.tvTitle);
 
         initializeRecipe();
@@ -135,6 +117,7 @@ public class AddRecipeActivity extends AppCompatActivity implements RecipeSectio
         this.ingredients = new ArrayList<String>();
         this.directions = new ArrayList<String>();
         this.notes = new ArrayList<String>();
+        this.tags = new ArrayList<String>();
     }
 
     protected void setDefaultFragment() {
@@ -263,9 +246,9 @@ public class AddRecipeActivity extends AppCompatActivity implements RecipeSectio
     }
 
     @Override
-    public void onChangeTitlePass(String newTitle) {
-        title = newTitle;
-        tvTitle.setText(newTitle);
+    public void onChangeTitlePass(String setTitle) {
+        tvTitle.setText(setTitle);
+        this.title = setTitle;
         this.titleChanged = true;
         this.recipeDataChanged = true;
     }
@@ -274,6 +257,12 @@ public class AddRecipeActivity extends AppCompatActivity implements RecipeSectio
     public void onChangeImagePass(File newImage) {
         this.photoFile = newImage;
         this.imageChanged = true;
+        this.recipeDataChanged = true;
+    }
+
+    @Override
+    public void onChangeTagsPass() {
+        this.tagsChanged = true;
         this.recipeDataChanged = true;
     }
 
