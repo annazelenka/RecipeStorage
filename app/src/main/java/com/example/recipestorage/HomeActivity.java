@@ -50,6 +50,7 @@ public class HomeActivity extends AppCompatActivity implements Filterable {
     List<Recipe> breakfastRecipes;
     List<Recipe> lunchRecipes;
     List<Recipe> dinnerRecipes;
+    List<Recipe> dessertRecipes;
     ParseUser currentUser;
     boolean isFacebookUser;
 
@@ -118,7 +119,8 @@ public class HomeActivity extends AppCompatActivity implements Filterable {
                 breakfastRecipes = getBreakfastRecipes();
                 lunchRecipes = getLunchRecipes();
                 dinnerRecipes = getDinnerRecipes();
-                homeFragment.setFilteredRecipes(favoritedRecipes, breakfastRecipes, lunchRecipes, dinnerRecipes);
+                dessertRecipes = getDessertRecipes();
+                homeFragment.setFilteredRecipes(favoritedRecipes, breakfastRecipes, lunchRecipes, dinnerRecipes, dessertRecipes);
                 homeFragment.filter();
                 recipeTrie = new RecipeTrie();
 
@@ -165,6 +167,17 @@ public class HomeActivity extends AppCompatActivity implements Filterable {
 
         for (Recipe recipe: allRecipes) {
             if (recipe.isDinner()) {
+                returnRecipes.add(recipe);
+            }
+        }
+        return returnRecipes;
+    }
+
+    protected List<Recipe> getDessertRecipes() {
+        List<Recipe> returnRecipes = new ArrayList<Recipe>();
+
+        for (Recipe recipe: allRecipes) {
+            if (recipe.isDessert()) {
                 returnRecipes.add(recipe);
             }
         }

@@ -32,6 +32,7 @@ public class Recipe extends ParseObject {
     private static final String KEY_IS_BREAKFAST = "isBreakfast";
     private static final String KEY_IS_LUNCH = "isLunch";
     private static final String KEY_IS_DINNER = "isDinner";
+    public static final String KEY_IS_DESSERT = "isDessert";
 
 
     // empty constructor needed by Parcelable library
@@ -261,5 +262,13 @@ public class Recipe extends ParseObject {
 
     public void setIsDinner(boolean isDinner) {
         put(KEY_IS_DINNER, isDinner);
+    }
+
+    public boolean isDessert() {
+        return getBoolean(KEY_IS_DESSERT);
+    }
+
+    public void setIsDessert(boolean isDessert) {
+        put(KEY_IS_DESSERT, isDessert);
     }
 }

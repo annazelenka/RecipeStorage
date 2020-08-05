@@ -86,6 +86,7 @@ public class RecipeSummaryFragment extends Fragment {
     Chip chipBreakfast;
     Chip chipLunch;
     Chip chipDinner;
+    Chip chipDessert;
 
     ArrayList<Chip> chips;
 
@@ -132,11 +133,14 @@ public class RecipeSummaryFragment extends Fragment {
         chipBreakfast = view.findViewById(R.id.chipBreakfast);
         chipLunch = view.findViewById(R.id.chipLunch);
         chipDinner = view.findViewById(R.id.chipDinner);
+        chipDessert = view.findViewById(R.id.chipDessert);
+
 
         chips = new ArrayList<Chip>();
         chips.add(chipBreakfast);
         chips.add(chipLunch);
         chips.add(chipDinner);
+        chips.add(chipDessert);
 
         ivRecipeImage = view.findViewById(R.id.ivPicture);
         etTitle = view.findViewById(R.id.etTitle);
@@ -224,6 +228,9 @@ public class RecipeSummaryFragment extends Fragment {
             if (recipe.isDinner()) {
                 chipDinner.setChecked(true);
             }
+            if (recipe.isDessert()) {
+                chipDessert.setChecked(true);
+            }
         }
 
         chipBreakfast.setOnClickListener(new View.OnClickListener() {
@@ -241,6 +248,13 @@ public class RecipeSummaryFragment extends Fragment {
         });
 
         chipDinner.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                tagsChanged = true;
+            }
+        });
+
+        chipDessert.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 tagsChanged = true;
@@ -381,6 +395,9 @@ public class RecipeSummaryFragment extends Fragment {
             if (chipDinner.isChecked() != recipe.isDinner()) {
                 recipe.setIsDinner(chipDinner.isChecked());
             }
+            if (chipDessert.isChecked() != recipe.isDessert()) {
+                recipe.setIsDessert(chipDessert.isChecked());
+            }
             recipe.saveRecipe();
         } else {
             if (chipBreakfast.isChecked()) {
@@ -391,6 +408,9 @@ public class RecipeSummaryFragment extends Fragment {
             }
             if (chipDinner.isChecked()) {
                 recipe.setIsDinner(true);
+            }
+            if (chipDessert.isChecked()) {
+                recipe.setIsDessert(true);
             }
         }
     }

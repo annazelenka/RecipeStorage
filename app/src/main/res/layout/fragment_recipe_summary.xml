@@ -133,19 +133,15 @@
                     style="@style/Widget.MaterialComponents.Chip.Filter"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:checkable="true"
                     android:text="breakfast"
-                    app:chipIcon="@drawable/ic_wb_sunny_24px"
                     app:chipBackgroundColor="@color/chip_state_list"/>
 
                 <com.google.android.material.chip.Chip
                     android:id="@+id/chipLunch"
-                    android:checkable="true"
                     style="@style/Widget.MaterialComponents.Chip.Filter"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="lunch"
-                    app:chipIcon="@drawable/ic_restaurant_menu_24px"
                     app:chipBackgroundColor="@color/chip_state_list"/>
 
 
@@ -155,8 +151,14 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="dinner"
-                    android:checkable="true"
-                    app:chipIcon="@drawable/ic_local_bar_24px"
+                    app:chipBackgroundColor="@color/chip_state_list"/>
+
+                <com.google.android.material.chip.Chip
+                    style="@style/Widget.MaterialComponents.Chip.Filter"
+                    android:id="@+id/chipDessert"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="dessert"
                     app:chipBackgroundColor="@color/chip_state_list"/>
 
             </com.google.android.material.chip.ChipGroup>

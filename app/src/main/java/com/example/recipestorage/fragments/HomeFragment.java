@@ -49,13 +49,14 @@ public class HomeFragment extends Fragment {
     public static final int DEFAULT_SIZE = 5;
 
     TextView tvWelcome;
-//    TextView tvNoRecipes;
+    TextView tvNoRecipes;
     CarouselView carouselView;
     ChipGroup chipGroup;
     Chip chipFavorites;
     Chip chipBreakfast;
     Chip chipLunch;
     Chip chipDinner;
+    Chip chipDessert;
     ParseUser currentUser;
 
     boolean isFacebookUser;
@@ -63,6 +64,7 @@ public class HomeFragment extends Fragment {
     boolean shouldIncludeBreakfast;
     boolean shouldIncludeLunch;
     boolean shouldIncludeDinner;
+    boolean shouldIncludeDessert;
 
     List<Recipe> originalAllRecipes;
     List<Recipe> displayedRecipes;
@@ -70,6 +72,7 @@ public class HomeFragment extends Fragment {
     List<Recipe> breakfastRecipes;
     List<Recipe> lunchRecipes;
     List<Recipe> dinnerRecipes;
+    List<Recipe> dessertRecipes;
     RecipeTrie trie;
 
     View onCreatedView;
@@ -105,7 +108,8 @@ public class HomeFragment extends Fragment {
         chipBreakfast = view.findViewById(R.id.chipBreakfast);
         chipLunch = view.findViewById(R.id.chipLunch);
         chipDinner = view.findViewById(R.id.chipDinner);
-//        tvNoRecipes = view.findViewById(R.id.tvNoRecipes);
+        chipDessert = view.findViewById(R.id.chipDessert);
+        tvNoRecipes = view.findViewById(R.id.tvNoRecipes);
 
         String name;
         isFacebookUser = isFacebookUser();
@@ -119,6 +123,7 @@ public class HomeFragment extends Fragment {
         onCreatedView = view;
         screens = new ArrayList<SkeletonScreen>();
         int allRecipesSize = displayedRecipes == null ? 0 : displayedRecipes.size();
+        tvNoRecipes.setVisibility(View.INVISIBLE);
         setupSkeleton();
         setupChips();
     }
@@ -127,11 +132,15 @@ public class HomeFragment extends Fragment {
         return AccessToken.getCurrentAccessToken() != null;
     }
 
-    public void setFilteredRecipes(List<Recipe> setFavoriteRecipes, List<Recipe> setBreakfastRecipes, List<Recipe> setLunchRecipes, List<Recipe> setDinnerRecipes) {
+    public void setFilteredRecipes(
+            List<Recipe> setFavoriteRecipes, List<Recipe> setBreakfastRecipes,
+            List<Recipe> setLunchRecipes, List<Recipe> setDinnerRecipes,
+            List<Recipe> setDessertRecipes) {
         this.favoriteRecipes = setFavoriteRecipes;
         this.breakfastRecipes = setBreakfastRecipes;
         this.lunchRecipes = setLunchRecipes;
         this.dinnerRecipes = setDinnerRecipes;
+        this.dessertRecipes = setDessertRecipes;
     }
 
     public void setOriginalAllRecipes(List<Recipe> setAllRecipes) {
@@ -195,6 +204,14 @@ public class HomeFragment extends Fragment {
             }
         });
 
+        chipDessert.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                shouldIncludeDessert = chipDessert.isChecked();
+                filter();
+            }
+        });
+
         chipFavorites.setChecked(true);
         shouldIncludeFavorites = true;
     }
@@ -215,17 +232,18 @@ public class HomeFragment extends Fragment {
             filteredRecipes.addAll(dinnerRecipes);
         }
 
-        if (!shouldIncludeFavorites && filteredRecipes.isEmpty()) {
-            reloadCarouselView(originalAllRecipes, true);
+        if (shouldIncludeDessert) {
+            filteredRecipes.addAll(dessertRecipes);
+        }
+
+        if (filteredRecipes.isEmpty()) {
+            tvNoRecipes.setVisibility(View.VISIBLE);
+            carouselView.setVisibility(View.INVISIBLE);
             return;
         }
+        carouselView.setVisibility(View.VISIBLE);
+        tvNoRecipes.setVisibility(View.INVISIBLE);
         reloadCarouselView(filteredRecipes);
-
-//        if (filteredRecipes.isEmpty()) {
-//            tvNoRecipes.setVisibility(View.VISIBLE);
-//        } else {
-//            tvNoRecipes.setVisibility(View.GONE);
-//        }
     }
 
     public void setupSkeleton() {
