@@ -321,6 +321,7 @@ public class RecipeSummaryFragment extends Fragment {
         public void setReturnFragment(String returnFragment);
         public void onChangeTitlePass(String newTitle);
         public void onChangeImagePass(File newPhotoFile);
+        public void onChangeTagsPass();
         public void onSaveRecipeSummaryPass();
     }
 
@@ -342,7 +343,10 @@ public class RecipeSummaryFragment extends Fragment {
                     return;
                 }
 
-                if (tagsChanged) saveChangedTags();
+                if (tagsChanged) {
+                    dataPasser.onChangeTagsPass();
+                    saveChangedTags();
+                }
 
                 if (!hasExistingRecipe) {
                     launchIngredientsFragment();

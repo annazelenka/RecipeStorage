@@ -25,6 +25,7 @@ import com.parse.ParseQuery;
 import com.parse.ParseUser;
 import org.parceler.Parcels;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class HomeActivity extends AppCompatActivity implements Filterable {
@@ -45,6 +46,10 @@ public class HomeActivity extends AppCompatActivity implements Filterable {
 
     RecipeTrie recipeTrie;
     List<Recipe> allRecipes;
+    List<Recipe> favoritedRecipes;
+    List<Recipe> breakfastRecipes;
+    List<Recipe> lunchRecipes;
+    List<Recipe> dinnerRecipes;
     ParseUser currentUser;
     boolean isFacebookUser;
 
@@ -70,8 +75,7 @@ public class HomeActivity extends AppCompatActivity implements Filterable {
                     case HOME_POSITION:
                     default:
                         currentFragment = homeFragment;
-                        ((HomeFragment) currentFragment).reloadCarouselView(allRecipes);
-
+                        ((HomeFragment) currentFragment).filter();
                         break;
                     case ALL_RECIPES_POSITION: //miDirections
                         currentFragment = new AllRecipesFragment(allRecipes, recipeTrie, isFacebookUser);
@@ -80,8 +84,8 @@ public class HomeActivity extends AppCompatActivity implements Filterable {
                         currentFragment = new MoreFragment(currentUser);
                         break;
                 }
-                fragmentManager.beginTransaction().replace(R.id.flContainer, currentFragment).commit();
-
+                fragmentManager
+                        .beginTransaction().replace(R.id.flContainer, currentFragment).commit();
             }
         });
         bubbleNavigation.setCurrentActiveItem(HOME_POSITION);
@@ -110,13 +114,63 @@ public class HomeActivity extends AppCompatActivity implements Filterable {
                 allRecipes = recipes;
 
                 if (currentFragment != null && currentFragment.getClass() == HomeFragment.class) {
-                    ((HomeFragment) currentFragment).reloadCarouselView(allRecipes);
+                    ((HomeFragment) currentFragment).setOriginalAllRecipes(allRecipes);
+                    favoritedRecipes = getFavoritedRecipes();
+                    breakfastRecipes = getBreakfastRecipes();
+                    lunchRecipes = getLunchRecipes();
+                    dinnerRecipes = getDinnerRecipes();
+                    ((HomeFragment) currentFragment).setFilteredRecipes(favoritedRecipes, breakfastRecipes, lunchRecipes, dinnerRecipes);
+                    ((HomeFragment) currentFragment).filter();
                 }
                 recipeTrie = new RecipeTrie();
 
                 recipeTrie.populateRecipeTrie(allRecipes);
             }
         });
+    }
+
+    protected List<Recipe> getFavoritedRecipes() {
+        List<Recipe> favorites = new ArrayList<Recipe>();
+
+        for (Recipe recipe: allRecipes) {
+            if (recipe.isFavorite()) {
+                favorites.add(recipe);
+            }
+        }
+        return favorites;
+    }
+
+    protected List<Recipe> getBreakfastRecipes() {
+        List<Recipe> returnRecipes = new ArrayList<Recipe>();
+
+        for (Recipe recipe: allRecipes) {
+            if (recipe.isBreakfast()) {
+                returnRecipes.add(recipe);
+            }
+        }
+        return returnRecipes;
+    }
+
+    protected List<Recipe> getLunchRecipes() {
+        List<Recipe> returnRecipes = new ArrayList<Recipe>();
+
+        for (Recipe recipe: allRecipes) {
+            if (recipe.isLunch()) {
+                returnRecipes.add(recipe);
+            }
+        }
+        return returnRecipes;
+    }
+
+    protected List<Recipe> getDinnerRecipes() {
+        List<Recipe> returnRecipes = new ArrayList<Recipe>();
+
+        for (Recipe recipe: allRecipes) {
+            if (recipe.isDinner()) {
+                returnRecipes.add(recipe);
+            }
+        }
+        return returnRecipes;
     }
 
     @Override
@@ -143,6 +197,7 @@ public class HomeActivity extends AppCompatActivity implements Filterable {
             int position = data.getIntExtra("position", 0);
             String returnFragment = data.getStringExtra("returnFragment");
             if (data.hasExtra("recipeToEdit")) {
+                boolean tagsChanged = data.getBooleanExtra("tagsChanged", true);
                 Recipe recipeToEdit = (Recipe) Parcels.unwrap(data.getParcelableExtra("recipeToEdit"));
                 if (data.hasExtra("originalTitle")) {
                     String originalTitle = data.getStringExtra("originalTitle");
@@ -150,32 +205,41 @@ public class HomeActivity extends AppCompatActivity implements Filterable {
                     recipeTrie.insert(recipeToEdit.getTitle(), recipeToEdit);
                 }
                 allRecipes.set(position, recipeToEdit);
-                launchReturnFragment(returnFragment, false, position);
+                launchReturnFragment(returnFragment, false, position, tagsChanged);
             } else { // recipe was deleted
                 String title = data.getStringExtra("titleToDelete");
                 String objectId = data.getStringExtra("objectIdToDelete");
                 recipeTrie.delete(title, objectId);
                 allRecipes.remove(position);
-                launchReturnFragment(returnFragment, true, position);
+                launchReturnFragment(returnFragment, true, position, false);
             }
         }
     }
 
-    private void launchReturnFragment(String returnFragment, boolean itemRemoved, int position) {
+    private void launchReturnFragment(String returnFragment, boolean itemRemoved, int position, boolean tagsChanged) {
         if (returnFragment == null) {
             Log.i(TAG, "returnFragment is null");
             return;
         }
-        else if (returnFragment.equals("AllRecipesFragment")) {
+
+        if (tagsChanged) {
+            populateRecipes();
+            favoritedRecipes = getFavoritedRecipes();
+            breakfastRecipes = getBreakfastRecipes();
+            lunchRecipes = getLunchRecipes();
+            dinnerRecipes = getDinnerRecipes();
+            homeFragment.setFilteredRecipes(favoritedRecipes, breakfastRecipes, lunchRecipes, dinnerRecipes);
+        }
+
+        if (returnFragment.equals("AllRecipesFragment")) {
             AllRecipesFragment allRecipesFragment =  (AllRecipesFragment) currentFragment;
             if (itemRemoved) allRecipesFragment.notifyItemRemoved(position);
             else allRecipesFragment.notifyItemChanged(position);
 
         } else if (returnFragment.equals("HomeFragment")) {
-//            HomeFragment homeFragment = (HomeFragment) currentFragment;
-            homeFragment.reloadCarouselView(allRecipes);
+            HomeFragment fragment =  (HomeFragment) currentFragment;
+            fragment.filter();
         }
     }
-
 
 }

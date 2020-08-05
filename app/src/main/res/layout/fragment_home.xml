@@ -4,45 +4,91 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".HomeActivity"
-    android:layout_margin="16dp">
+    android:layout_margin="16dp"
+    tools:context=".HomeActivity">
 
     <TextView
         android:id="@+id/tvWelcome"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="64dp"
+        android:layout_marginBottom="32dp"
         android:text="Welcome!"
         android:textAlignment="center"
-        android:textSize="48sp"
         android:textColor="@color/colorTextColor"
-        android:layout_marginBottom="64dp"
+        android:textSize="48sp"
         android:textStyle="bold"></TextView>
+
+    <com.google.android.material.chip.ChipGroup
+        android:id="@+id/chipGroup"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tvWelcome">
+
+        <com.google.android.material.chip.Chip
+            android:id="@+id/chipFavorites"
+            style="@style/Widget.MaterialComponents.Chip.Filter"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:checkable="true"
+            android:text="favorites"
+            app:chipIcon="@drawable/ic_favorite_black_18dp"
+            app:chipBackgroundColor="@color/chip_state_list"/>
+
+        <com.google.android.material.chip.Chip
+            android:id="@+id/chipBreakfast"
+            style="@style/Widget.MaterialComponents.Chip.Filter"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="breakfast"
+            app:chipBackgroundColor="@color/chip_state_list"/>
+
+        <com.google.android.material.chip.Chip
+            android:id="@+id/chipLunch"
+            style="@style/Widget.MaterialComponents.Chip.Filter"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="lunch"
+            app:chipBackgroundColor="@color/chip_state_list"/>
+
+
+        <com.google.android.material.chip.Chip
+            style="@style/Widget.MaterialComponents.Chip.Filter"
+            android:id="@+id/chipDinner"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="dinner"
+            app:chipBackgroundColor="@color/chip_state_list"/>
+
+    </com.google.android.material.chip.ChipGroup>
+
+
     <FrameLayout
         android:id="@+id/flContainer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_centerVertical="true"
-        android:layout_below="@+id/tvWelcome"
-        android:layout_above="@+id/bubbleNavigation">
+        android:layout_above="@+id/bubbleNavigation"
+        android:layout_below="@+id/chipGroup"
+        android:layout_centerVertical="true">
 
         <com.jama.carouselview.CarouselView
             android:id="@+id/carouselView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_margin="0dp"
+            app:carouselOffset="start"
             app:enableSnapping="false"
+            app:indicatorAnimationType="drop"
+            app:indicatorPadding="5"
+            app:indicatorRadius="5"
+            app:indicatorSelectedColor="@color/colorAccent"
+            app:indicatorUnselectedColor="@color/colorPrimary"
+            app:resource="@layout/item_recipe_preview"
             app:scaleOnScroll="true"
             app:setAutoPlay="true"
             app:setAutoPlayDelay="3000"
-            app:carouselOffset="start"
-            app:indicatorAnimationType="drop"
-            app:indicatorRadius="5"
-            app:indicatorPadding="5"
-            app:indicatorSelectedColor="@color/colorAccent"
-            app:indicatorUnselectedColor="@color/colorPrimary"
             app:size="10"
-            app:spacing="10"
-            app:resource="@layout/item_recipe_preview" />
+            app:spacing="10" />
 
     </FrameLayout>
 

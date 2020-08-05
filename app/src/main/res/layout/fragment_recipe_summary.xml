@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_marginTop="32dp"
     tools:context=".fragments.RecipeSummaryFragment">
 
@@ -11,142 +12,156 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         >
+
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="wrap_content">
 
-    <ImageView
-        android:id="@+id/ivRecipeImage"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:adjustViewBounds="true"
-        android:scaleType="fitCenter"
-        android:src="@drawable/lobster"
-        android:transitionName="recipeImage">
-        </ImageView>
-
-
-
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/etTitleLayout"
-        android:layout_width="match_parent"
-        android:transitionName="recipeTitle"
-        android:layout_height="wrap_content"
-        android:layout_margin="16dp"
-        android:layout_marginTop="32dp"
-        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-        android:layout_gravity="bottom"
-        android:layout_below="@id/ivRecipeImage">
-
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/etTitle"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:imeOptions="actionDone"
-            android:singleLine="true"
-            android:inputType="text"
-            android:layout_centerHorizontal="true"
-            android:textAlignment="center"
-            android:textSize="36dp"
-            android:textStyle="bold"/>
-
-    </com.google.android.material.textfield.TextInputLayout>
-
-    <LinearLayout
-        android:id="@+id/layoutImageBtns"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_below="@id/etTitleLayout"
-        android:layout_margin="16dp"
-        android:layout_marginTop="0dp"
-        android:layout_centerHorizontal="true">
-
-        <ImageButton
-            android:id="@+id/btnCamera"
-            android:layout_height="wrap_content"
-            android:layout_width="wrap_content"
-            android:layout_margin="16dp"
-            android:src="@drawable/ic_photo_camera_24px"
-            android:backgroundTint="@color/colorWhite"
-            >
-
-        </ImageButton>
+            <ImageView
+                android:id="@+id/ivPicture"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:adjustViewBounds="true"
+                android:scaleType="fitCenter"
+                android:src="@drawable/lobster"
+                android:transitionName="recipeImage"
+                ></ImageView>
 
 
-        <ImageButton
-            android:id="@+id/btnFavorite"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="16dp"
-            android:src="@drawable/ic_favorite_border_black_18dp"
-            android:layout_weight="1"
-            android:backgroundTint="@color/colorWhite"
-            >
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/etTitleLayout"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/ivPicture"
+                android:layout_gravity="bottom"
+                android:layout_margin="16dp"
+                android:layout_marginTop="32dp"
+                android:transitionName="recipeTitle">
 
-        </ImageButton>
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etTitle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:imeOptions="actionDone"
+                    android:inputType="text"
+                    android:singleLine="true"
+                    android:textAlignment="center"
+                    android:textSize="36dp"
+                    android:textStyle="bold" />
 
-        <com.facebook.share.widget.ShareButton
-            android:id="@+id/btnShare"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="16dp"
+            </com.google.android.material.textfield.TextInputLayout>
 
-            android:layout_marginEnd="16dp"
-            android:layout_marginBottom="16dp"
-            android:layout_gravity="center">
+            <LinearLayout
+                android:id="@+id/layoutImageBtns"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/etTitleLayout"
+                android:layout_centerHorizontal="true"
+                android:layout_margin="16dp"
+                android:layout_marginTop="0dp"
+                android:orientation="horizontal">
 
-        </com.facebook.share.widget.ShareButton>
+                <ImageButton
+                    android:id="@+id/btnCamera"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="16dp"
+                    android:backgroundTint="@color/colorWhite"
+                    android:src="@drawable/ic_photo_camera_24px">
 
-        <ImageButton
-            android:id="@+id/btnDelete"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="16dp"
-            android:src="@drawable/ic_delete_outline_24px"
-            android:backgroundTint="@color/colorWhite"
-            >
-        </ImageButton>
+                </ImageButton>
 
-    </LinearLayout>
 
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/etRecipeTimeLayout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="16dp"
-        android:layout_marginTop="32dp"
-        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-        android:layout_gravity="bottom"
-        android:layout_below="@id/layoutImageBtns">
+                <ImageButton
+                    android:id="@+id/btnFavorite"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="16dp"
+                    android:layout_weight="1"
+                    android:backgroundTint="@color/colorWhite"
+                    android:src="@drawable/ic_favorite_border_black_18dp">
 
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/etRecipeTime"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:imeOptions="actionDone"
-            android:singleLine="true"
-            android:layout_centerHorizontal="true"
-            android:textAlignment="center"
-            android:textSize="16dp"
-            android:textStyle="bold"/>
+                </ImageButton>
 
-    </com.google.android.material.textfield.TextInputLayout>
+                <com.facebook.share.widget.ShareButton
+                    android:id="@+id/btnShare"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginStart="16dp"
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/fabSubmit"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="@color/green_active"
-        android:src="@drawable/ic_done_24px"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentEnd="true"
-        android:layout_margin="16dp">
+                    android:layout_marginTop="16dp"
+                    android:layout_marginEnd="16dp"
+                    android:layout_marginBottom="16dp">
 
-    </com.google.android.material.floatingactionbutton.FloatingActionButton>
+                </com.facebook.share.widget.ShareButton>
 
-    </RelativeLayout>
+                <ImageButton
+                    android:id="@+id/btnDelete"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="16dp"
+                    android:backgroundTint="@color/colorWhite"
+                    android:src="@drawable/ic_delete_outline_24px"></ImageButton>
+
+            </LinearLayout>
+
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/fabSubmit"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_margin="16dp"
+                android:layout_marginTop="0dp"
+                android:background="@color/green_active"
+                android:src="@drawable/ic_done_24px">
+
+            </com.google.android.material.floatingactionbutton.FloatingActionButton>
+
+            <com.google.android.material.chip.ChipGroup
+                android:id="@+id/chipGroup"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/layoutImageBtns"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp">
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chipBreakfast"
+                    style="@style/Widget.MaterialComponents.Chip.Filter"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:checkable="true"
+                    android:text="breakfast"
+                    app:chipIcon="@drawable/ic_wb_sunny_24px"
+                    app:chipBackgroundColor="@color/chip_state_list"/>
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chipLunch"
+                    android:checkable="true"
+                    style="@style/Widget.MaterialComponents.Chip.Filter"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="lunch"
+                    app:chipIcon="@drawable/ic_restaurant_menu_24px"
+                    app:chipBackgroundColor="@color/chip_state_list"/>
+
+
+                <com.google.android.material.chip.Chip
+                    style="@style/Widget.MaterialComponents.Chip.Filter"
+                    android:id="@+id/chipDinner"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="dinner"
+                    android:checkable="true"
+                    app:chipIcon="@drawable/ic_local_bar_24px"
+                    app:chipBackgroundColor="@color/chip_state_list"/>
+
+            </com.google.android.material.chip.ChipGroup>
+
+        </RelativeLayout>
     </ScrollView>
 
 

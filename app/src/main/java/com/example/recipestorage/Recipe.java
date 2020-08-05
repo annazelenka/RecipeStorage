@@ -29,6 +29,10 @@ public class Recipe extends ParseObject {
     public static final String KEY_RECIPE_IMAGE = "recipeImage";
     private static final String KEY_COOK_TIME_MIN = "cookTimeMin";
     private static final String KEY_IS_FAVORITE = "isFavorite";
+    private static final String KEY_IS_BREAKFAST = "isBreakfast";
+    private static final String KEY_IS_LUNCH = "isLunch";
+    private static final String KEY_IS_DINNER = "isDinner";
+
 
     // empty constructor needed by Parcelable library
     public Recipe() {
@@ -135,6 +139,7 @@ public class Recipe extends ParseObject {
         return directions;
     }
 
+
     public void addDirection(String direction) {
         addUnique(KEY_DIRECTIONS, direction);
     }
@@ -152,8 +157,6 @@ public class Recipe extends ParseObject {
     }
 
     public void clearDirections() {
-//        ArrayList<String> directions = getParsedDirections();
-//        removeDirections(directions);
         remove(KEY_DIRECTIONS);
     }
 
@@ -197,8 +200,6 @@ public class Recipe extends ParseObject {
     }
 
     public void clearNotes() {
-//        ArrayList<String> notes = getParsedNotes();
-//        removeNotes(notes);
         remove(KEY_NOTES);
     }
 
@@ -236,5 +237,29 @@ public class Recipe extends ParseObject {
 
     public void setIsFavorite(boolean isFavorite) {
         put(KEY_IS_FAVORITE, isFavorite);
+    }
+
+    public boolean isBreakfast() {
+        return getBoolean(KEY_IS_BREAKFAST);
+    }
+
+    public void setIsBreakfast(boolean isBreakfast) {
+        put(KEY_IS_BREAKFAST, isBreakfast);
+    }
+
+    public boolean isLunch() {
+        return getBoolean(KEY_IS_LUNCH);
+    }
+
+    public void setIsLunch(boolean isLunch) {
+        put(KEY_IS_LUNCH, isLunch);
+    }
+
+    public boolean isDinner() {
+        return getBoolean(KEY_IS_DINNER);
+    }
+
+    public void setIsDinner(boolean isDinner) {
+        put(KEY_IS_DINNER, isDinner);
     }
 }

@@ -10,7 +10,6 @@ import androidx.core.util.Pair;
 import androidx.fragment.app.Fragment;
 
 import android.os.Handler;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,6 +25,8 @@ import com.example.recipestorage.Recipe;
 import com.example.recipestorage.utils.RecipeTrie;
 import com.facebook.AccessToken;
 import com.facebook.Profile;
+import com.google.android.material.chip.Chip;
+import com.google.android.material.chip.ChipGroup;
 import com.jama.carouselview.CarouselView;
 import com.jama.carouselview.CarouselViewListener;
 import com.jama.carouselview.enums.IndicatorAnimationType;
@@ -35,7 +36,9 @@ import com.parse.ParseUser;
 import org.parceler.Parcels;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import coil.Coil;
 import coil.ImageLoader;
@@ -47,10 +50,25 @@ public class HomeFragment extends Fragment {
 
     TextView tvWelcome;
     CarouselView carouselView;
+    ChipGroup chipGroup;
+    Chip chipFavorites;
+    Chip chipBreakfast;
+    Chip chipLunch;
+    Chip chipDinner;
     ParseUser currentUser;
 
     boolean isFacebookUser;
-    List<Recipe> allRecipes;
+    boolean shouldIncludeFavorites;
+    boolean shouldIncludeBreakfast;
+    boolean shouldIncludeLunch;
+    boolean shouldIncludeDinner;
+
+    List<Recipe> originalAllRecipes;
+    List<Recipe> displayedRecipes;
+    List<Recipe> favoriteRecipes;
+    List<Recipe> breakfastRecipes;
+    List<Recipe> lunchRecipes;
+    List<Recipe> dinnerRecipes;
     RecipeTrie trie;
 
     View onCreatedView;
@@ -58,10 +76,11 @@ public class HomeFragment extends Fragment {
     SkeletonScreen skeletonScreen;
     List<SkeletonScreen> screens;
     boolean isLoading;
+    Set<Recipe> filteredRecipes;
 
     public HomeFragment(List<Recipe> setAllRecipes, RecipeTrie setTrie, boolean setIsLoading) {
-        // Required empty public constructor
-        this.allRecipes = setAllRecipes;
+        this.originalAllRecipes = setAllRecipes;
+        this.displayedRecipes = setAllRecipes;
         this.trie = setTrie;
         this.isLoading = setIsLoading;
     }
@@ -70,7 +89,6 @@ public class HomeFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_home, container, false);
     }
 
@@ -81,6 +99,11 @@ public class HomeFragment extends Fragment {
         tvWelcome = view.findViewById(R.id.tvWelcome);
         carouselView = view.findViewById(R.id.carouselView);
         currentUser = ParseUser.getCurrentUser();
+        chipGroup = view.findViewById(R.id.chipGroup);
+        chipFavorites = view.findViewById(R.id.chipFavorites);
+        chipBreakfast = view.findViewById(R.id.chipBreakfast);
+        chipLunch = view.findViewById(R.id.chipLunch);
+        chipDinner = view.findViewById(R.id.chipDinner);
 
         String name;
         isFacebookUser = isFacebookUser();
@@ -93,18 +116,36 @@ public class HomeFragment extends Fragment {
 
         onCreatedView = view;
         screens = new ArrayList<SkeletonScreen>();
-        int allRecipesSize = allRecipes == null ? 0 : allRecipes.size();
+        int allRecipesSize = displayedRecipes == null ? 0 : displayedRecipes.size();
         setupSkeleton();
+        setupChips();
     }
 
     public boolean isFacebookUser() {
         return AccessToken.getCurrentAccessToken() != null;
     }
 
+    public void setFilteredRecipes(List<Recipe> setFavoriteRecipes, List<Recipe> setBreakfastRecipes, List<Recipe> setLunchRecipes, List<Recipe> setDinnerRecipes) {
+        this.favoriteRecipes = setFavoriteRecipes;
+        this.breakfastRecipes = setBreakfastRecipes;
+        this.lunchRecipes = setLunchRecipes;
+        this.dinnerRecipes = setDinnerRecipes;
+    }
+
+    public void setOriginalAllRecipes(List<Recipe> setAllRecipes) {
+        this.originalAllRecipes = setAllRecipes;
+    }
+
+    public void reloadCarouselView(Set<Recipe> filteredRecipes) {
+        List<Recipe> filteredList = new ArrayList<Recipe>();
+        filteredList.addAll(filteredRecipes);
+        reloadCarouselView(filteredList);
+    }
+
     public void reloadCarouselView(List<Recipe> setAllRecipes) {
         carouselView = onCreatedView.findViewById(R.id.carouselView);
-        this.allRecipes = setAllRecipes;
-        int allRecipesSize = allRecipes == null ? 0 : allRecipes.size();
+        this.displayedRecipes = setAllRecipes;
+        int allRecipesSize = setAllRecipes == null ? 0 : setAllRecipes.size();
         if (skeletonScreen == null) {
             setupSkeleton();
         }
@@ -117,6 +158,66 @@ public class HomeFragment extends Fragment {
         };
         Handler handler = new Handler();
         handler.postDelayed(r, 500);
+    }
+
+    private void setupChips() {
+        chipFavorites.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                shouldIncludeFavorites = chipFavorites.isChecked();
+                filter();
+            }
+        });
+
+        chipBreakfast.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                shouldIncludeBreakfast = chipBreakfast.isChecked();
+                filter();
+            }
+        });
+
+        chipLunch.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                shouldIncludeLunch = chipLunch.isChecked();
+                filter();
+            }
+        });
+
+        chipDinner.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                shouldIncludeDinner = chipDinner.isChecked();
+                filter();
+            }
+        });
+
+        chipFavorites.setChecked(true);
+        shouldIncludeFavorites = true;
+    }
+
+    public void filter() {
+        filteredRecipes = new HashSet<Recipe>();
+
+        if (shouldIncludeFavorites) {
+            filteredRecipes.addAll(favoriteRecipes);
+        }
+        if (shouldIncludeBreakfast) {
+            filteredRecipes.addAll(breakfastRecipes);
+        }
+        if (shouldIncludeLunch) {
+            filteredRecipes.addAll(lunchRecipes);
+        }
+        if (shouldIncludeDinner) {
+            filteredRecipes.addAll(dinnerRecipes);
+        }
+
+        if (!shouldIncludeFavorites && filteredRecipes.isEmpty()) {
+            reloadCarouselView(originalAllRecipes);
+            return;
+        }
+        reloadCarouselView(filteredRecipes);
     }
 
     public void setupSkeleton() {
@@ -148,7 +249,6 @@ public class HomeFragment extends Fragment {
     private void setupCarouselView(View view, int allRecipesSize, boolean isSkeletonView) {
         carouselView = view.findViewById(R.id.carouselView);
 
-
         int layout = R.layout.item_recipe_preview;
         carouselView.setSize(allRecipesSize);
         carouselView.setResource(layout);
@@ -163,23 +263,19 @@ public class HomeFragment extends Fragment {
                         .load(R.layout.item_recipe_skeleton)
                         .show();
                 screens.add(skeletonScreen);
-                // Example here is setting up a full image carousel
+
                 final TextView tvTitle = view.findViewById(R.id.tvTitle);
                 final ImageView ivPicture = view.findViewById(R.id.ivPicture);
                 ImageButton btnEditRecipe = view.findViewById(R.id.btnEditRecipe);
 
-                ivPicture.setTransitionName("recipeImage");
-                tvTitle.setTransitionName("recipeTitle");
-
-
                 ImageLoader imageLoader = Coil.imageLoader(getContext());
 
-                if (allRecipes == null || allRecipes.size() == 0 || position >= allRecipes.size()) {
+                if (displayedRecipes == null || displayedRecipes.size() == 0 || position >= displayedRecipes.size()) {
                     return;
                 }
 
 
-                final Recipe recipe = allRecipes.get(position);
+                final Recipe recipe = displayedRecipes.get(position);
                 boolean hasImage = (recipe.getImage() != null);
                 if (hasImage) {
                     LoadRequest request = LoadRequest.builder(getContext())
@@ -224,8 +320,6 @@ public class HomeFragment extends Fragment {
         Pair<View, String> p2 = Pair.create((View)tvTitle, "tvTitle");
         ActivityOptionsCompat options = ActivityOptionsCompat.
                 makeSceneTransitionAnimation(getActivity(), p1, p2);
-        getActivity().startActivityForResult(intent, EDIT_REQUEST_CODE, options.toBundle());
+        startActivityForResult(intent, EDIT_REQUEST_CODE, options.toBundle());
     }
-
-
 }
