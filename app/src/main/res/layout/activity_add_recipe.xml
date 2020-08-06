@@ -34,7 +34,7 @@
                     android:layout_height="wrap_content"
                     android:text=" title"
                     android:textStyle="bold"
-                    android:textSize="48sp"></TextView>
+                    android:textSize="36sp"></TextView>
 
             </RelativeLayout>
         </androidx.appcompat.widget.Toolbar>
@@ -44,7 +44,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/sliding_tabs"
-        android:background="@color/colorPrimary"
+        android:background="@color/colorPrimaryDark"
         android:minHeight="?attr/actionBarSize"
         android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
         style="@style/MyCustomTabLayout">

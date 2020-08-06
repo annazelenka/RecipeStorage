@@ -16,7 +16,7 @@
         android:layout_marginEnd="16dp"
         android:layout_marginTop="32dp"
         android:layout_marginBottom="0dp"
-        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+        style="@style/customTextInputLayoutOutlined">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/etUsername"
@@ -29,7 +29,7 @@
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/etPasswordLayout"
-        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        style="@style/customTextInputLayoutOutlined"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
@@ -38,7 +38,8 @@
         android:layout_marginBottom="16dp"
         android:layout_below="@+id/etUsernameLayout"
         android:hint="password"
-        app:endIconMode="password_toggle">
+        app:endIconMode="password_toggle"
+        >
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/etPassword"
@@ -51,13 +52,15 @@
 
     <Button
         android:id="@+id/btnLogin"
-        style="@style/Widget.MaterialComponents.Button"
+        style="@style/AppButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/etPasswordLayout"
         android:layout_alignLeft="@+id/etPasswordLayout"
         android:layout_alignRight="@+id/etPasswordLayout"
-        android:text="Log In without Facebook" />
+        android:text="Log In without Facebook"
+        android:backgroundTint="@color/colorAccent"
+        />
 
     <Button
         android:id="@+id/btnSignup"
@@ -67,7 +70,9 @@
         android:layout_alignLeft="@+id/btnLogin"
         android:layout_alignRight="@+id/btnLogin"
         android:layout_below="@+id/btnLogin"
-        android:text="Sign Up without Facebook" />
+        android:text="Sign Up without Facebook"
+        android:backgroundTint="@color/colorAccent"
+        />
 
     <com.facebook.login.widget.LoginButton
         android:id="@+id/btnLoginFacebook"
@@ -80,6 +85,6 @@
         android:textSize="16sp"
         android:layout_alignParentBottom="true"
         android:layout_marginBottom="16dp"
-        android:backgroundTint="@color/colorPrimary"
+        android:backgroundTint="@color/colorAccent"
         />
 </RelativeLayout>

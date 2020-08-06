@@ -16,6 +16,7 @@ import android.widget.Toast;
 import com.example.recipestorage.fragments.AllRecipesFragment;
 import com.example.recipestorage.fragments.HomeFragment;
 import com.example.recipestorage.fragments.MoreFragment;
+import com.example.recipestorage.utils.KeyboardUtils;
 import com.example.recipestorage.utils.RecipeTrie;
 import com.gauravk.bubblenavigation.BubbleNavigationConstraintView;
 import com.gauravk.bubblenavigation.listener.BubbleNavigationChangeListener;
@@ -93,6 +94,20 @@ public class HomeActivity extends AppCompatActivity implements Filterable {
         currentFragment = new HomeFragment(allRecipes, recipeTrie, true);
         homeFragment = (HomeFragment) currentFragment;
         fragmentManager.beginTransaction().replace(R.id.flContainer, currentFragment).commit();
+
+
+        KeyboardUtils.addKeyboardToggleListener(this, new KeyboardUtils.SoftKeyboardToggleListener()
+        {
+            @Override
+            public void onToggleSoftKeyboard(boolean isVisible)
+            {
+                if (isVisible) {
+                    bubbleNavigation.setVisibility(View.GONE);
+                } else {
+                    bubbleNavigation.setVisibility(View.VISIBLE);
+                }
+            }
+        });
     }
 
 

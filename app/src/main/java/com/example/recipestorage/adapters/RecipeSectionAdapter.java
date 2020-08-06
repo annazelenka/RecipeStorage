@@ -4,6 +4,7 @@ package com.example.recipestorage.adapters;
 import android.content.Context;
 import android.graphics.Color;
 import android.os.Handler;
+import android.text.InputType;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -270,6 +271,9 @@ public class RecipeSectionAdapter extends RecyclerView.Adapter implements Filter
         etData = (EditText) itemView.findViewById(R.id.etData);
         ivMore = (ImageView) itemView.findViewById(R.id.ivMore);
         final int position = getAdapterPosition();
+
+        etData.setImeOptions(EditorInfo.IME_ACTION_DONE);
+        etData.setRawInputType(InputType.TYPE_CLASS_TEXT);
 
     }
 

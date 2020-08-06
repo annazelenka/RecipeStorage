@@ -15,7 +15,8 @@
         android:textCursorDrawable="@null"
         app:iconifiedByDefault="false"
         app:queryBackground="@null"
-        android:layout_margin="16dp"/>
+        android:layout_margin="16dp"
+        android:backgroundTint="@color/colorAccent"/>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvRecipes"
@@ -32,6 +33,7 @@
         android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true"
         android:layout_margin="16dp"
+        android:tint="@color/colorWhite"
         ></com.google.android.material.floatingactionbutton.FloatingActionButton>
 
 </RelativeLayout>

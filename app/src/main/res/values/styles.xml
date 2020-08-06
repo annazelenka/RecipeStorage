@@ -5,16 +5,14 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+        <item name="colorSecondary">@color/colorAccent</item>
         <item name="android:textColorPrimary">@color/colorTextColor</item>
         <item name="android:windowContentTransitions">true</item>
+        <item name="colorButtonNormal">@color/colorAccent</item>
+        <item name="colorControlHighlight">@color/colorAccent</item>
+        <item name="android:statusBarColor">@color/colorPrimary</item>
     </style>
 
-<!--    <style name="AnnaMaterialButton" parent="Widget.MaterialComponents.Button">-->
-<!--        <item name="android:textColor">@color/colorWhite</item>-->
-<!--        <item name="android:textSize">16sp</item>-->
-<!--        <item name="fontFamily">serif-monospace</item>-->
-<!--        <item name="android:textAllCaps">true</item>-->
-<!--    </style>-->
 
     <style name="ToolbarTheme" parent="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
         <!-- android:textColorPrimary is the color of the title text in the Toolbar  -->
@@ -29,6 +27,9 @@
         <item name="colorControlActivated">@color/colorFacebookBlue</item>
         <!-- Applied to framework control highlights (i.e ripples or list selectors) -->
         <item name="colorControlHighlight">@color/colorWhite</item>
+        <item name="colorButtonNormal">@color/colorAccent</item>
+        <item name="android:statusBarColor">@color/colorPrimary</item>
+
 
         <!-- Enable these below if you want clicking icons to trigger a ripple effect -->
         <!--
@@ -49,8 +50,27 @@
 
     </style>
 
+    <style name="AppButton" parent="Widget.MaterialComponents.Button">
+        <item name="backgroundTint">@color/colorAccent</item>
+    </style>
+
     <color name="colorWhite">#ffffff</color>
     <color name="colorBlack">#000000</color>
+
+
+    <style name="customTextInputLayout" parent="@style/Widget.MaterialComponents.TextInputLayout.FilledBox">
+        <item name="backgroundTint">@color/colorWhite</item>
+        <item name="hintTextColor">?attr/colorAccent</item>
+        <item name="android:textColorHint">@color/colorAccent</item>
+        <item name="boxStrokeColor">@color/colorAccent</item>
+    </style>
+
+    <style name="customTextInputLayoutOutlined" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+<!--        <item name="backgroundTint">@color/colorWhite</item>-->
+        <item name="hintTextColor">?attr/colorAccent</item>
+        <item name="android:textColorHint">@color/colorAccent</item>
+<!--        <item name="boxStrokeColor">@color/colorAccent</item>-->
+    </style>
 
 
 </resources>

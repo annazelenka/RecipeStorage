@@ -3,15 +3,26 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".fragments.MoreFragment">
+    tools:context=".fragments.MoreFragment"
+    android:orientation="vertical">
 
-    <!-- TODO: Update blank fragment layout -->
+    <Button
+        android:id="@+id/btnAddRecipe"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="64dp"
+        android:text="Add Recipe"
+        android:backgroundTint="@color/colorAccent"
+        >
+
+    </Button>
     <Button
         android:id="@+id/btnLogout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Log Out"
-        android:layout_gravity="top">
+        android:backgroundTint="@color/colorAccent"
+        >
 
     </Button>
 

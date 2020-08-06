@@ -11,56 +11,60 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
-        android:layout_margin="16dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
-        android:layout_marginBottom="16dp"
+        android:layout_marginBottom="8dp"
         android:text="Recipe Section"
         android:textAlignment="center"
         android:textColor="@color/colorBlack"
         android:textSize="24sp"
         android:textStyle="bold"></TextView>
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rvItems"
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvItems"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tvTitle"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="0dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="0dp">
+
+    </androidx.recyclerview.widget.RecyclerView>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/etAddRecipeSectionLayout"
+        style="@style/customTextInputLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/rvItems"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"
+        android:paddingStart="?android:attr/listPreferredItemPaddingStart"
+        android:paddingEnd="?android:attr/listPreferredItemPaddingEnd"
+        >
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/etAddRecipeSection"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="0dp"
-            android:layout_below="@id/tvTitle"
-            android:layout_margin="16dp">
+            android:imeOptions="actionDone"
+            android:singleLine="true" />
 
-        </androidx.recyclerview.widget.RecyclerView>
-
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/etAddRecipeSectionLayout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="16dp"
-                android:paddingStart="?android:attr/listPreferredItemPaddingStart"
-                android:paddingEnd="?android:attr/listPreferredItemPaddingEnd"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                android:layout_gravity="bottom"
-                android:layout_below="@id/rvItems">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/etAddRecipeSection"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:imeOptions="actionDone"
-                    android:singleLine="true" />
-
-            </com.google.android.material.textfield.TextInputLayout>
+    </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fabSubmit"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@color/green_active"
-        android:src="@drawable/ic_done_24px"
-        android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true"
-        android:layout_margin="16dp">
+        android:layout_alignParentBottom="true"
+        android:layout_margin="16dp"
+        android:src="@drawable/ic_done_24px"
+        android:tint="@color/colorWhite">
 
     </com.google.android.material.floatingactionbutton.FloatingActionButton>
 

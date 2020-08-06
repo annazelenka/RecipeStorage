@@ -25,7 +25,8 @@
         android:textSize="20sp"
         android:textStyle="bold"
         android:layout_marginBottom="8dp"
-        android:textColor="@color/colorBlack">
+        android:textColor="@color/colorTextColor"
+        android:transitionName="recipeTitle">
 
     </TextView>
 
@@ -36,6 +37,7 @@
         android:layout_below="@+id/tvTitle"
         android:layout_centerHorizontal="true"
         android:scaleType="centerCrop"
+        android:transitionName="recipeImage"
         ></ImageView>
 
     <ImageButton
@@ -46,6 +48,7 @@
         android:layout_alignEnd="@+id/ivPicture"
         android:layout_alignBottom="@+id/ivPicture"
         android:backgroundTint="@color/colorWhite"
+        android:tint="@color/colorTextColor"
         ></ImageButton>
 
 

@@ -27,10 +27,19 @@
                 android:transitionName="recipeImage"
                 ></ImageView>
 
+            <ImageView
+                android:id="@+id/ivScrollDown"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:src="@drawable/ic_expand_more_24px"
+                android:layout_alignBottom="@+id/ivPicture"
+                ></ImageView>
+
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/etTitleLayout"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                style="@style/customTextInputLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/ivPicture"
@@ -69,7 +78,8 @@
                     android:layout_height="wrap_content"
                     android:layout_margin="16dp"
                     android:backgroundTint="@color/colorWhite"
-                    android:src="@drawable/ic_photo_camera_24px">
+                    android:src="@drawable/ic_photo_camera_24px"
+                    android:tint="@color/colorTextColor">
 
                 </ImageButton>
 
@@ -81,7 +91,8 @@
                     android:layout_margin="16dp"
                     android:layout_weight="1"
                     android:backgroundTint="@color/colorWhite"
-                    android:src="@drawable/ic_favorite_border_black_18dp">
+                    android:src="@drawable/ic_favorite_border_black_18dp"
+                    android:tint="@color/colorTextColor">
 
                 </ImageButton>
 
@@ -104,7 +115,8 @@
                     android:layout_height="wrap_content"
                     android:layout_margin="16dp"
                     android:backgroundTint="@color/colorWhite"
-                    android:src="@drawable/ic_delete_outline_24px"></ImageButton>
+                    android:src="@drawable/ic_delete_outline_24px"
+                    android:tint="@color/colorTextColor"></ImageButton>
 
             </LinearLayout>
 
@@ -115,8 +127,8 @@
                 android:layout_alignParentEnd="true"
                 android:layout_margin="16dp"
                 android:layout_marginTop="0dp"
-                android:background="@color/green_active"
-                android:src="@drawable/ic_done_24px">
+                android:src="@drawable/ic_done_24px"
+                android:tint="@color/colorWhite">
 
             </com.google.android.material.floatingactionbutton.FloatingActionButton>
 

@@ -79,7 +79,7 @@
         android:textAlignment="center"
         android:layout_below="@id/chipGroup"
         android:layout_marginTop="36dp"
-        android:textColor="@color/colorBlack"
+        android:textColor="@color/colorTextColor"
         ></TextView>
 
     <FrameLayout
@@ -100,7 +100,7 @@
             app:indicatorAnimationType="drop"
             app:indicatorPadding="5"
             app:indicatorRadius="5"
-            app:indicatorSelectedColor="@color/colorAccent"
+            app:indicatorSelectedColor="@color/colorPrimaryDark"
             app:indicatorUnselectedColor="@color/colorPrimary"
             app:resource="@layout/item_recipe_preview"
             app:scaleOnScroll="true"
