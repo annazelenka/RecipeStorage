@@ -69,7 +69,7 @@
 <!--        <item name="backgroundTint">@color/colorWhite</item>-->
         <item name="hintTextColor">?attr/colorAccent</item>
         <item name="android:textColorHint">@color/colorAccent</item>
-<!--        <item name="boxStrokeColor">@color/colorAccent</item>-->
+        <item name="boxStrokeColor">@color/colorAccent</item>
     </style>
 
 
