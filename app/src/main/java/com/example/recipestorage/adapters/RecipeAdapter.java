@@ -173,7 +173,7 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
             intent.putExtra("returnFragment", "AllRecipesFragment");
             intent.putExtra("position", position);
             Pair<View, String> p1 = Pair.create((View)ivPicture, "recipeImage");
-            Pair<View, String> p2 = Pair.create((View)tvTitle, "tvTitle");
+            Pair<View, String> p2 = Pair.create((View)tvTitle, "recipeTitle");
             ActivityOptionsCompat options = ActivityOptionsCompat.
                     makeSceneTransitionAnimation(activity, p1, p2);
             ((HomeActivity) context).startActivityForResult(intent, EDIT_REQUEST_CODE, options.toBundle());

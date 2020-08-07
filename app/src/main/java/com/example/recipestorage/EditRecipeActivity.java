@@ -68,7 +68,7 @@ public class EditRecipeActivity<recipe> extends AddRecipeActivity {
         int[] imageResId = {
                 R.drawable.default_icon,
                 R.drawable.ic_fastfood_black_18dp,
-                R.drawable.ic_list_24px,
+                R.drawable.ic_format_list_numbered_24px,
                 R.drawable.ic_content_paste_black_18dp
         };
 

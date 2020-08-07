@@ -21,6 +21,7 @@ import com.example.recipestorage.AddRecipeActivity;
 import com.example.recipestorage.R;
 import com.example.recipestorage.Recipe;
 import com.example.recipestorage.adapters.RecipeAdapter;
+import com.example.recipestorage.utils.KeyboardUtils;
 import com.example.recipestorage.utils.RecipeTrie;
 import com.facebook.AccessToken;
 import com.facebook.GraphRequest;
@@ -118,6 +119,19 @@ public class AllRecipesFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 launchAddRecipe();
+            }
+        });
+
+        KeyboardUtils.addKeyboardToggleListener(getActivity(), new KeyboardUtils.SoftKeyboardToggleListener()
+        {
+            @Override
+            public void onToggleSoftKeyboard(boolean isVisible)
+            {
+                if (isVisible) {
+                    fabAddRecipe.setVisibility(View.GONE);
+                } else {
+                    fabAddRecipe.setVisibility(View.VISIBLE);
+                }
             }
         });
     }

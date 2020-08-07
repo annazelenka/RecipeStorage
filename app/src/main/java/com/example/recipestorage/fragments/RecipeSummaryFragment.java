@@ -27,6 +27,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -80,6 +81,7 @@ public class RecipeSummaryFragment extends Fragment {
     EditText etTitle;
     //EditText etRecipeTime;
     ImageView ivRecipeImage;
+    ImageView ivScrollDown;
     FloatingActionButton fabSubmit;
     MaterialDialog mDialog;
     MaterialDialog photoDialog;
@@ -134,6 +136,7 @@ public class RecipeSummaryFragment extends Fragment {
         chipLunch = view.findViewById(R.id.chipLunch);
         chipDinner = view.findViewById(R.id.chipDinner);
         chipDessert = view.findViewById(R.id.chipDessert);
+        ivScrollDown = view.findViewById(R.id.ivScrollDown);
 
 
         chips = new ArrayList<Chip>();
@@ -157,6 +160,7 @@ public class RecipeSummaryFragment extends Fragment {
             btnDelete.setVisibility(View.GONE);
             btnShare.setVisibility(View.GONE);
             ivRecipeImage.setVisibility(View.GONE);
+            ivScrollDown.setVisibility(View.GONE);
         }
         setupFabSubmit();
         setupChips();
@@ -275,7 +279,7 @@ public class RecipeSummaryFragment extends Fragment {
                 .setTitle("Add photo")
                 .setMessage("Add photo from gallery or take a photo?")
                 .setCancelable(true)
-                .setPositiveButton("photo gallery", R.drawable.ic_delete_24px, new MaterialDialog.OnClickListener() {
+                .setPositiveButton("gallery", R.drawable.ic_wb_sunny_24px, new MaterialDialog.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int which) {
                         // Delete Operation
@@ -283,7 +287,7 @@ public class RecipeSummaryFragment extends Fragment {
                         photoDialog.dismiss();
                     }
                 })
-                .setNegativeButton("camera", R.drawable.ic_clear_24px, new MaterialDialog.OnClickListener() {
+                .setNegativeButton("camera", R.drawable.ic_photo_camera_24px, new MaterialDialog.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int which) {
                         launchCamera();
@@ -369,6 +373,14 @@ public class RecipeSummaryFragment extends Fragment {
                 }
             }
         });
+        if (ivRecipeImage.getVisibility() == View.GONE) {
+            // move fabSubmit down if image is invisible
+            RelativeLayout.LayoutParams params= new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,ViewGroup.LayoutParams.WRAP_CONTENT);
+            params.addRule(RelativeLayout.BELOW, R.id.chipGroup);
+            params.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+            params.setMargins(0, 0, 16, 0);
+            fabSubmit.setLayoutParams(params);
+        }
     }
 
     private void launchIngredientsFragment() {

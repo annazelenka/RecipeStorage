@@ -77,8 +77,8 @@ public class HomeFragment extends Fragment {
 
     View onCreatedView;
 
-    SkeletonScreen skeletonScreen;
-    List<SkeletonScreen> screens;
+//    SkeletonScreen skeletonScreen;
+//    List<SkeletonScreen> screens;
     boolean isLoading;
     Set<Recipe> filteredRecipes;
 
@@ -121,10 +121,10 @@ public class HomeFragment extends Fragment {
         tvWelcome.setText("Welcome, " + name + "!");
 
         onCreatedView = view;
-        screens = new ArrayList<SkeletonScreen>();
+//        screens = new ArrayList<SkeletonScreen>();
         int allRecipesSize = displayedRecipes == null ? 0 : displayedRecipes.size();
         tvNoRecipes.setVisibility(View.INVISIBLE);
-        setupSkeleton();
+//        setupSkeleton();
         setupChips();
     }
 
@@ -157,9 +157,6 @@ public class HomeFragment extends Fragment {
         carouselView = onCreatedView.findViewById(R.id.carouselView);
         this.displayedRecipes = setAllRecipes;
         int recipesSize = setAllRecipes == null ? 0 : setAllRecipes.size();
-        if (skeletonScreen == null) {
-            setupSkeleton();
-        }
 
         final Runnable r = new Runnable() {
             public void run() {
@@ -258,12 +255,12 @@ public class HomeFragment extends Fragment {
             @Override
             public void onBindView(View view, int position) {
                 // Example here is setting up a full image carousel
-                skeletonScreen = Skeleton.bind(view)
-                        .load(R.layout.item_recipe_skeleton)
-                        .shimmer(true)
-                        .duration(200)
-                        .show();
-                screens.add(skeletonScreen);
+//                skeletonScreen = Skeleton.bind(view)
+//                        .load(R.layout.item_recipe_skeleton)
+//                        .shimmer(true)
+//                        .duration(200)
+//                        .show();
+//                screens.add(skeletonScreen);
 
             }
 
@@ -334,10 +331,10 @@ public class HomeFragment extends Fragment {
         carouselView.setCarouselViewListener(new CarouselViewListener() {
             @Override
             public void onBindView(View view, int position) {
-                skeletonScreen = Skeleton.bind(view)
-                        .load(R.layout.item_recipe_skeleton)
-                        .show();
-                screens.add(skeletonScreen);
+//                skeletonScreen = Skeleton.bind(view)
+//                        .load(R.layout.item_recipe_skeleton)
+//                        .show();
+//                screens.add(skeletonScreen);
 
                 final TextView tvTitle = view.findViewById(R.id.tvTitle);
                 final ImageView ivPicture = view.findViewById(R.id.ivPicture);
@@ -376,9 +373,9 @@ public class HomeFragment extends Fragment {
         final Runnable r = new Runnable() {
             public void run() {
 
-                for (SkeletonScreen screen: screens) {
-                    screen.hide();
-                }
+//                for (SkeletonScreen screen: screens) {
+//                    screen.hide();
+//                }
                 carouselView.show();
 
             }

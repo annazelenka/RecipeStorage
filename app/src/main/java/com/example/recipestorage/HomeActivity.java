@@ -251,8 +251,7 @@ public class HomeActivity extends AppCompatActivity implements Filterable {
         if (returnFragment.equals("AllRecipesFragment")) {
             if (tagsChanged) populateRecipes();
             AllRecipesFragment allRecipesFragment =  (AllRecipesFragment) currentFragment;
-            if (itemRemoved) allRecipesFragment.notifyItemRemoved(position);
-            else allRecipesFragment.notifyItemChanged(position);
+            allRecipesFragment.notifyDatasetChanged();
 
         } else if (returnFragment.equals("HomeFragment")) {
             populateRecipes();
