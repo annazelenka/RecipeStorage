@@ -44,10 +44,13 @@ A mobile Android app developed in Java. Users can create profiles and store reci
 **Optional Nice-to-have Stories**
 
 - [X]  add option to write down notes about recipe
-- [ ]  Improve searching functionality: replace map usage with trie. Change search view so that it updates search filter every time user types, instead of only once user clicks search button.
-- [ ]  Integrate Facebook Graphs API: use Facebook Graphs API somehow, eg share post.
-- [ ]  When adding a photo to picture, add ability to choose photo from device’s photo library instead of using the camera.
+- [X]  Improve searching functionality: replace map usage with trie. Change search view so that it updates search filter every time user types, instead of only once user clicks search button.
+- [X]  Integrate Facebook Graphs API: use Facebook Graphs API somehow, eg share post.
+- [X]  When adding a photo to picture, add ability to choose photo from device’s photo library instead of using the camera.
 - [ ]  integrate [Spoonacular API](https://spoonacular.com/food-api) (maybe recommend recipes or pull recipes directly from Spoonacular)
+
+
+**To see how the FBU requirements were fulfilled, see the [wiki page](https://github.com/annazelenka/RecipeStorage/wiki/FBU-Requirements).**
 
 ### 2. Screen Archetypes
 
