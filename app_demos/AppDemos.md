@@ -13,3 +13,4 @@
 * Sprint 3: improved search feature by using a custom trie (complex algorithm), fixed bugs, changed layout based on feedback, added placeholder images, added ability to upload images from photo gallery.
   * [Demo](https://imgur.com/a/Sklz9W4)
 
+* Sprint 4: finished app. Final demo [here](https://github.com/annazelenka/RecipeStorage/blob/master/app_demos/app_demo4.mp4) (too long to upload to Imgur)
