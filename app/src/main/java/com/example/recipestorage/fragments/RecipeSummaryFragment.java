@@ -291,25 +291,22 @@ public class RecipeSummaryFragment extends Fragment {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int which) {
                         launchCamera();
-//                        dialogInterface.dismiss();
                         photoDialog.dismiss();
                     }
                 })
                 .build();
 
-        // Show Dialog
         photoDialog.show();
     }
 
-    // from CodePath guide
+    // launching a camera and using gallery (onPickPhoto, loadFromUri, getPhotoFileUri,
+    // getResizedPhotoFileUri, launchCamera) modified from CodePath guide:
+    // https://guides.codepath.com/android/Accessing-the-Camera-and-Stored-Media
     // Trigger gallery selection for a photo
     public void onPickPhoto(View view) {
-        // Create intent for picking a photo from the gallery
         Intent intent = new Intent(Intent.ACTION_PICK,
                 MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
 
-        // If you call startActivityForResult() using an intent that no app can handle, your app will crash.
-        // So as long as the result is not null, it's safe to use the intent.
         if (intent.resolveActivity(getActivity().getPackageManager()) != null) {
             // Bring up gallery to select a photo
             startActivityForResult(intent, PICK_PHOTO_CODE);
@@ -430,10 +427,6 @@ public class RecipeSummaryFragment extends Fragment {
     private boolean hasTitle() {
         return !etTitle.getText().toString().isEmpty();
     }
-
-//    private boolean hasRecipeTime() {
-//        return !etRecipeTime.getText().toString().isEmpty();
-//    }
 
     private void setUpFacebookShareContent() {
         ParseFile fileObject = recipe.getImage();
@@ -674,19 +667,8 @@ public class RecipeSummaryFragment extends Fragment {
         }
     }
 
-    // from CodePath
-    /**
-     * Schedules the shared element transition to be started immediately
-     * after the shared element has been measured and laid out within the
-     * activity's view hierarchy. Some common places where it might make
-     * sense to call this method are:
-     *
-     * (1) Inside a Fragment's onCreateView() method (if the shared element
-     *     lives inside a Fragment hosted by the called Activity).
-     *
-     * (2) Inside a Picasso Callback object (if you need to wait for Picasso to
-     *     asynchronously load/scale a bitmap before the transition can begin).
-     **/
+    // code from https://www.androiddesignpatterns.com/2015/03/activity-postponed-shared-element-transitions-part3b.html
+    // used so that animation renders correctly after image is loaded
     private void scheduleStartPostponedTransition(final View sharedElement) {
         sharedElement.getViewTreeObserver().addOnPreDrawListener(
                 new ViewTreeObserver.OnPreDrawListener() {

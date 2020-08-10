@@ -84,7 +84,6 @@ public class EditRecipeActivity<recipe> extends AddRecipeActivity {
         adapterPosition = getIntent().getIntExtra("position",0);
         toolbar.setVisibility(View.GONE);
         Fragment fragment = new RecipeSummaryFragment(recipe, adapterPosition, returnFragment);
-//        fragmentManager.beginTransaction().replace(R.id.flContainer, fragment).commit();
     }
 
     @Override

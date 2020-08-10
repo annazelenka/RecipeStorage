@@ -30,7 +30,9 @@ import java.util.List;
 
 /**
  * RecyclerView adapter enabling undo on a swiped away item.
- * MODIFIED FROM https://github.com/nemanja-kovacevic/recycler-view-swipe-to-delete
+ *
+ * Swipe to Delete functionality modified from:
+ * https://github.com/nemanja-kovacevic/recycler-view-swipe-to-delete
  */
 
 public class RecipeSectionAdapter extends RecyclerView.Adapter implements Filterable {
@@ -274,7 +276,6 @@ public class RecipeSectionAdapter extends RecyclerView.Adapter implements Filter
 
         etData.setImeOptions(EditorInfo.IME_ACTION_DONE);
         etData.setRawInputType(InputType.TYPE_CLASS_TEXT);
-
     }
 
 }

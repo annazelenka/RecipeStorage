@@ -34,7 +34,6 @@ public class LoginActivity extends AppCompatActivity {
     Button btnSignup;
     LoginButton btnLoginFacebook;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -50,11 +49,7 @@ public class LoginActivity extends AppCompatActivity {
         btnLogin = findViewById(R.id.btnLogin);
         btnSignup = findViewById(R.id.btnSignup);
         btnLoginFacebook = findViewById(R.id.btnLoginFacebook);
-        //btnLoginFacebook.setReadPermissions(Arrays.asList("user_status, user_birthday, user_location"));
         btnLoginFacebook.setPermissions(Arrays.asList("user_status, user_birthday, user_location"));
-
-
-
 
         btnLogin.setOnClickListener(new View.OnClickListener() {
             @Override

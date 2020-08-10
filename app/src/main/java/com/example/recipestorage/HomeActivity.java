@@ -33,16 +33,13 @@ public class HomeActivity extends AppCompatActivity implements Filterable {
     public static final int HOME_POSITION = 0;
     public static final int ALL_RECIPES_POSITION = 1;
     public static final int MORE_POSITION = 2;
-    private static final int RECIPE_LIMIT = 20;
     private static final String TAG = "HomeActivity";
     private static final int ADD_RECIPE_REQUEST_CODE = 24;
     public static final int EDIT_REQUEST_CODE = 5;
 
-
     final FragmentManager fragmentManager = getSupportFragmentManager();
     Fragment currentFragment;
     HomeFragment homeFragment;
-
     BubbleNavigationConstraintView bubbleNavigation;
 
     RecipeTrie recipeTrie;
@@ -257,7 +254,6 @@ public class HomeActivity extends AppCompatActivity implements Filterable {
             populateRecipes();
             homeFragment = (HomeFragment) currentFragment;
             fragmentManager.beginTransaction().replace(R.id.flContainer, currentFragment).commit();
-
         }
     }
 

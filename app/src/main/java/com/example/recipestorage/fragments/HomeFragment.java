@@ -46,10 +46,10 @@ import coil.request.LoadRequest;
 
 public class HomeFragment extends Fragment {
     public static final int EDIT_REQUEST_CODE = 5;
-    public static final int DEFAULT_SIZE = 5;
 
     TextView tvWelcome;
     TextView tvNoRecipes;
+    View onCreatedView;
     CarouselView carouselView;
     ChipGroup chipGroup;
     Chip chipFavorites;
@@ -73,14 +73,10 @@ public class HomeFragment extends Fragment {
     List<Recipe> lunchRecipes;
     List<Recipe> dinnerRecipes;
     List<Recipe> dessertRecipes;
-    RecipeTrie trie;
 
-    View onCreatedView;
-
-//    SkeletonScreen skeletonScreen;
-//    List<SkeletonScreen> screens;
-    boolean isLoading;
     Set<Recipe> filteredRecipes;
+    RecipeTrie trie;
+    boolean isLoading;
 
     public HomeFragment(List<Recipe> setAllRecipes, RecipeTrie setTrie, boolean setIsLoading) {
         this.originalAllRecipes = setAllRecipes;
@@ -88,7 +84,6 @@ public class HomeFragment extends Fragment {
         this.trie = setTrie;
         this.isLoading = setIsLoading;
     }
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -121,10 +116,8 @@ public class HomeFragment extends Fragment {
         tvWelcome.setText("Welcome, " + name + "!");
 
         onCreatedView = view;
-//        screens = new ArrayList<SkeletonScreen>();
         int allRecipesSize = displayedRecipes == null ? 0 : displayedRecipes.size();
         tvNoRecipes.setVisibility(View.INVISIBLE);
-//        setupSkeleton();
         setupChips();
     }
 
@@ -243,31 +236,6 @@ public class HomeFragment extends Fragment {
         reloadCarouselView(filteredRecipes);
     }
 
-    public void setupSkeleton() {
-        int layout = R.layout.item_recipe_skeleton_carousel;
-        carouselView.setSize(DEFAULT_SIZE);
-        carouselView.setResource(layout);
-        carouselView.setAutoPlay(false);
-        carouselView.setScaleOnScroll(true);
-        carouselView.setIndicatorAnimationType(IndicatorAnimationType.SLIDE);
-        carouselView.setCarouselOffset(OffsetType.CENTER);
-        carouselView.setCarouselViewListener(new CarouselViewListener() {
-            @Override
-            public void onBindView(View view, int position) {
-                // Example here is setting up a full image carousel
-//                skeletonScreen = Skeleton.bind(view)
-//                        .load(R.layout.item_recipe_skeleton)
-//                        .shimmer(true)
-//                        .duration(200)
-//                        .show();
-//                screens.add(skeletonScreen);
-
-            }
-
-        });
-        carouselView.show();
-    }
-
     private void setupCarouselView(View view, int size) {
         carouselView = view.findViewById(R.id.carouselView);
         int layout = R.layout.item_recipe_preview;
@@ -319,8 +287,6 @@ public class HomeFragment extends Fragment {
 
     private void setupCarouselViewWithSkeletonLoad(View view, int allRecipesSize, boolean isSkeletonView) {
         carouselView = view.findViewById(R.id.carouselView);
-//        tvNoRecipes.setVisibility(View.GONE);
-
         int layout = R.layout.item_recipe_preview;
         carouselView.setSize(allRecipesSize);
         carouselView.setResource(layout);
@@ -331,10 +297,6 @@ public class HomeFragment extends Fragment {
         carouselView.setCarouselViewListener(new CarouselViewListener() {
             @Override
             public void onBindView(View view, int position) {
-//                skeletonScreen = Skeleton.bind(view)
-//                        .load(R.layout.item_recipe_skeleton)
-//                        .show();
-//                screens.add(skeletonScreen);
 
                 final TextView tvTitle = view.findViewById(R.id.tvTitle);
                 final ImageView ivPicture = view.findViewById(R.id.ivPicture);
@@ -369,13 +331,8 @@ public class HomeFragment extends Fragment {
                 });
             }
         });
-        // After you finish setting up, show the CarouselView
         final Runnable r = new Runnable() {
             public void run() {
-
-//                for (SkeletonScreen screen: screens) {
-//                    screen.hide();
-//                }
                 carouselView.show();
 
             }

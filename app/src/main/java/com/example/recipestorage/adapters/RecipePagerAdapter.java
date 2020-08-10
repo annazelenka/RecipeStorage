@@ -64,11 +64,11 @@ public class RecipePagerAdapter extends androidx.fragment.app.FragmentPagerAdapt
                 toolbar.setVisibility(View.GONE);
                 fragment = new RecipeSummaryFragment(recipe, adapterPosition, returnFragment);
                 break;
-            case INGREDIENTS_POSITION: //miDirections
+            case INGREDIENTS_POSITION:
                 toolbar.setVisibility(View.VISIBLE);
                 fragment = new RecipeSectionFragment(false, RecipeSectionFragment.RecipeSection.INGREDIENT, ingredients);
                 break;
-            case DIRECTIONS_POSITION: //miNotes
+            case DIRECTIONS_POSITION:
                 toolbar.setVisibility(View.VISIBLE);
                 fragment = new RecipeSectionFragment(false, RecipeSectionFragment.RecipeSection.DIRECTION, directions);
                 break;

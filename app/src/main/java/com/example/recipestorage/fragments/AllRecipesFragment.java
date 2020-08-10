@@ -43,25 +43,19 @@ public class AllRecipesFragment extends Fragment {
     public static final String TAG = "AllRecipesActivity";
     public static final int NUM_COLUMNS = 2;
     private static final int ADD_REQUEST_CODE = 24;
-    public static final int EDIT_REQUEST_CODE = 5;
-
-    private static final int RESULT_OK = 24;
-
 
     RecyclerView rvRecipes;
-    List<Recipe> allRecipes;
-    RecipeAdapter adapter;
-    RecipeTrie recipeTrie;
+    SkeletonScreen skeletonScreen;
     SearchView searchView;
     FloatingActionButton fabAddRecipe;
 
+    List<Recipe> allRecipes;
+    RecipeAdapter adapter;
+    RecipeTrie recipeTrie;
     ParseUser currentUser;
     Boolean isFacebookUser;
-    SkeletonScreen skeletonScreen;
-
 
     public AllRecipesFragment(List<Recipe> setAllRecipes, RecipeTrie setTrie, boolean setIsFacebookUser) {
-        // Required empty public constructor
         this.allRecipes = setAllRecipes;
         this.recipeTrie = setTrie;
         this.isFacebookUser = setIsFacebookUser;
@@ -71,7 +65,6 @@ public class AllRecipesFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_all_recipes, container, false);
     }
 
@@ -81,15 +74,10 @@ public class AllRecipesFragment extends Fragment {
 
         searchView = view.findViewById(R.id.recipe_search);
 
-        // Find the recycler view
         rvRecipes = view.findViewById(R.id.rvRecipes);
         fabAddRecipe = view.findViewById(R.id.fabAddRecipe);
-        rvRecipes = view.findViewById(R.id.rvRecipes);
 
-
-        // Initialize the list of tweets and adapter
         adapter = new RecipeAdapter(getActivity(), getContext(), allRecipes);
-
 
         // Recycler view setup: layout manager and the adapter
         rvRecipes.setLayoutManager(new GridLayoutManager(getContext(), NUM_COLUMNS));

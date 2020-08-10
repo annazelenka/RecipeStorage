@@ -35,7 +35,6 @@ import coil.request.LoadRequest;
 
 public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder> {
     public static final int EDIT_REQUEST_CODE = 5;
-    public static final int DELETE_REQUEST_CODE = 10;
 
     Context context;
     List<Recipe> allRecipes;
@@ -70,7 +69,7 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
         this.recipesFiltered = list;
         notifyDataSetChanged();
     }
-    //call when you want to filter
+
     public void filterList(String text) {
         filter.filter(text);
     }
@@ -79,8 +78,6 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
         this.recipesFiltered = setRecipes;
     }
 
-
-    //Usually involves inflating a layout from XML (item_movie.xml) and return it inside a viewholder
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -89,8 +86,6 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
         return new ViewHolder(movieView);
     }
 
-    //Involves populating data into the item through holder (take data at position and put into
-    // View contained within ViewHolder)
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Log.d("MovieAdapter", "onBindViewHolder " + position);
@@ -100,7 +95,6 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
         holder.bind(data);
     }
 
-    //Returns the total count of items in the list
     @Override
     public int getItemCount() {
         if (recipesFiltered != null) {
@@ -122,7 +116,6 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
             ivPicture = itemView.findViewById(R.id.ivPicture);
             btnEditRecipe = itemView.findViewById(R.id.btnEditRecipe);
 
-            // add this as the itemView's OnClickListener
             itemView.setOnClickListener(this);
         }
 
@@ -158,11 +151,8 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
 
         @Override
         public void onClick(View view) {
-            // get item position
             int position = getAdapterPosition();
-            //make sure position is valid, ie actually exists in the view
             if (position != RecyclerView.NO_POSITION) {
-                // get the movie at the position, this won't work if the class is static
                 Recipe data = allRecipes.get(position);
             }
         }

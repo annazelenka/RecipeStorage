@@ -2,6 +2,8 @@ package com.example.recipestorage;
 
 import android.graphics.Bitmap;
 
+// Credit to: https://gist.github.com/nesquena/3885707fd3773c09f1bb
+
 public class BitmapScaler {
     // scale and keep aspect ratio
     public static Bitmap scaleToFitWidth(Bitmap b, int width)
@@ -17,7 +19,6 @@ public class BitmapScaler {
         float factor = height / (float) b.getHeight();
         return Bitmap.createScaledBitmap(b, (int) (b.getWidth() * factor), height, true);
     }
-
 
     // scale and keep aspect ratio
     public static Bitmap scaleToFill(Bitmap b, int width, int height)

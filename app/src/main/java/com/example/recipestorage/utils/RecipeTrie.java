@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
 
-
 /** Represents a RecipeTrie.
  *  This implementation does NOT have each letter at each level. Instead, letters correspond only
  *  to existing keys. The root node is an empty value. The leaf TrieNodes contain recipes and are
@@ -151,7 +150,7 @@ public class RecipeTrie {
     }
 
     /**
-     Given a list of recipe, this method adds all the recipes to the trie.
+     Given a list of recipes, this method adds all the recipes to the trie.
      @param recipes the recipes to be inserted
      */
     public void populateRecipeTrie(List<Recipe> recipes) {

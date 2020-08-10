@@ -46,24 +46,18 @@ import java.io.File;
 import java.util.ArrayList;
 
 public class RecipeSectionFragment extends Fragment implements RecipeSectionAdapter.AdapterInterface {
-    public static final String TAG = "RecipeSectionFragment";
-    private static final Object RESULT_OK = 24;
-
     TextView tvTitle;
-    RecipeSection recipeSection;
-    String recipeSectionString;
-    ArrayList<String> recipeSectionContents;
-    boolean isBlankRecipe;
     RecyclerView rvItems;
-
     EditText etAddRecipeSection;
     FloatingActionButton fabSubmit;
 
+    boolean isBlankRecipe;
+    RecipeSection recipeSection;
+    String recipeSectionString;
+    ArrayList<String> recipeSectionContents;
     RecipeSectionAdapter recipeSectionAdapter;
     OnDataPass dataPasser;
-
     Recipe newRecipe;
-
 
     public enum RecipeSection {
         INGREDIENT,
@@ -100,7 +94,6 @@ public class RecipeSectionFragment extends Fragment implements RecipeSectionAdap
         }
     }
 
-    // for AddRecipe
     public RecipeSectionFragment(boolean setIsBlankRecipe, RecipeSection setRecipeSection, Recipe setNewRecipe) {
         this.isBlankRecipe = setIsBlankRecipe;
         this.recipeSection = setRecipeSection;
@@ -164,7 +157,6 @@ public class RecipeSectionFragment extends Fragment implements RecipeSectionAdap
         }
     }
 
-
     @Override
     public void onDataEdited(int position, String newData){
         switch (recipeSection) {
@@ -179,8 +171,6 @@ public class RecipeSectionFragment extends Fragment implements RecipeSectionAdap
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-
-        // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_recipe_section, container, false);
     }
 
@@ -193,9 +183,7 @@ public class RecipeSectionFragment extends Fragment implements RecipeSectionAdap
         etAddRecipeSection = view.findViewById(R.id.etAddRecipeSection);
         fabSubmit = view.findViewById(R.id.fabSubmit);
 
-
         setUpRecyclerView();
-        //populateListView(view);
         tvTitle.setText(recipeSectionString + "s");
 
         if (!isBlankRecipe) {
@@ -272,9 +260,7 @@ public class RecipeSectionFragment extends Fragment implements RecipeSectionAdap
                 newRecipe.clearNotes();
                 newRecipe.addNotes(recipeSectionContents);
                 recipeSectionString = "note";
-                //saveRecipe();
                 dataPasser.onSaveNewRecipePass(newRecipe);
-                //launchAllRecipesActivity();
                 break;
             default:
                 recipeSectionString = "empty";
@@ -285,7 +271,6 @@ public class RecipeSectionFragment extends Fragment implements RecipeSectionAdap
     private void setUpRecyclerView() {
         rvItems.setLayoutManager(new LinearLayoutManager(getContext()));
         recipeSectionAdapter = new RecipeSectionAdapter(getContext(), RecipeSectionFragment.this, recipeSectionContents);
-        //recipeSectionAdapter.setUndoOn(true);
         rvItems.setAdapter(recipeSectionAdapter);
         rvItems.setHasFixedSize(true);
         setUpItemTouchHelper();
@@ -293,9 +278,8 @@ public class RecipeSectionFragment extends Fragment implements RecipeSectionAdap
     }
 
     /**
-     * This is the standard support library way of implementing "swipe to delete" feature. You can do custom drawing in onChildDraw method
-     * but whatever you draw will disappear once the swipe is over, and while the items are animating to their new position the recycler view
-     * background will be visible. That is rarely an desired effect.
+     * Swipe-to-delete modified from:
+     * https://medium.com/nemanja-kovacevic/recyclerview-swipe-to-delete-no-3rd-party-lib-necessary-6bf6a6601214
      */
     private void setUpItemTouchHelper() {
 
@@ -383,6 +367,7 @@ public class RecipeSectionFragment extends Fragment implements RecipeSectionAdap
     }
 
     /**
+     * from https://medium.com/nemanja-kovacevic/recyclerview-swipe-to-delete-no-3rd-party-lib-necessary-6bf6a6601214
      * We're gonna setup another ItemDecorator that will draw the red background in the empty space while the items are animating to thier new positions
      * after an item is removed.
      */
